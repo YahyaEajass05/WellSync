@@ -1,0 +1,45 @@
+================================================================================
+ACADEMIC IMPACT ANALYZER - TRAINING REPORT
+================================================================================
+Generated: 2026-01-06 21:46:14
+
+================================================================================
+ALL MODELS COMPARISON
+================================================================================
+         model_name  train_mae  test_mae  train_rmse  test_rmse  train_r2   test_r2  train_mape  test_mape
+  Gradient Boosting   0.091249  0.101486    0.147783   0.177716  0.991426  0.986862    0.015393   0.017827
+      Random Forest   0.031563  0.059362    0.078332   0.179216  0.997591  0.986639    0.005913   0.010693
+        Extra Trees   0.000000  0.055390    0.000000   0.187566  1.000000  0.985365    0.000000   0.009512
+K-Nearest Neighbors   0.067496  0.087943    0.187723   0.239385  0.986166  0.976162    0.012517   0.015718
+   Ridge Regression   0.221580  0.199911    0.299518   0.279932  0.964782  0.967402    0.038124   0.034632
+           AdaBoost   0.383613  0.382591    0.402060   0.404708  0.936539  0.931865    0.063685   0.064117
+         ElasticNet   0.916982  0.878478    1.065677   1.022932  0.554165  0.564712    0.168325   0.158297
+   Lasso Regression   1.381391  1.346094    1.596019   1.550613  0.000000 -0.000207    0.251343   0.238379
+
+================================================================================
+BEST MODEL PERFORMANCE
+================================================================================
+model_name: Tuned Gradient Boosting
+train_mae: 0.0013979149004764702
+test_mae: 0.04792126367484074
+train_rmse: 0.0019679976514285985
+test_rmse: 0.15435388468733585
+train_r2: 0.9999984795473735
+test_r2: 0.9900889846652792
+train_mape: 0.00023943401723704413
+test_mape: 0.0084170240711434
+
+================================================================================
+CROSS-VALIDATION RESULTS
+================================================================================
+r2_mean: 0.9870
+r2_std: 0.0059
+mae_mean: 0.0605
+mae_std: 0.0163
+rmse_mean: 0.1746
+rmse_std: 0.0484
+
+================================================================================
+TOTAL FEATURES: 26
+================================================================================
+Age, Gender, Academic_Level, Country, Avg_Daily_Usage_Hours, Most_Used_Platform, Affects_Academic_Performance, Sleep_Hours_Per_Night, Mental_Health_Score, Relationship_Status, Conflicts_Over_Social_Media, usage_intensity, sleep_deficit, severe_sleep_deficit, mental_health_risk, usage_sleep_ratio, mental_sleep_score, high_conflict, age_group, poor_academic_performance, combined_risk_score, usage_squared, mental_health_squared, usage_conflict_interaction, uses_popular_platform, has_relationship
