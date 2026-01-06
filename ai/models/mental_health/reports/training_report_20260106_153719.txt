@@ -1,0 +1,45 @@
+================================================================================
+MENTAL WELLNESS PREDICTION MODEL - TRAINING REPORT
+================================================================================
+Generated: 2026-01-06 15:37:19
+
+================================================================================
+ALL MODELS COMPARISON
+================================================================================
+         model_name    train_mae  test_mae   train_rmse  test_rmse  train_r2  test_r2   train_mape    test_mape
+   Ridge Regression 4.015750e+00  3.588499 5.133559e+00   4.599150  0.935758 0.950802 1.638390e+15 2.308819e+15
+   Lasso Regression 4.495486e+00  3.768854 5.716869e+00   4.707399  0.920330 0.948458 2.522734e+15 3.553749e+15
+  Gradient Boosting 1.918087e+00  4.223872 2.355392e+00   5.260938  0.986476 0.935624 9.493290e+14 2.622845e+15
+      Random Forest 1.892309e+00  4.436737 2.474280e+00   5.401915  0.985076 0.932128 7.789398e+14 3.145539e+15
+        Extra Trees 2.597939e-14  4.411062 4.175359e-14   5.462877  1.000000 0.930587 1.069790e-15 3.245238e+15
+           AdaBoost 4.715633e+00  5.094839 5.434106e+00   5.852012  0.928016 0.920346 4.577084e+15 5.907988e+15
+         ElasticNet 5.557161e+00  5.229386 7.143272e+00   6.613872  0.875613 0.898256 3.514232e+15 4.584018e+15
+K-Nearest Neighbors 5.446937e+00  5.848750 7.262729e+00   7.914852  0.871418 0.854293 2.138084e+15 3.388959e+15
+
+================================================================================
+BEST MODEL PERFORMANCE
+================================================================================
+model_name: Voting Ensemble
+train_mae: 2.6475362616996057
+test_mae: 4.018268794921925
+train_rmse: 3.281013810432314
+test_rmse: 4.968386544033722
+train_r2: 0.9737580302898563
+test_r2: 0.942584875501278
+train_mape: 1316118065411715.2
+test_mape: 3203869936346653.0
+
+================================================================================
+CROSS-VALIDATION RESULTS
+================================================================================
+r2_mean: 0.9080
+r2_std: 0.0364
+mae_mean: 4.5543
+mae_std: 0.4521
+rmse_mean: 5.6965
+rmse_std: 0.6213
+
+================================================================================
+TOTAL FEATURES: 26
+================================================================================
+age, gender, occupation, work_mode, screen_time_hours, work_screen_hours, leisure_screen_hours, sleep_hours, sleep_quality_1_5, stress_level_0_10, productivity_0_100, exercise_minutes_per_week, social_hours_per_week, work_screen_ratio, leisure_screen_ratio, sleep_efficiency, work_life_balance, screen_sleep_ratio, health_score, stress_productivity_interaction, age_group, high_screen_time, excessive_work_screen, screen_time_squared, stress_squared, sleep_squared
