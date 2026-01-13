@@ -20,7 +20,21 @@ class ModelLoader:
             model_type: Either 'mental_health' or 'academic'
         """
         self.model_type = model_type
-        self.base_path = f"ai/models/{model_type}"
+        
+        # Determine base path based on current working directory
+        # This handles both running from project root and from ai/api
+        cwd = os.getcwd()
+        
+        if cwd.endswith(os.path.join('ai', 'api')):
+            # Running from ai/api directory
+            self.base_path = os.path.join("..", "models", model_type)
+        elif os.path.exists(os.path.join("ai", "models")):
+            # Running from project root
+            self.base_path = os.path.join("ai", "models", model_type)
+        else:
+            # Fallback: try relative path
+            self.base_path = os.path.join("models", model_type)
+        
         self.model = None
         self.preprocessors = None
         self.feature_names = None
@@ -29,6 +43,9 @@ class ModelLoader:
     def load_model(self, model_name: str = "best_model.pkl"):
         """Load a trained model"""
         model_path = os.path.join(self.base_path, model_name)
+        
+        # Normalize path for Windows/Linux compatibility
+        model_path = os.path.normpath(model_path)
         
         if not os.path.exists(model_path):
             raise FileNotFoundError(f"Model not found: {model_path}")
@@ -40,6 +57,7 @@ class ModelLoader:
     def load_preprocessors(self):
         """Load preprocessing objects"""
         preprocessor_path = os.path.join(self.base_path, "preprocessors.pkl")
+        preprocessor_path = os.path.normpath(preprocessor_path)
         
         if not os.path.exists(preprocessor_path):
             raise FileNotFoundError(f"Preprocessors not found: {preprocessor_path}")
@@ -51,6 +69,7 @@ class ModelLoader:
     def load_feature_names(self):
         """Load feature names"""
         feature_path = os.path.join(self.base_path, "feature_names.pkl")
+        feature_path = os.path.normpath(feature_path)
         
         if not os.path.exists(feature_path):
             raise FileNotFoundError(f"Feature names not found: {feature_path}")
@@ -62,6 +81,7 @@ class ModelLoader:
     def load_metadata(self):
         """Load model metadata"""
         metadata_path = os.path.join(self.base_path, "model_metadata.pkl")
+        metadata_path = os.path.normpath(metadata_path)
         
         if not os.path.exists(metadata_path):
             raise FileNotFoundError(f"Metadata not found: {metadata_path}")
@@ -112,15 +132,38 @@ class MentalWellnessPredictor:
         Returns:
             Dictionary with prediction and confidence
         """
-        # This is a placeholder - actual preprocessing would happen here
-        # based on the preprocess.py logic
+        from ai.utils.preprocessing import preprocess_mental_wellness_input, interpret_mental_wellness_score
         
-        # For now, return model info
-        return {
-            "prediction": "Feature engineering required",
-            "model_info": self.loader.get_model_info(),
-            "note": "Full preprocessing pipeline needed for actual predictions"
-        }
+        try:
+            # Preprocess input data
+            X_processed = preprocess_mental_wellness_input(input_data, self.loader.preprocessors)
+            
+            # Make prediction
+            prediction = self.loader.model.predict(X_processed)[0]
+            
+            # Get interpretation
+            interpretation = interpret_mental_wellness_score(prediction)
+            
+            # Get model info
+            model_info = self.loader.get_model_info()
+            
+            return {
+                "prediction": float(prediction),
+                "interpretation": interpretation,
+                "model_name": model_info["model_name"],
+                "confidence_metrics": {
+                    "model_r2_score": model_info["test_r2_score"],
+                    "model_mae": model_info["test_mae"]
+                },
+                "input_features_processed": int(X_processed.shape[1]),
+                "status": "success"
+            }
+        except Exception as e:
+            return {
+                "status": "error",
+                "error": str(e),
+                "model_info": self.loader.get_model_info()
+            }
 
 
 class AcademicImpactPredictor:
@@ -140,13 +183,38 @@ class AcademicImpactPredictor:
         Returns:
             Dictionary with prediction and confidence
         """
-        # This is a placeholder - actual preprocessing would happen here
+        from ai.utils.preprocessing import preprocess_academic_input, interpret_addiction_score
         
-        return {
-            "prediction": "Feature engineering required",
-            "model_info": self.loader.get_model_info(),
-            "note": "Full preprocessing pipeline needed for actual predictions"
-        }
+        try:
+            # Preprocess input data
+            X_processed = preprocess_academic_input(input_data, self.loader.preprocessors)
+            
+            # Make prediction
+            prediction = self.loader.model.predict(X_processed)[0]
+            
+            # Get interpretation
+            interpretation = interpret_addiction_score(prediction)
+            
+            # Get model info
+            model_info = self.loader.get_model_info()
+            
+            return {
+                "prediction": float(prediction),
+                "interpretation": interpretation,
+                "model_name": model_info["model_name"],
+                "confidence_metrics": {
+                    "model_r2_score": model_info["test_r2_score"],
+                    "model_mae": model_info["test_mae"]
+                },
+                "input_features_processed": int(X_processed.shape[1]),
+                "status": "success"
+            }
+        except Exception as e:
+            return {
+                "status": "error",
+                "error": str(e),
+                "model_info": self.loader.get_model_info()
+            }
 
 
 def get_available_models() -> Dict[str, list]:
