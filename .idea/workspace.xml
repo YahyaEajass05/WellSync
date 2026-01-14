@@ -6,16 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="e5f2139c-e03f-4693-8066-6bfb2bbda600" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/controllers/authController.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/controllers/authController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/controllers/userController.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/controllers/userController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/models/Prediction.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/models/Prediction.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/models/User.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/models/User.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/routes/authRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routes/authRoutes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/routes/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routes/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/routes/userRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routes/userRoutes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/utils/emailService.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/utils/emailService.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/utils/emailTemplates.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/utils/emailTemplates.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_with_auth.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -141,7 +133,7 @@
       <workItem from="1768210028091" duration="1079000" />
       <workItem from="1768224594511" duration="7793000" />
       <workItem from="1768294477849" duration="11208000" />
-      <workItem from="1768383839066" duration="6261000" />
+      <workItem from="1768383839066" duration="10027000" />
     </task>
     <servers />
   </component>

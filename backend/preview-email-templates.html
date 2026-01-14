@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WellSync Email Templates Preview</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #1a1a2e;
+            color: white;
+            margin: 0;
+            padding: 20px;
+        }
+        .preview-header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+        .preview-header h1 {
+            margin: 0;
+            font-size: 36px;
+        }
+        .preview-header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+        }
+        .template-selector {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        .template-btn {
+            padding: 15px 30px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .template-btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        .template-btn.active {
+            background: #28a745;
+        }
+        .preview-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        iframe {
+            width: 100%;
+            height: 800px;
+            border: none;
+            border-radius: 10px;
+        }
+        .features-list {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+        .features-list h2 {
+            margin-top: 0;
+            color: #667eea;
+        }
+        .features-list ul {
+            list-style: none;
+            padding: 0;
+        }
+        .features-list li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+        .features-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #28a745;
+            font-weight: bold;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="preview-header">
+        <h1>✨ WellSync Email Templates</h1>
+        <p>Enhanced with Beautiful Animations & Modern Design</p>
+    </div>
+
+    <div class="template-selector">
+        <button class="template-btn active" onclick="showTemplate('welcome')">🎉 Welcome Email</button>
+        <button class="template-btn" onclick="showTemplate('verification')">✉️ Email Verification</button>
+        <button class="template-btn" onclick="showTemplate('password')">🔐 Password Reset</button>
+        <button class="template-btn" onclick="showTemplate('report')">📊 Prediction Report</button>
+        <button class="template-btn" onclick="showTemplate('activation')">✅ Account Activation</button>
+    </div>
+
+    <div class="preview-container">
+        <iframe id="emailPreview" srcdoc=""></iframe>
+    </div>
+
+    <div class="features-list">
+        <h2>🎨 Animation Features Included:</h2>
+        <ul>
+            <li><strong>Bounce Animation:</strong> Animated icons that gently bounce</li>
+            <li><strong>Fade Effects:</strong> Smooth fade-in transitions for content</li>
+            <li><strong>Slide Animations:</strong> List items slide in sequentially</li>
+            <li><strong>Glow Effect:</strong> Verification codes with pulsing glow</li>
+            <li><strong>Pulse Animation:</strong> Code boxes with subtle scaling</li>
+            <li><strong>Shine Effect:</strong> Animated light sweep across header</li>
+            <li><strong>Button Hover:</strong> Interactive buttons with smooth transitions</li>
+            <li><strong>Progress Bars:</strong> Animated score visualization</li>
+            <li><strong>Scale Animations:</strong> Info cards that pop in</li>
+            <li><strong>Count Up:</strong> Score numbers animate from 0</li>
+            <li><strong>Responsive Design:</strong> Mobile-friendly layouts</li>
+            <li><strong>Modern Typography:</strong> Clean, professional fonts</li>
+        </ul>
+    </div>
+
+    <script>
+        const templates = {
+            welcome: `<!-- Welcome Email Template will be loaded here -->`,
+            verification: `<!-- Verification Email Template will be loaded here -->`,
+            password: `<!-- Password Reset Template will be loaded here -->`,
+            report: `<!-- Prediction Report Template will be loaded here -->`,
+            activation: `<!-- Account Activation Template will be loaded here -->`
+        };
+
+        function showTemplate(type) {
+            // Update button states
+            document.querySelectorAll('.template-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Load template (you would fetch from emailTemplates.js in real implementation)
+            const message = `
+                <div style="text-align: center; padding: 100px 20px; font-family: Arial;">
+                    <h1 style="color: #667eea;">📧 ${type.charAt(0).toUpperCase() + type.slice(1)} Email Template</h1>
+                    <p style="font-size: 18px; color: #666; margin: 20px 0;">
+                        To see the actual animated template, test it by:<br><br>
+                        <strong>1. Register a new user in your backend</strong><br>
+                        <strong>2. Check the email sent to your inbox</strong><br>
+                        <strong>3. Or use the test script: node backend/test-email.js</strong>
+                    </p>
+                    <div style="background: #f0f2f5; padding: 20px; border-radius: 10px; margin: 30px auto; max-width: 500px; text-align: left;">
+                        <h3 style="color: #667eea; margin-top: 0;">Animations in this template:</h3>
+                        <ul style="color: #333;">
+                            <li>✨ Bouncing icon animation</li>
+                            <li>✨ Glowing verification code</li>
+                            <li>✨ Smooth fade-in effects</li>
+                            <li>✨ Interactive button hovers</li>
+                            <li>✨ Shine effect on header</li>
+                            <li>✨ Responsive mobile design</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('emailPreview').srcdoc = message;
+        }
+
+        // Show welcome template by default
+        showTemplate('welcome');
+    </script>
+</body>
+</html>

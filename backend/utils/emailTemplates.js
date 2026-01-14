@@ -413,12 +413,6 @@ const getEmailTemplate = (type, data) => {
                     </div>
                     <div class="footer">
                         <p style="font-weight: 600; color: #333; margin-bottom: 15px;">Stay Connected</p>
-                        <div class="social-links">
-                            <a href="#" title="Facebook">📘</a>
-                            <a href="#" title="Twitter">🐦</a>
-                            <a href="#" title="Instagram">📷</a>
-                            <a href="#" title="LinkedIn">💼</a>
-                        </div>
                         <p>&copy; 2026 WellSync. All rights reserved.</p>
                         <p style="margin-top: 10px; font-size: 11px; color: #999;">
                             You received this email because you signed up for WellSync.<br>
