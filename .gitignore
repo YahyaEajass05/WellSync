@@ -1,6 +1,12 @@
-# Documentation and Script Files (exclude from repository)
-*.md
+# Script Files (exclude from repository)
 *.ps1
+
+# Markdown files (excluding important documentation)
+*.md
+!README.md
+!QUICK_START_GUIDE.md
+!backend/USER_DOCUMENTATION.md
+!ai/AI_USER_DOCUMENTATION.md
 
 # Environment Variables
 .env
