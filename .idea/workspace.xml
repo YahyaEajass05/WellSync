@@ -6,8 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="e5f2139c-e03f-4693-8066-6bfb2bbda600" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/utils/emailTemplates.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/utils/emailTemplates.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_with_auth.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/preview-email-templates.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/quick-test-email.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/send-test-email.js" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -133,7 +134,8 @@
       <workItem from="1768210028091" duration="1079000" />
       <workItem from="1768224594511" duration="7793000" />
       <workItem from="1768294477849" duration="11208000" />
-      <workItem from="1768383839066" duration="10027000" />
+      <workItem from="1768383839066" duration="11160000" />
+      <workItem from="1768402265508" duration="3475000" />
     </task>
     <servers />
   </component>
