@@ -35,13 +35,13 @@ exports.register = asyncHandler(async (req, res) => {
         password
     });
 
-    // Generate verification token
-    const verificationToken = user.generateEmailVerificationToken();
+    // Generate 6-digit verification code
+    const verificationCode = user.generateEmailVerificationCode();
     await user.save();
 
-    // Send welcome email
+    // Send welcome email with 6-digit code
     try {
-        await emailService.sendWelcomeEmail(user, verificationToken);
+        await emailService.sendWelcomeEmail(user, verificationCode);
     } catch (error) {
         logger.error(`Failed to send welcome email: ${error.message}`);
         // Don't fail registration if email fails
@@ -87,9 +87,21 @@ exports.login = asyncHandler(async (req, res) => {
         });
     }
 
+    // Check if account is locked
+    if (user.isLocked()) {
+        return res.status(423).json({
+            success: false,
+            error: 'Account locked',
+            message: 'Account is temporarily locked due to too many failed login attempts. Please try again later.'
+        });
+    }
+
     // Check if password matches
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
+        // Increment login attempts
+        await user.incLoginAttempts();
+        
         return res.status(401).json({
             success: false,
             error: 'Invalid credentials',
@@ -104,6 +116,11 @@ exports.login = asyncHandler(async (req, res) => {
             error: 'Account deactivated',
             message: 'Your account has been deactivated. Please contact support.'
         });
+    }
+
+    // Reset login attempts on successful login
+    if (user.loginAttempts > 0 || user.lockUntil) {
+        await user.resetLoginAttempts();
     }
 
     // Update last login
@@ -163,30 +180,38 @@ exports.getMe = asyncHandler(async (req, res) => {
 });
 
 /**
- * @desc    Verify email
- * @route   GET /api/auth/verify-email/:token
+ * @desc    Verify email with 6-digit code
+ * @route   POST /api/auth/verify-email
  * @access  Public
  */
 exports.verifyEmail = asyncHandler(async (req, res) => {
-    const { token } = req.params;
+    const { email, code } = req.body;
 
-    // Find user with valid token
+    if (!email || !code) {
+        return res.status(400).json({
+            success: false,
+            error: 'Email and verification code are required'
+        });
+    }
+
+    // Find user with valid code
     const user = await User.findOne({
-        emailVerificationToken: token,
+        email: email.toLowerCase(),
+        emailVerificationCode: code,
         emailVerificationExpire: { $gt: Date.now() }
-    });
+    }).select('+emailVerificationCode');
 
     if (!user) {
         return res.status(400).json({
             success: false,
-            error: 'Invalid or expired token',
-            message: 'Email verification link is invalid or has expired'
+            error: 'Invalid or expired code',
+            message: 'Verification code is invalid or has expired'
         });
     }
 
     // Update user
     user.isEmailVerified = true;
-    user.emailVerificationToken = undefined;
+    user.emailVerificationCode = undefined;
     user.emailVerificationExpire = undefined;
     await user.save();
 
@@ -213,7 +238,7 @@ exports.verifyEmail = asyncHandler(async (req, res) => {
 });
 
 /**
- * @desc    Resend verification email
+ * @desc    Resend verification code
  * @route   POST /api/auth/resend-verification
  * @access  Private
  */
@@ -228,16 +253,16 @@ exports.resendVerification = asyncHandler(async (req, res) => {
         });
     }
 
-    // Generate new verification token
-    const verificationToken = user.generateEmailVerificationToken();
+    // Generate new 6-digit verification code
+    const verificationCode = user.generateEmailVerificationCode();
     await user.save();
 
-    // Send verification email
-    await emailService.sendVerificationEmail(user, verificationToken);
+    // Send verification email with code
+    await emailService.sendVerificationEmail(user, verificationCode);
 
     res.status(200).json({
         success: true,
-        message: 'Verification email sent successfully'
+        message: 'Verification code sent successfully. Check your email.'
     });
 });
 
@@ -258,20 +283,20 @@ exports.forgotPassword = asyncHandler(async (req, res) => {
         });
     }
 
-    // Generate reset token
-    const resetToken = user.generatePasswordResetToken();
+    // Generate 6-digit reset code
+    const resetCode = user.generatePasswordResetCode();
     await user.save();
 
-    // Send reset email
+    // Send reset email with code
     try {
-        await emailService.sendPasswordResetEmail(user, resetToken);
+        await emailService.sendPasswordResetEmail(user, resetCode);
         
         res.status(200).json({
             success: true,
-            message: 'Password reset email sent successfully'
+            message: 'Password reset code sent to your email'
         });
     } catch (error) {
-        user.passwordResetToken = undefined;
+        user.passwordResetCode = undefined;
         user.passwordResetExpire = undefined;
         await user.save();
         
@@ -280,31 +305,38 @@ exports.forgotPassword = asyncHandler(async (req, res) => {
 });
 
 /**
- * @desc    Reset password
- * @route   POST /api/auth/reset-password/:token
+ * @desc    Reset password with code
+ * @route   POST /api/auth/reset-password
  * @access  Public
  */
 exports.resetPassword = asyncHandler(async (req, res) => {
-    const { token } = req.params;
-    const { password } = req.body;
+    const { email, code, password } = req.body;
 
-    // Find user with valid token
+    if (!email || !code || !password) {
+        return res.status(400).json({
+            success: false,
+            error: 'Email, code, and new password are required'
+        });
+    }
+
+    // Find user with valid code
     const user = await User.findOne({
-        passwordResetToken: token,
+        email: email.toLowerCase(),
+        passwordResetCode: code,
         passwordResetExpire: { $gt: Date.now() }
-    });
+    }).select('+passwordResetCode');
 
     if (!user) {
         return res.status(400).json({
             success: false,
-            error: 'Invalid or expired token',
-            message: 'Password reset link is invalid or has expired'
+            error: 'Invalid or expired code',
+            message: 'Password reset code is invalid or has expired'
         });
     }
 
     // Set new password
     user.password = password;
-    user.passwordResetToken = undefined;
+    user.passwordResetCode = undefined;
     user.passwordResetExpire = undefined;
     await user.save();
 

@@ -76,9 +76,9 @@ predictionSchema.virtual('predictionAge').get(function() {
 
 // Static method to get user statistics
 predictionSchema.statics.getUserStats = async function(userId) {
-    // Fix: Use 'new' with mongoose.Types.ObjectId for newer Mongoose versions
+    // Convert userId to ObjectId
     const objectId = mongoose.Types.ObjectId.isValid(userId) 
-        ? new mongoose.Types.ObjectId(userId) 
+        ? (typeof userId === 'string' ? mongoose.Types.ObjectId(userId) : userId)
         : userId;
     
     const stats = await this.aggregate([

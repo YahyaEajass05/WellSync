@@ -30,14 +30,12 @@ const sendEmail = async (options) => {
 };
 
 /**
- * Send welcome email with verification link
+ * Send welcome email with verification code
  */
-exports.sendWelcomeEmail = async (user, verificationToken) => {
-    const verificationLink = `${process.env.FRONTEND_URL}/verify-email/${verificationToken}`;
-    
+exports.sendWelcomeEmail = async (user, verificationCode) => {
     const html = getEmailTemplate('welcome', {
         firstName: user.firstName,
-        verificationLink
+        verificationCode
     });
 
     await sendEmail({
@@ -48,14 +46,12 @@ exports.sendWelcomeEmail = async (user, verificationToken) => {
 };
 
 /**
- * Send email verification
+ * Send email verification code
  */
-exports.sendVerificationEmail = async (user, verificationToken) => {
-    const verificationLink = `${process.env.FRONTEND_URL}/verify-email/${verificationToken}`;
-    
+exports.sendVerificationEmail = async (user, verificationCode) => {
     const html = getEmailTemplate('emailVerification', {
         firstName: user.firstName,
-        verificationLink
+        verificationCode
     });
 
     await sendEmail({
@@ -66,14 +62,12 @@ exports.sendVerificationEmail = async (user, verificationToken) => {
 };
 
 /**
- * Send password reset email
+ * Send password reset code
  */
-exports.sendPasswordResetEmail = async (user, resetToken) => {
-    const resetLink = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
-    
+exports.sendPasswordResetEmail = async (user, resetCode) => {
     const html = getEmailTemplate('passwordReset', {
         firstName: user.firstName,
-        resetLink
+        resetCode
     });
 
     await sendEmail({

@@ -10,18 +10,22 @@ const aiService = require('../utils/aiService');
 // Import route modules
 const authRoutes = require('./authRoutes');
 const userRoutes = require('./userRoutes');
+const profileRoutes = require('./profileRoutes');
 const predictionRoutes = require('./predictionRoutes');
 const notificationRoutes = require('./notificationRoutes');
 const analyticsRoutes = require('./analyticsRoutes');
 const exportRoutes = require('./exportRoutes');
+const adminRoutes = require('./adminRoutes');
 
 // API Routes
 router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
+router.use('/profiles', profileRoutes);
 router.use('/predictions', predictionRoutes);
 router.use('/notifications', notificationRoutes);
 router.use('/analytics', analyticsRoutes);
 router.use('/export', exportRoutes);
+router.use('/admin', adminRoutes);
 
 // Health check route
 router.get('/health', async (req, res) => {

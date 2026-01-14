@@ -2,6 +2,10 @@
 node_modules/
 package-lock.json
 
+# Documentation and Script Files (exclude from repository)
+*.md
+*.ps1
+
 # Environment variables
 .env
 .env.local

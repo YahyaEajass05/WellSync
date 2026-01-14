@@ -13,9 +13,9 @@ const { authLimiter, emailLimiter } = require('../middleware/rateLimiter');
 // Public routes
 router.post('/register', authLimiter, registerValidation, validate, authController.register);
 router.post('/login', authLimiter, loginValidation, validate, authController.login);
-router.get('/verify-email/:token', authController.verifyEmail);
+router.post('/verify-email', authController.verifyEmail); // Changed to POST with code
 router.post('/forgot-password', emailLimiter, emailValidation, validate, authController.forgotPassword);
-router.post('/reset-password/:token', authController.resetPassword);
+router.post('/reset-password', authController.resetPassword); // Changed to POST with code
 
 // Protected routes
 router.get('/me', protect, authController.getMe);

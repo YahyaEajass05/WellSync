@@ -37,10 +37,11 @@ const getEmailTemplate = (type, data) => {
                             <li>💡 Receive actionable insights for better health</li>
                         </ul>
                         <div class="highlight">
-                            <p><strong>Verify your email to get started:</strong></p>
-                            <a href="${data.verificationLink}" class="button">Verify Email Address</a>
+                            <p><strong>Your verification code is:</strong></p>
+                            <h1 style="text-align: center; font-size: 48px; letter-spacing: 10px; color: #667eea; margin: 20px 0;">${data.verificationCode}</h1>
+                            <p style="text-align: center; color: #666;">Enter this code to verify your email address</p>
                         </div>
-                        <p>This link will expire in 24 hours.</p>
+                        <p><strong>This code will expire in 15 minutes.</strong></p>
                         <p>If you didn't create this account, please ignore this email.</p>
                         <p>Best regards,<br>The WellSync Team</p>
                     </div>
@@ -64,13 +65,12 @@ const getEmailTemplate = (type, data) => {
                     <div class="content">
                         <h2>Hi ${data.firstName},</h2>
                         <p>Thank you for signing up with WellSync!</p>
-                        <p>Please verify your email address to activate your account:</p>
+                        <p>Please use this code to verify your email address:</p>
                         <div class="highlight">
-                            <a href="${data.verificationLink}" class="button">Verify Email Address</a>
+                            <h1 style="text-align: center; font-size: 48px; letter-spacing: 10px; color: #667eea; margin: 20px 0;">${data.verificationCode}</h1>
+                            <p style="text-align: center; color: #666;">Enter this code in the app to verify your account</p>
                         </div>
-                        <p>Or copy and paste this link into your browser:</p>
-                        <p style="word-break: break-all; color: #666;">${data.verificationLink}</p>
-                        <p>This link will expire in 24 hours.</p>
+                        <p><strong>This code will expire in 15 minutes.</strong></p>
                         <p>If you didn't request this verification, please ignore this email.</p>
                     </div>
                     <div class="footer">
@@ -93,15 +93,14 @@ const getEmailTemplate = (type, data) => {
                     <div class="content">
                         <h2>Hi ${data.firstName},</h2>
                         <p>We received a request to reset your password for your WellSync account.</p>
-                        <p>Click the button below to reset your password:</p>
+                        <p>Use this code to reset your password:</p>
                         <div class="highlight">
-                            <a href="${data.resetLink}" class="button">Reset Password</a>
+                            <h1 style="text-align: center; font-size: 48px; letter-spacing: 10px; color: #667eea; margin: 20px 0;">${data.resetCode}</h1>
+                            <p style="text-align: center; color: #666;">Enter this code to reset your password</p>
                         </div>
-                        <p>Or copy and paste this link into your browser:</p>
-                        <p style="word-break: break-all; color: #666;">${data.resetLink}</p>
-                        <p>This link will expire in 1 hour.</p>
+                        <p><strong>This code will expire in 15 minutes.</strong></p>
                         <p><strong>If you didn't request this password reset, please ignore this email or contact support if you have concerns.</strong></p>
-                        <p>Your password will not be changed until you access the link above and create a new one.</p>
+                        <p>Your password will not be changed until you use this code.</p>
                     </div>
                     <div class="footer">
                         <p>&copy; 2026 WellSync. All rights reserved.</p>

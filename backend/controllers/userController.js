@@ -83,8 +83,15 @@ exports.getDashboard = asyncHandler(async (req, res) => {
         .limit(5)
         .lean();
 
-    // Get statistics
-    const stats = await Prediction.getUserStats(req.user.id);
+    // Get statistics - safely handle if no predictions
+    let stats = [];
+    try {
+        stats = await Prediction.getUserStats(req.user.id) || [];
+    } catch (error) {
+        logger.warn(`Error getting prediction stats: ${error.message}`);
+        stats = [];
+    }
+    
     const totalPredictions = await Prediction.countDocuments({ user: req.user.id });
 
     // Get latest prediction for each type
@@ -110,16 +117,16 @@ exports.getDashboard = asyncHandler(async (req, res) => {
             },
             stats: {
                 totalPredictions,
-                mentalWellness: stats.find(s => s._id === 'mental_wellness') || { count: 0, averagePrediction: 0 },
-                academicImpact: stats.find(s => s._id === 'academic_impact') || { count: 0, averagePrediction: 0 }
+                mentalWellness: Array.isArray(stats) ? (stats.find(s => s._id === 'mental_wellness') || { count: 0, averagePrediction: 0 }) : { count: 0, averagePrediction: 0 },
+                academicImpact: Array.isArray(stats) ? (stats.find(s => s._id === 'academic_impact') || { count: 0, averagePrediction: 0 }) : { count: 0, averagePrediction: 0 }
             },
             latestPredictions: {
-                mentalWellness: latestMentalWellness ? {
+                mentalWellness: latestMentalWellness && latestMentalWellness.result ? {
                     score: latestMentalWellness.result.prediction,
                     interpretation: latestMentalWellness.result.interpretation,
                     date: latestMentalWellness.createdAt
                 } : null,
-                academicImpact: latestAcademicImpact ? {
+                academicImpact: latestAcademicImpact && latestAcademicImpact.result ? {
                     score: latestAcademicImpact.result.prediction,
                     interpretation: latestAcademicImpact.result.interpretation,
                     date: latestAcademicImpact.createdAt
@@ -128,7 +135,7 @@ exports.getDashboard = asyncHandler(async (req, res) => {
             recentActivity: recentPredictions.map(p => ({
                 id: p._id,
                 type: p.predictionType,
-                score: p.result.prediction,
+                score: p.result && p.result.prediction ? p.result.prediction : 'N/A',
                 date: p.createdAt
             }))
         }
@@ -194,85 +201,5 @@ exports.deactivateAccount = asyncHandler(async (req, res) => {
     });
 });
 
-/**
- * @desc    Get all users (Admin only)
- * @route   GET /api/users
- * @access  Private/Admin
- */
-exports.getAllUsers = asyncHandler(async (req, res) => {
-    const { page = 1, limit = 10, search = '', role = '' } = req.query;
-
-    const query = {};
-    
-    if (search) {
-        query.$or = [
-            { firstName: { $regex: search, $options: 'i' } },
-            { lastName: { $regex: search, $options: 'i' } },
-            { email: { $regex: search, $options: 'i' } }
-        ];
-    }
-
-    if (role) {
-        query.role = role;
-    }
-
-    const skip = (parseInt(page) - 1) * parseInt(limit);
-
-    const users = await User.find(query)
-        .select('-password')
-        .sort({ createdAt: -1 })
-        .limit(parseInt(limit))
-        .skip(skip);
-
-    const total = await User.countDocuments(query);
-
-    res.status(200).json({
-        success: true,
-        data: {
-            users,
-            pagination: {
-                total,
-                page: parseInt(page),
-                pages: Math.ceil(total / parseInt(limit)),
-                limit: parseInt(limit)
-            }
-        }
-    });
-});
-
-/**
- * @desc    Update user role (Admin only)
- * @route   PUT /api/users/:id/role
- * @access  Private/Admin
- */
-exports.updateUserRole = asyncHandler(async (req, res) => {
-    const { role } = req.body;
-
-    if (!['user', 'admin'].includes(role)) {
-        return res.status(400).json({
-            success: false,
-            error: 'Invalid role. Must be user or admin'
-        });
-    }
-
-    const user = await User.findByIdAndUpdate(
-        req.params.id,
-        { role },
-        { new: true }
-    );
-
-    if (!user) {
-        return res.status(404).json({
-            success: false,
-            error: 'User not found'
-        });
-    }
-
-    logger.info(`Role updated for user ${user.email} to ${role} by admin ${req.user.email}`);
-
-    res.status(200).json({
-        success: true,
-        message: 'User role updated successfully',
-        data: { user }
-    });
-});
+// Admin-only user management functions moved to adminController.js
+// These routes are now handled by /api/admin/users

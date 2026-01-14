@@ -46,10 +46,21 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    emailVerificationToken: String,
+    emailVerificationCode: {
+        type: String,
+        select: false
+    },
     emailVerificationExpire: Date,
-    passwordResetToken: String,
+    passwordResetCode: {
+        type: String,
+        select: false
+    },
     passwordResetExpire: Date,
+    loginAttempts: {
+        type: Number,
+        default: 0
+    },
+    lockUntil: Date,
     profile: {
         age: {
             type: Number,
@@ -125,32 +136,58 @@ userSchema.methods.generateRefreshToken = function() {
     );
 };
 
-// Generate email verification token
-userSchema.methods.generateEmailVerificationToken = function() {
-    const token = jwt.sign(
-        { id: this._id, email: this.email },
-        process.env.JWT_SECRET,
-        { expiresIn: '24h' }
-    );
+// Generate 6-digit email verification code
+userSchema.methods.generateEmailVerificationCode = function() {
+    const code = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit code
     
-    this.emailVerificationToken = token;
-    this.emailVerificationExpire = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
+    this.emailVerificationCode = code;
+    this.emailVerificationExpire = Date.now() + 15 * 60 * 1000; // 15 minutes
     
-    return token;
+    return code;
 };
 
-// Generate password reset token
-userSchema.methods.generatePasswordResetToken = function() {
-    const token = jwt.sign(
-        { id: this._id, email: this.email },
-        process.env.JWT_SECRET,
-        { expiresIn: '1h' }
-    );
+// Generate 6-digit password reset code
+userSchema.methods.generatePasswordResetCode = function() {
+    const code = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit code
     
-    this.passwordResetToken = token;
-    this.passwordResetExpire = Date.now() + 60 * 60 * 1000; // 1 hour
+    this.passwordResetCode = code;
+    this.passwordResetExpire = Date.now() + 15 * 60 * 1000; // 15 minutes
     
-    return token;
+    return code;
+};
+
+// Check if account is locked
+userSchema.methods.isLocked = function() {
+    return !!(this.lockUntil && this.lockUntil > Date.now());
+};
+
+// Increment login attempts
+userSchema.methods.incLoginAttempts = async function() {
+    // If we have a previous lock that has expired, restart at 1
+    if (this.lockUntil && this.lockUntil < Date.now()) {
+        return await this.updateOne({
+            $set: { loginAttempts: 1 },
+            $unset: { lockUntil: 1 }
+        });
+    }
+    
+    // Otherwise increment
+    const updates = { $inc: { loginAttempts: 1 } };
+    
+    // Lock account after 5 failed attempts for 30 minutes
+    if (this.loginAttempts + 1 >= 5 && !this.isLocked()) {
+        updates.$set = { lockUntil: Date.now() + 30 * 60 * 1000 }; // 30 minutes
+    }
+    
+    return await this.updateOne(updates);
+};
+
+// Reset login attempts
+userSchema.methods.resetLoginAttempts = async function() {
+    return await this.updateOne({
+        $set: { loginAttempts: 0 },
+        $unset: { lockUntil: 1 }
+    });
 };
 
 module.exports = mongoose.model('User', userSchema);

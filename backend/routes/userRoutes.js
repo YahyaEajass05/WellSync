@@ -21,8 +21,6 @@ router.get('/dashboard', userController.getDashboard);
 router.delete('/account', userController.deleteAccount);
 router.put('/deactivate', userController.deactivateAccount);
 
-// Admin only routes
-router.get('/', authorize('admin'), userController.getAllUsers);
-router.put('/:id/role', authorize('admin'), userController.updateUserRole);
+// Note: Admin routes moved to /api/admin/users for better organization
 
 module.exports = router;

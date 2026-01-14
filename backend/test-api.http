@@ -1,0 +1,327 @@
+### WellSync Backend API Testing
+### Use REST Client extension in VS Code or import to Postman
+
+@baseUrl = http://localhost:5000/api
+@token = YOUR_JWT_TOKEN_HERE
+
+### Health Check
+GET {{baseUrl}}/health
+
+### Root Endpoint
+GET {{baseUrl}}/
+
+### Get Models Info
+GET {{baseUrl}}/models/info
+
+###
+### AUTHENTICATION TESTS
+###
+
+### Register New User
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "john.doe@example.com",
+  "password": "Password123",
+  "confirmPassword": "Password123"
+}
+
+### Login User
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "john.doe@example.com",
+  "password": "Password123"
+}
+
+### Get Current User (requires authentication)
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{token}}
+
+###
+### USER PROFILE TESTS
+###
+
+### Get User Profile
+GET {{baseUrl}}/users/profile
+Authorization: Bearer {{token}}
+
+### Update User Profile
+PUT {{baseUrl}}/users/profile
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Smith",
+  "profile": {
+    "age": 25,
+    "gender": "Male",
+    "occupation": "Software Developer",
+    "country": "USA"
+  }
+}
+
+### Get User Dashboard
+GET {{baseUrl}}/users/dashboard
+Authorization: Bearer {{token}}
+
+###
+### MENTAL WELLNESS PROFILE TESTS
+###
+
+### Create/Update Mental Wellness Profile
+POST {{baseUrl}}/profiles/mental-wellness
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "occupation": "Software Engineer",
+  "workMode": "Remote",
+  "stressLevel": 6,
+  "productivity": 75,
+  "exerciseMinutesPerWeek": 120,
+  "socialHoursPerWeek": 10,
+  "hasChronicConditions": false,
+  "isSeeingTherapist": false,
+  "medicationUsage": "None"
+}
+
+### Get Mental Wellness Profile
+GET {{baseUrl}}/profiles/mental-wellness
+Authorization: Bearer {{token}}
+
+###
+### STUDENT PROFILE TESTS
+###
+
+### Create/Update Student Profile
+POST {{baseUrl}}/profiles/student
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "academicLevel": "Bachelor",
+  "country": "USA",
+  "institution": "State University",
+  "major": "Computer Science",
+  "yearOfStudy": 3,
+  "enrollmentYear": 2021,
+  "gpa": 3.5,
+  "relationshipStatus": "Single",
+  "livingArrangement": "Off-campus with roommates",
+  "partTimeJob": true,
+  "hoursWorkedPerWeek": 15,
+  "financialStress": "Moderate",
+  "studyHoursPerWeek": 25,
+  "attendanceRate": 90
+}
+
+### Get Student Profile
+GET {{baseUrl}}/profiles/student
+Authorization: Bearer {{token}}
+
+###
+### SCREEN TIME LOGGING TESTS
+###
+
+### Log Screen Time
+POST {{baseUrl}}/profiles/screen-time
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "date": "2026-01-11",
+  "screenTimeHours": 8.5,
+  "workScreenHours": 6,
+  "leisureScreenHours": 2.5,
+  "deviceTypes": [
+    { "device": "laptop", "hours": 6 },
+    { "device": "smartphone", "hours": 2.5 }
+  ],
+  "appCategories": [
+    { "category": "productivity", "hours": 6 },
+    { "category": "social_media", "hours": 1.5 },
+    { "category": "entertainment", "hours": 1 }
+  ],
+  "mood": "good",
+  "eyeStrain": false,
+  "headache": false,
+  "notes": "Productive day"
+}
+
+### Get Screen Time Logs (last 7 days)
+GET {{baseUrl}}/profiles/screen-time?days=7
+Authorization: Bearer {{token}}
+
+### Get Screen Time Logs (last 30 days)
+GET {{baseUrl}}/profiles/screen-time?days=30
+Authorization: Bearer {{token}}
+
+###
+### SLEEP LOGGING TESTS
+###
+
+### Log Sleep
+POST {{baseUrl}}/profiles/sleep
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "date": "2026-01-11",
+  "sleepHours": 7.5,
+  "sleepQuality": 4,
+  "bedtime": "23:00",
+  "wakeTime": "07:30",
+  "sleepInterruptions": 1,
+  "napDuration": 0,
+  "caffeine": true,
+  "exercise": true,
+  "screenBeforeSleep": false,
+  "mood": "good",
+  "notes": "Good night's sleep"
+}
+
+### Get Sleep Records (last 7 days)
+GET {{baseUrl}}/profiles/sleep?days=7
+Authorization: Bearer {{token}}
+
+###
+### SOCIAL MEDIA USAGE TESTS (Students Only)
+###
+
+### Log Social Media Usage
+POST {{baseUrl}}/profiles/social-media
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "date": "2026-01-11",
+  "avgDailyUsageHours": 3.5,
+  "mostUsedPlatform": "Instagram",
+  "platformsUsed": [
+    { "platform": "Instagram", "hoursPerDay": 2 },
+    { "platform": "TikTok", "hoursPerDay": 1 },
+    { "platform": "YouTube", "hoursPerDay": 0.5 }
+  ],
+  "conflictsOverSocialMedia": 1,
+  "affectsAcademicPerformance": "Sometimes",
+  "usagePurpose": ["Entertainment", "Communication", "News"],
+  "notes": "Tried to limit usage today"
+}
+
+###
+### MENTAL HEALTH ASSESSMENT TESTS (Students Only)
+###
+
+### Log Mental Health Assessment
+POST {{baseUrl}}/profiles/mental-health-assessment
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "date": "2026-01-11",
+  "mentalHealthScore": 7,
+  "sleepHoursPerNight": 7,
+  "assessmentType": "Self-Assessment",
+  "anxietyLevel": 4,
+  "depressionLevel": 3,
+  "stressLevel": 5,
+  "notes": "Feeling okay, some academic stress"
+}
+
+###
+### PROFILE OVERVIEW TEST
+###
+
+### Get Complete Profile Overview
+GET {{baseUrl}}/profiles/overview
+Authorization: Bearer {{token}}
+
+###
+### PREDICTION TESTS
+###
+
+### Mental Wellness Prediction
+POST {{baseUrl}}/predictions/mental-wellness
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "age": 25,
+  "gender": "Male",
+  "occupation": "Software Engineer",
+  "work_mode": "Remote",
+  "screen_time_hours": 8.5,
+  "work_screen_hours": 6,
+  "leisure_screen_hours": 2.5,
+  "sleep_hours": 7.5,
+  "sleep_quality_1_5": 4,
+  "stress_level_0_10": 6,
+  "productivity_0_100": 75,
+  "exercise_minutes_per_week": 120,
+  "social_hours_per_week": 10
+}
+
+### Academic Impact Prediction
+POST {{baseUrl}}/predictions/academic-impact
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "age": 21,
+  "gender": "Male",
+  "academic_level": "Bachelor",
+  "country": "USA",
+  "most_used_platform": "Instagram",
+  "avg_daily_usage_hours": 3.5,
+  "sleep_hours_per_night": 7,
+  "mental_health_score": 7,
+  "conflicts_over_social_media": 1,
+  "affects_academic_performance": "Sometimes",
+  "relationship_status": "Single"
+}
+
+### Get All Predictions
+GET {{baseUrl}}/predictions
+Authorization: Bearer {{token}}
+
+### Get Prediction by ID
+GET {{baseUrl}}/predictions/PREDICTION_ID_HERE
+Authorization: Bearer {{token}}
+
+###
+### NOTIFICATION TESTS
+###
+
+### Get All Notifications
+GET {{baseUrl}}/notifications
+Authorization: Bearer {{token}}
+
+### Get Unread Count
+GET {{baseUrl}}/notifications/unread-count
+Authorization: Bearer {{token}}
+
+### Mark Notification as Read
+PUT {{baseUrl}}/notifications/NOTIFICATION_ID_HERE/read
+Authorization: Bearer {{token}}
+
+### Mark All as Read
+PUT {{baseUrl}}/notifications/mark-all-read
+Authorization: Bearer {{token}}
+
+###
+### ANALYTICS TESTS
+###
+
+### Get User Statistics
+GET {{baseUrl}}/analytics/user-stats
+Authorization: Bearer {{token}}
+
+### Get Trends
+GET {{baseUrl}}/analytics/trends
+Authorization: Bearer {{token}}
