@@ -89,6 +89,7 @@ app.get('/', (req, res) => {
             'User Authentication & Authorization',
             'Mental Wellness Predictions',
             'Academic Impact Analysis',
+            'Stress Level Predictions',
             'Email Notifications',
             'Prediction History & Trends',
             'User Dashboard & Statistics'
@@ -126,6 +127,7 @@ const server = app.listen(PORT, () => {
     console.log('   • GET    /api/auth/me                - Get current user');
     console.log('   • POST   /api/predictions/mental-wellness - Mental wellness prediction');
     console.log('   • POST   /api/predictions/academic-impact - Academic impact prediction');
+    console.log('   • POST   /api/predictions/stress-level - Stress level prediction');
     console.log('   • GET    /api/predictions            - Get all predictions');
     console.log('   • GET    /api/users/dashboard        - Get user dashboard');
     console.log('   • GET    /api/models/info            - Get AI models info');

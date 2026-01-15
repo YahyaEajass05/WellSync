@@ -1,0 +1,500 @@
+
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                
+        <style>
+            /* Reset & Base Styles */
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body { 
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+                line-height: 1.6; 
+                color: #333; 
+                background: #f0f2f5;
+            }
+            
+            /* Container */
+            .container { 
+                max-width: 600px; 
+                margin: 0 auto; 
+                background: #ffffff;
+                border-radius: 16px;
+                overflow: hidden;
+                box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            }
+            
+            /* Animated Header */
+            .header { 
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                color: white; 
+                padding: 40px 30px; 
+                text-align: center; 
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .header::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+                animation: shine 3s infinite;
+            }
+            
+            @keyframes shine {
+                0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+                100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+            }
+            
+            .header h1 { 
+                font-size: 32px; 
+                font-weight: 700; 
+                margin: 0;
+                position: relative;
+                z-index: 1;
+                animation: fadeInDown 0.8s ease-out;
+            }
+            
+            @keyframes fadeInDown {
+                from { opacity: 0; transform: translateY(-20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            
+            /* Animated Icon */
+            .icon-wrapper {
+                font-size: 64px;
+                margin-bottom: 20px;
+                animation: bounce 2s infinite;
+            }
+            
+            @keyframes bounce {
+                0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+                40% { transform: translateY(-15px); }
+                60% { transform: translateY(-8px); }
+            }
+            
+            /* Content Area */
+            .content { 
+                background: #ffffff; 
+                padding: 40px 30px;
+                animation: fadeIn 1s ease-out;
+            }
+            
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            
+            .content h2 { 
+                color: #667eea; 
+                margin-bottom: 20px;
+                font-size: 24px;
+            }
+            
+            .content p { 
+                margin-bottom: 15px; 
+                color: #555;
+                font-size: 16px;
+            }
+            
+            .content ul {
+                list-style: none;
+                padding: 0;
+                margin: 20px 0;
+            }
+            
+            .content ul li {
+                padding: 12px 0;
+                padding-left: 30px;
+                position: relative;
+                animation: slideInLeft 0.6s ease-out backwards;
+            }
+            
+            .content ul li:nth-child(1) { animation-delay: 0.2s; }
+            .content ul li:nth-child(2) { animation-delay: 0.4s; }
+            .content ul li:nth-child(3) { animation-delay: 0.6s; }
+            .content ul li:nth-child(4) { animation-delay: 0.8s; }
+            
+            @keyframes slideInLeft {
+                from { opacity: 0; transform: translateX(-20px); }
+                to { opacity: 1; transform: translateX(0); }
+            }
+            
+            .content ul li::before {
+                content: '✓';
+                position: absolute;
+                left: 0;
+                color: #667eea;
+                font-weight: bold;
+                font-size: 20px;
+            }
+            
+            /* Animated Button */
+            .button { 
+                display: inline-block; 
+                padding: 16px 40px; 
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white !important; 
+                text-decoration: none; 
+                border-radius: 50px; 
+                margin: 25px 0;
+                font-weight: 600;
+                font-size: 16px;
+                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .button::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: rgba(255,255,255,0.2);
+                transition: left 0.5s ease;
+            }
+            
+            .button:hover::before {
+                left: 100%;
+            }
+            
+            .button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+            }
+            
+            /* Highlight Box with Animation */
+            .highlight { 
+                background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+                padding: 30px; 
+                border-radius: 12px;
+                margin: 30px 0;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                animation: scaleIn 0.8s ease-out;
+            }
+            
+            @keyframes scaleIn {
+                from { opacity: 0; transform: scale(0.9); }
+                to { opacity: 1; transform: scale(1); }
+            }
+            
+            /* Code Display */
+            .code-box {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                padding: 30px;
+                border-radius: 12px;
+                text-align: center;
+                margin: 25px 0;
+                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+                animation: pulse 2s infinite;
+            }
+            
+            @keyframes pulse {
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.02); }
+            }
+            
+            .verification-code {
+                font-size: 48px;
+                font-weight: 800;
+                letter-spacing: 15px;
+                color: #ffffff;
+                text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+                font-family: 'Courier New', monospace;
+                animation: glow 2s ease-in-out infinite;
+            }
+            
+            @keyframes glow {
+                0%, 100% { text-shadow: 0 0 10px rgba(255,255,255,0.5), 0 0 20px rgba(255,255,255,0.3); }
+                50% { text-shadow: 0 0 20px rgba(255,255,255,0.8), 0 0 30px rgba(255,255,255,0.5); }
+            }
+            
+            .code-label {
+                color: rgba(255,255,255,0.9);
+                font-size: 14px;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                margin-top: 10px;
+            }
+            
+            /* Stats/Info Cards */
+            .info-card {
+                background: #ffffff;
+                padding: 20px;
+                border-radius: 10px;
+                margin: 15px 0;
+                border-left: 4px solid #667eea;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+                transition: all 0.3s ease;
+            }
+            
+            .info-card:hover {
+                transform: translateX(5px);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            }
+            
+            .info-card h3 {
+                color: #667eea;
+                margin-bottom: 10px;
+                font-size: 20px;
+            }
+            
+            .info-card p {
+                margin: 5px 0;
+                color: #666;
+            }
+            
+            /* Score Display */
+            .score-display {
+                text-align: center;
+                padding: 30px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                border-radius: 12px;
+                margin: 25px 0;
+                color: white;
+            }
+            
+            .score-number {
+                font-size: 64px;
+                font-weight: 800;
+                animation: countUp 1.5s ease-out;
+            }
+            
+            @keyframes countUp {
+                from { opacity: 0; transform: scale(0.5); }
+                to { opacity: 1; transform: scale(1); }
+            }
+            
+            /* Footer */
+            .footer { 
+                text-align: center; 
+                padding: 30px;
+                background: #f8f9fa;
+                color: #666; 
+                font-size: 13px;
+                border-top: 1px solid #e0e0e0;
+            }
+            
+            .footer p { 
+                margin: 5px 0; 
+            }
+            
+            .social-links {
+                margin: 20px 0;
+            }
+            
+            .social-links a {
+                display: inline-block;
+                margin: 0 10px;
+                color: #667eea;
+                text-decoration: none;
+                font-size: 24px;
+                transition: transform 0.3s ease;
+            }
+            
+            .social-links a:hover {
+                transform: scale(1.2);
+            }
+            
+            /* Warning/Alert Box */
+            .alert-box {
+                background: #fff3cd;
+                border-left: 4px solid #ffc107;
+                padding: 15px;
+                margin: 20px 0;
+                border-radius: 8px;
+                animation: slideInRight 0.6s ease-out;
+            }
+            
+            @keyframes slideInRight {
+                from { opacity: 0; transform: translateX(20px); }
+                to { opacity: 1; transform: translateX(0); }
+            }
+            
+            /* Success Badge */
+            .badge {
+                display: inline-block;
+                padding: 8px 16px;
+                background: #28a745;
+                color: white;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                animation: fadeInUp 0.8s ease-out;
+            }
+            
+            @keyframes fadeInUp {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            
+            /* Progress Bar */
+            .progress-bar {
+                width: 100%;
+                height: 8px;
+                background: #e0e0e0;
+                border-radius: 10px;
+                overflow: hidden;
+                margin: 20px 0;
+            }
+            
+            .progress-fill {
+                height: 100%;
+                background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+                animation: progressAnimation 2s ease-out;
+            }
+            
+            @keyframes progressAnimation {
+                from { width: 0%; }
+            }
+            
+            /* Responsive Design */
+            @media only screen and (max-width: 600px) {
+                .container { border-radius: 0; }
+                .header h1 { font-size: 24px; }
+                .content { padding: 25px 20px; }
+                .verification-code { font-size: 36px; letter-spacing: 10px; }
+                .score-number { font-size: 48px; }
+            }
+        </style>
+    
+                <style>
+                    /* Prediction Type Specific Styles */
+                    .stress-low { background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%); }
+                    .stress-moderate { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); }
+                    .stress-high { background: linear-gradient(135deg, #fb923c 0%, #f97316 100%); }
+                    .stress-very-high { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+                    
+                    .wellness-excellent { background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%); }
+                    .wellness-good { background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%); }
+                    .wellness-fair { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); }
+                    .wellness-poor { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+                    
+                    .academic-low { background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%); }
+                    .academic-moderate { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); }
+                    .academic-high { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+                    
+                    /* Icon styles for different types */
+                    .icon-stress { font-size: 64px; }
+                    .icon-wellness { font-size: 64px; }
+                    .icon-academic { font-size: 64px; }
+                    
+                    /* Recommendation List Styles */
+                    .recommendation-item {
+                        background: #f8f9fa;
+                        padding: 15px 20px;
+                        margin: 10px 0;
+                        border-radius: 8px;
+                        border-left: 4px solid #667eea;
+                        animation: slideInLeft 0.6s ease-out backwards;
+                    }
+                    
+                    .recommendation-item:nth-child(1) { animation-delay: 0.2s; }
+                    .recommendation-item:nth-child(2) { animation-delay: 0.4s; }
+                    .recommendation-item:nth-child(3) { animation-delay: 0.6s; }
+                    .recommendation-item:nth-child(4) { animation-delay: 0.8s; }
+                    .recommendation-item:nth-child(5) { animation-delay: 1.0s; }
+                </style>
+            </head>
+            <body style="margin: 0; padding: 20px; background: #f0f2f5;">
+                <div class="container">
+                    <div class="header">
+                        <div class="icon-wrapper icon-academic">
+                            📚
+                        </div>
+                        <h1>Your Academic Impact Report</h1>
+                        <p style="margin-top: 10px; font-size: 16px; opacity: 0.95;">AI-Powered Insights Ready</p>
+                    </div>
+                    <div class="content">
+                        <h2>Hi Lisa! 👋</h2>
+                        <p>Great news! Your latest academic impact analysis is complete. Here are your personalized insights:</p>
+                        
+                        <div class="score-display academic-high">
+                            <p style="margin: 0; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; opacity: 0.9;">
+                                Your Addiction Score
+                            </p>
+                            <div class="score-number">7.50</div>
+                            <div class="progress-bar" style="width: 80%; margin: 20px auto;">
+                                <div class="progress-fill" style="width: 83.32499999999999%;"></div>
+                            </div>
+                            <p style="margin: 10px 0 0 0; font-size: 18px; font-weight: 600; opacity: 0.95;">High social media addiction risk - significant academic impact likely</p>
+                        </div>
+                        
+                        
+                        
+                        <div class="info-card">
+                            <h3>📈 Analysis Details</h3>
+                            <p><strong>Model Used:</strong> Tuned Gradient Boosting</p>
+                            <p><strong>Analysis Date:</strong> 1/15/2026</p>
+                            <p><strong>Prediction Type:</strong> Academic Impact</p>
+                            
+                        </div>
+                        
+                        <div class="info-card" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-left: 4px solid #0ea5e9;">
+                            <h3>💡 Personalized Recommendations</h3>
+                            
+                                    <div class="recommendation-item">
+                                        <strong style="color: #667eea;">1.</strong> Set strict daily social media time limits (1-2 hours max)
+                                    </div>
+                                
+                                    <div class="recommendation-item">
+                                        <strong style="color: #667eea;">2.</strong> Use app blockers during study time
+                                    </div>
+                                
+                                    <div class="recommendation-item">
+                                        <strong style="color: #667eea;">3.</strong> Create a dedicated study environment without phone
+                                    </div>
+                                
+                                    <div class="recommendation-item">
+                                        <strong style="color: #667eea;">4.</strong> Seek academic support or tutoring
+                                    </div>
+                                
+                                    <div class="recommendation-item">
+                                        <strong style="color: #667eea;">5.</strong> Consider a digital detox weekend
+                                    </div>
+                                
+                                    <div class="recommendation-item">
+                                        <strong style="color: #667eea;">6.</strong> Talk to a counselor about social media habits
+                                    </div>
+                                
+                        </div>
+                        
+                        
+                        
+                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 25px; border-radius: 12px; margin: 30px 0; text-align: center;">
+                            <p style="margin: 0; color: #ffffff; font-size: 18px; font-weight: 600;">📎 Detailed PDF Report Attached</p>
+                            <p style="margin: 10px 0 0 0; color: rgba(255,255,255,0.9); font-size: 14px;">
+                                Your comprehensive analysis report is attached to this email.<br>
+                                Open the PDF for detailed insights, visualizations, and personalized recommendations.
+                            </p>
+                        </div>
+                        
+                        <p style="text-align: center; color: #666; margin-top: 25px;">
+                            Keep tracking your wellness journey with WellSync! 🌟
+                        </p>
+                        
+                        <p style="margin-top: 30px; color: #667eea; font-weight: 600;">
+                            Keep thriving,<br>The WellSync Team 💜
+                        </p>
+                    </div>
+                    <div class="footer">
+                        <p>&copy; 2026 WellSync. All rights reserved.</p>
+                        <p style="margin-top: 10px; font-size: 11px; color: #999;">
+                            📧 Check your email attachments for the detailed PDF report.<br>
+                            Questions? Contact us at wellsync.lk@gmail.com
+                        </p>
+                    </div>
+                </div>
+            </body>
+            </html>
+        

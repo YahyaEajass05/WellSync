@@ -1,0 +1,79 @@
+================================================================================
+STRESS LEVEL PREDICTION - EVALUATION REPORT
+================================================================================
+
+Date: 2026-01-15 14:41:35
+Dataset: ../../../ai/data/ScreenTime_MentalWellness.csv
+Model: ../../../ai/models/mental_health/stress_model.pkl
+Model Type: Ridge
+
+================================================================================
+DATASET SUMMARY
+================================================================================
+
+Training samples: 320
+Testing samples: 80
+Number of features: 36
+Stress level range: [3.00, 10.00]
+
+================================================================================
+PERFORMANCE METRICS
+================================================================================
+
+Training Set:
+  R² Score:  0.9088
+  RMSE:      0.6383
+  MAE:       0.5030
+  MAPE:      988478181176402.75%
+
+Test Set:
+  R² Score:  0.8373
+  RMSE:      0.8074
+  MAE:       0.6116
+  MAPE:      9.02%
+
+Generalization:
+  Train-Test Gap: 0.0714
+  Status: ✅ Good generalization
+
+================================================================================
+RESIDUAL ANALYSIS
+================================================================================
+
+Mean Residual: 0.0185
+Std Residual:  0.8072
+Min Residual:  -2.4303
+Max Residual:  2.0911
+
+================================================================================
+STRESS CATEGORY ANALYSIS
+================================================================================
+
+Actual Distribution:
+  High          19 (23.8%)
+  Low            2 (2.5%)
+  Moderate      10 (12.5%)
+  Very High     49 (61.3%)
+
+Predicted Distribution:
+  High          16 (20.0%)
+  Moderate      14 (17.5%)
+  Very High     50 (62.5%)
+
+Category Accuracy: 81.25%
+
+================================================================================
+INTERPRETATION GUIDE
+================================================================================
+
+• R² Score (0.8373): Explains 83.7% of stress variance
+• RMSE (0.8074): Average prediction error of ±0.81 stress points
+• MAE (0.6116): Typical error is 0.61 stress points
+• MAPE (9.02%): Average percentage error
+
+Stress Categories:
+  Low (0-3):       Minimal stress, good mental health
+  Moderate (3-6):  Normal stress levels
+  High (6-8):      Elevated stress, needs attention
+  Very High (8-10): Critical stress, intervention recommended
+

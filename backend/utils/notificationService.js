@@ -34,7 +34,8 @@ exports.sendNotification = async (userId, type, title, message, data = {}, prior
 exports.notifyPredictionCompleted = async (userId, predictionType, score, interpretation) => {
     const titles = {
         mental_wellness: '🧠 Mental Wellness Prediction Complete',
-        academic_impact: '🎓 Academic Impact Analysis Complete'
+        academic_impact: '🎓 Academic Impact Analysis Complete',
+        stress_level: '😰 Stress Level Prediction Complete'
     };
 
     const title = titles[predictionType] || 'Prediction Complete';
@@ -108,7 +109,8 @@ exports.notifyMilestone = async (userId, milestone, count) => {
 exports.notifyWeeklySummary = async (userId, stats) => {
     const message = `This week: ${stats.totalPredictions} predictions made. 
         Mental Wellness Average: ${stats.mentalWellnessAvg?.toFixed(1) || 'N/A'}. 
-        Academic Impact Average: ${stats.academicImpactAvg?.toFixed(1) || 'N/A'}.`;
+        Academic Impact Average: ${stats.academicImpactAvg?.toFixed(1) || 'N/A'}.
+        Stress Level Average: ${stats.stressLevelAvg?.toFixed(1) || 'N/A'}.`;
 
     return await this.sendNotification(
         userId,

@@ -217,6 +217,212 @@ class AcademicImpactPredictor:
             }
 
 
+class StressPredictionPredictor:
+    """Stress Level Prediction Interface"""
+    
+    def __init__(self):
+        """Initialize stress prediction model"""
+        # Use mental_health path since stress model is stored there
+        self.base_path = None
+        cwd = os.getcwd()
+        
+        if cwd.endswith(os.path.join('ai', 'api')):
+            self.base_path = os.path.join("..", "models", "mental_health")
+        elif os.path.exists(os.path.join("ai", "models")):
+            self.base_path = os.path.join("ai", "models", "mental_health")
+        else:
+            self.base_path = os.path.join("models", "mental_health")
+        
+        self.model = None
+        self.preprocessors = None
+        self._load_model()
+    
+    def _load_model(self):
+        """Load the stress prediction model and preprocessors"""
+        model_path = os.path.normpath(os.path.join(self.base_path, "stress_model.pkl"))
+        preprocessor_path = os.path.normpath(os.path.join(self.base_path, "stress_preprocessors.pkl"))
+        
+        if not os.path.exists(model_path):
+            raise FileNotFoundError(f"Stress model not found: {model_path}")
+        if not os.path.exists(preprocessor_path):
+            raise FileNotFoundError(f"Stress preprocessors not found: {preprocessor_path}")
+        
+        self.model = joblib.load(model_path)
+        self.preprocessors = joblib.load(preprocessor_path)
+        print(f"✅ Loaded stress prediction model")
+    
+    def predict(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Predict stress level
+        
+        Args:
+            input_data: Dictionary with lifestyle data
+            
+        Returns:
+            Dictionary with prediction and interpretation
+        """
+        try:
+            # Create DataFrame from input
+            df = pd.DataFrame([input_data])
+            
+            # Drop user_id if present
+            if 'user_id' in df.columns:
+                df = df.drop(columns=['user_id'])
+            
+            # Apply same feature engineering as training (BEFORE encoding)
+            df = self._engineer_features(df)
+            
+            # Get numeric columns (all except categorical)
+            categorical_cols = ['gender', 'occupation', 'work_mode']
+            numeric_cols = [col for col in df.columns if col not in categorical_cols]
+            
+            # Apply imputation ONLY to numeric columns (like in training)
+            imputer = self.preprocessors['imputer']
+            df[numeric_cols] = imputer.transform(df[numeric_cols])
+            
+            # NOW encode categorical variables (after imputation)
+            encoders = self.preprocessors['encoders']
+            for col, encoder in encoders.items():
+                if col in df.columns:
+                    try:
+                        df[col] = encoder.transform(df[col])
+                    except:
+                        # Handle unknown categories - use most common class
+                        df[col] = 0
+            
+            # Get feature names and ensure all are present
+            feature_names = self.preprocessors['feature_names']
+            for feature in feature_names:
+                if feature not in df.columns:
+                    df[feature] = 0
+            
+            # Reorder columns to match training
+            df = df[feature_names]
+            
+            # Convert to numpy array and scale
+            scaler = self.preprocessors['scaler']
+            X_scaled = scaler.transform(df.values)
+            
+            # Make prediction
+            prediction = self.model.predict(X_scaled)[0]
+            
+            # Get interpretation
+            interpretation = self._interpret_stress(prediction)
+            
+            return {
+                "prediction": float(prediction),
+                "interpretation": interpretation,
+                "model_name": type(self.model).__name__,
+                "stress_category": self._categorize_stress(prediction),
+                "recommendations": self._get_recommendations(prediction, input_data),
+                "status": "success"
+            }
+        except Exception as e:
+            return {
+                "status": "error",
+                "error": str(e)
+            }
+    
+    def _engineer_features(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Apply feature engineering (same as preprocessing)"""
+        # Screen time patterns
+        df['total_screen_ratio'] = df['screen_time_hours'] / 24.0
+        df['work_screen_ratio'] = df['work_screen_hours'] / (df['screen_time_hours'] + 1e-6)
+        df['leisure_screen_ratio'] = df['leisure_screen_hours'] / (df['screen_time_hours'] + 1e-6)
+        
+        # Sleep deficiency
+        df['sleep_deficit'] = np.maximum(0, 8 - df['sleep_hours'])
+        df['sleep_efficiency'] = df['sleep_quality_1_5'] / (df['sleep_hours'] + 1e-6)
+        df['poor_sleep_indicator'] = ((df['sleep_hours'] < 6) | (df['sleep_quality_1_5'] < 2)).astype(int)
+        
+        # Work-life imbalance
+        df['work_life_balance'] = df['social_hours_per_week'] / (df['work_screen_hours'] + 1e-6)
+        df['screen_sleep_ratio'] = df['screen_time_hours'] / (df['sleep_hours'] + 1e-6)
+        df['excessive_work_screen'] = (df['work_screen_hours'] > 8).astype(int)
+        
+        # Physical activity
+        df['exercise_hours_week'] = df['exercise_minutes_per_week'] / 60.0
+        df['low_exercise'] = (df['exercise_minutes_per_week'] < 150).astype(int)
+        
+        # Social isolation
+        df['social_isolation'] = (df['social_hours_per_week'] < 5).astype(int)
+        df['social_exercise_score'] = (df['social_hours_per_week'] + df['exercise_hours_week']) / 2
+        
+        # Productivity
+        df['low_productivity'] = (df['productivity_0_100'] < 50).astype(int)
+        df['productivity_wellness_gap'] = abs(df['productivity_0_100'] - df['mental_wellness_index_0_100'])
+        
+        # Age groups
+        df['age_group'] = pd.cut(df['age'], bins=[0, 25, 35, 45, 100], labels=[0, 1, 2, 3])
+        df['age_group'] = df['age_group'].astype(int)
+        df['young_professional'] = ((df['age'] >= 25) & (df['age'] <= 35)).astype(int)
+        
+        # Overall health score
+        df['overall_health_score'] = (
+            (df['sleep_quality_1_5'] / 5) * 0.25 + 
+            (df['exercise_minutes_per_week'] / df['exercise_minutes_per_week'].max()) * 0.25 +
+            (df['social_hours_per_week'] / df['social_hours_per_week'].max()) * 0.25 +
+            (df['mental_wellness_index_0_100'] / 100) * 0.25
+        )
+        
+        # Screen time categories
+        df['high_screen_time'] = (df['screen_time_hours'] > 8).astype(int)
+        df['extreme_screen_time'] = (df['screen_time_hours'] > 12).astype(int)
+        
+        # Polynomial features
+        df['screen_time_squared'] = df['screen_time_hours'] ** 2
+        df['sleep_hours_squared'] = df['sleep_hours'] ** 2
+        df['age_squared'] = df['age'] ** 2
+        
+        return df
+    
+    def _interpret_stress(self, stress_level: float) -> str:
+        """Interpret stress level"""
+        if stress_level <= 3:
+            return "Low stress - You're managing well with minimal stress"
+        elif stress_level <= 6:
+            return "Moderate stress - Normal stress levels, manageable"
+        elif stress_level <= 8:
+            return "High stress - Elevated stress, consider stress management techniques"
+        else:
+            return "Very high stress - Critical stress levels, professional help recommended"
+    
+    def _categorize_stress(self, stress_level: float) -> str:
+        """Categorize stress level"""
+        if stress_level <= 3:
+            return "Low"
+        elif stress_level <= 6:
+            return "Moderate"
+        elif stress_level <= 8:
+            return "High"
+        else:
+            return "Very High"
+    
+    def _get_recommendations(self, stress_level: float, input_data: Dict[str, Any]) -> list:
+        """Get personalized recommendations based on stress and lifestyle"""
+        recommendations = []
+        
+        if stress_level > 6:
+            recommendations.append("Consider stress management techniques like meditation or yoga")
+        
+        if input_data.get('sleep_hours', 8) < 7:
+            recommendations.append("Aim for 7-9 hours of sleep per night")
+        
+        if input_data.get('screen_time_hours', 0) > 10:
+            recommendations.append("Reduce screen time, especially before bed")
+        
+        if input_data.get('exercise_minutes_per_week', 0) < 150:
+            recommendations.append("Increase physical activity to at least 150 minutes per week")
+        
+        if input_data.get('social_hours_per_week', 0) < 5:
+            recommendations.append("Spend more time on social activities and connections")
+        
+        if not recommendations:
+            recommendations.append("Maintain your current healthy lifestyle")
+        
+        return recommendations
+
+
 def get_available_models() -> Dict[str, list]:
     """Get list of available trained models"""
     models = {

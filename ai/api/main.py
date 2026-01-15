@@ -18,11 +18,13 @@ from ai.utils.model_loader import (
     ModelLoader, 
     MentalWellnessPredictor, 
     AcademicImpactPredictor,
+    StressPredictionPredictor,
     get_available_models
 )
 from ai.utils.validators import (
     MentalWellnessInput,
     AcademicImpactInput,
+    StressPredictionInput,
     PredictionResponse,
     ModelInfo
 )
@@ -48,12 +50,13 @@ app.add_middleware(
 # Initialize model loaders (lazy loading)
 mental_wellness_predictor = None
 academic_impact_predictor = None
+stress_prediction_predictor = None
 
 
 @app.on_event("startup")
 async def startup_event():
     """Load models on startup"""
-    global mental_wellness_predictor, academic_impact_predictor
+    global mental_wellness_predictor, academic_impact_predictor, stress_prediction_predictor
     
     try:
         print("\n🚀 Loading Mental Wellness Model...")
@@ -64,7 +67,14 @@ async def startup_event():
         academic_impact_predictor = AcademicImpactPredictor()
         print("✅ Academic Impact Model Loaded")
         
-        print("\n✅ All models loaded successfully!\n")
+        print("\n🚀 Loading Stress Prediction Model...")
+        try:
+            stress_prediction_predictor = StressPredictionPredictor()
+            print("✅ Stress Prediction Model Loaded")
+        except FileNotFoundError:
+            print("⚠️  Stress Prediction Model not found (run training first)")
+        
+        print("\n✅ All available models loaded successfully!\n")
     except Exception as e:
         print(f"\n❌ Error loading models: {e}\n")
 
@@ -83,6 +93,10 @@ async def root():
             "academic_impact": {
                 "status": "loaded" if academic_impact_predictor else "not loaded",
                 "endpoint": "/predict/academic-impact"
+            },
+            "stress_prediction": {
+                "status": "loaded" if stress_prediction_predictor else "not loaded",
+                "endpoint": "/predict/stress"
             }
         },
         "documentation": {
@@ -99,7 +113,8 @@ async def health_check():
         "status": "healthy",
         "models": {
             "mental_wellness": "ready" if mental_wellness_predictor else "not ready",
-            "academic_impact": "ready" if academic_impact_predictor else "not ready"
+            "academic_impact": "ready" if academic_impact_predictor else "not ready",
+            "stress_prediction": "ready" if stress_prediction_predictor else "not ready"
         }
     }
 
@@ -258,6 +273,76 @@ async def get_academic_impact_example():
     }
 
 
+@app.post("/predict/stress", response_model=Dict[str, Any], tags=["Predictions"])
+async def predict_stress_level(input_data: StressPredictionInput):
+    """
+    Predict stress level from lifestyle and behavioral data
+    
+    **Required Fields:**
+    - age: Person's age (18-100)
+    - gender: Gender (Male/Female/Other)
+    - occupation: Occupation type
+    - work_mode: Work mode (Remote/Hybrid/Office)
+    - screen_time_hours: Total daily screen time
+    - work_screen_hours: Work-related screen time
+    - leisure_screen_hours: Leisure screen time
+    - sleep_hours: Average sleep hours
+    - sleep_quality_1_5: Sleep quality (1-5)
+    - productivity_0_100: Productivity score (0-100)
+    - exercise_minutes_per_week: Weekly exercise minutes
+    - social_hours_per_week: Weekly social hours
+    - mental_wellness_index_0_100: Mental wellness score (0-100)
+    
+    **Returns:**
+    - prediction: Predicted stress level (0-10)
+    - stress_category: Category (Low/Moderate/High/Very High)
+    - interpretation: Human-readable interpretation
+    - recommendations: Personalized recommendations
+    - model_info: Information about the model used
+    """
+    try:
+        if not stress_prediction_predictor:
+            raise HTTPException(
+                status_code=503, 
+                detail="Stress Prediction model not loaded. Please run training first: ./run_stress_train.ps1"
+            )
+        
+        # Convert input to dict
+        input_dict = input_data.dict()
+        
+        # Make prediction
+        result = stress_prediction_predictor.predict(input_dict)
+        
+        return result
+        
+    except ValidationError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Prediction error: {str(e)}")
+
+
+@app.get("/examples/stress", tags=["Examples"])
+async def get_stress_prediction_example():
+    """Get example input for stress level prediction"""
+    return {
+        "example": {
+            "age": 28,
+            "gender": "Male",
+            "occupation": "Software Engineer",
+            "work_mode": "Hybrid",
+            "screen_time_hours": 9.5,
+            "work_screen_hours": 7.0,
+            "leisure_screen_hours": 2.5,
+            "sleep_hours": 6.5,
+            "sleep_quality_1_5": 3,
+            "productivity_0_100": 65,
+            "exercise_minutes_per_week": 120,
+            "social_hours_per_week": 8.0,
+            "mental_wellness_index_0_100": 55.0
+        }
+    }
+
+
 @app.exception_handler(Exception)
 async def global_exception_handler(request, exc):
     """Global exception handler"""
@@ -285,6 +370,7 @@ if __name__ == "__main__":
     print("   • GET  /models/info - Model information")
     print("   • POST /predict/mental-wellness - Mental wellness prediction")
     print("   • POST /predict/academic-impact - Academic impact prediction")
+    print("   • POST /predict/stress - Stress level prediction")
     print("\n" + "="*80 + "\n")
     
     uvicorn.run(

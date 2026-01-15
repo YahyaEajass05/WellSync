@@ -14,7 +14,7 @@ const predictionSchema = new mongoose.Schema({
     },
     predictionType: {
         type: String,
-        enum: ['mental_wellness', 'academic_impact'],
+        enum: ['mental_wellness', 'academic_impact', 'stress_level'],
         required: true,
         index: true
     },
@@ -33,7 +33,10 @@ const predictionSchema = new mongoose.Schema({
             modelR2Score: Number,
             modelMAE: Number
         },
-        inputFeaturesProcessed: Number
+        inputFeaturesProcessed: Number,
+        // Stress prediction specific fields
+        stressCategory: String,
+        recommendations: [String]
     },
     metadata: {
         ipAddress: String,
@@ -78,7 +81,7 @@ predictionSchema.virtual('predictionAge').get(function() {
 predictionSchema.statics.getUserStats = async function(userId) {
     // Convert userId to ObjectId
     const objectId = mongoose.Types.ObjectId.isValid(userId) 
-        ? (typeof userId === 'string' ? mongoose.Types.ObjectId(userId) : userId)
+        ? (typeof userId === 'string' ? new mongoose.Types.ObjectId(userId) : userId)
         : userId;
     
     const stats = await this.aggregate([

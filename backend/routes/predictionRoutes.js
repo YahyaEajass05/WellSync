@@ -7,7 +7,7 @@ const express = require('express');
 const router = express.Router();
 const predictionController = require('../controllers/predictionController');
 const { protect } = require('../middleware/auth');
-const { validate, mentalWellnessValidation, academicImpactValidation, predictionIdValidation } = require('../middleware/validator');
+const { validate, mentalWellnessValidation, academicImpactValidation, stressLevelValidation, predictionIdValidation } = require('../middleware/validator');
 const { predictionLimiter, emailLimiter } = require('../middleware/rateLimiter');
 
 // Public routes
@@ -19,6 +19,7 @@ router.use(protect);
 // Create predictions
 router.post('/mental-wellness', predictionLimiter, mentalWellnessValidation, validate, predictionController.predictMentalWellness);
 router.post('/academic-impact', predictionLimiter, academicImpactValidation, validate, predictionController.predictAcademicImpact);
+router.post('/stress-level', predictionLimiter, stressLevelValidation, validate, predictionController.predictStressLevel);
 
 // Get predictions
 router.get('/', predictionController.getPredictions);

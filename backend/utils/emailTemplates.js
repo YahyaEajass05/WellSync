@@ -525,38 +525,129 @@ const getEmailTemplate = (type, data) => {
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 ${baseStyle}
+                <style>
+                    /* Prediction Type Specific Styles */
+                    .stress-low { background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%); }
+                    .stress-moderate { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); }
+                    .stress-high { background: linear-gradient(135deg, #fb923c 0%, #f97316 100%); }
+                    .stress-very-high { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+                    
+                    .wellness-excellent { background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%); }
+                    .wellness-good { background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%); }
+                    .wellness-fair { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); }
+                    .wellness-poor { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+                    
+                    .academic-low { background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%); }
+                    .academic-moderate { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); }
+                    .academic-high { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+                    
+                    /* Icon styles for different types */
+                    .icon-stress { font-size: 64px; }
+                    .icon-wellness { font-size: 64px; }
+                    .icon-academic { font-size: 64px; }
+                    
+                    /* Recommendation List Styles */
+                    .recommendation-item {
+                        background: #f8f9fa;
+                        padding: 15px 20px;
+                        margin: 10px 0;
+                        border-radius: 8px;
+                        border-left: 4px solid #667eea;
+                        animation: slideInLeft 0.6s ease-out backwards;
+                    }
+                    
+                    .recommendation-item:nth-child(1) { animation-delay: 0.2s; }
+                    .recommendation-item:nth-child(2) { animation-delay: 0.4s; }
+                    .recommendation-item:nth-child(3) { animation-delay: 0.6s; }
+                    .recommendation-item:nth-child(4) { animation-delay: 0.8s; }
+                    .recommendation-item:nth-child(5) { animation-delay: 1.0s; }
+                </style>
             </head>
             <body style="margin: 0; padding: 20px; background: #f0f2f5;">
                 <div class="container">
                     <div class="header">
-                        <div class="icon-wrapper">📊</div>
+                        <div class="icon-wrapper ${data.predictionType === 'Stress Level' ? 'icon-stress' : data.predictionType === 'Mental Wellness' ? 'icon-wellness' : 'icon-academic'}">
+                            ${data.predictionType === 'Stress Level' ? '😰' : data.predictionType === 'Mental Wellness' ? '🧠' : '📚'}
+                        </div>
                         <h1>Your ${data.predictionType} Report</h1>
                         <p style="margin-top: 10px; font-size: 16px; opacity: 0.95;">AI-Powered Insights Ready</p>
                     </div>
                     <div class="content">
                         <h2>Hi ${data.firstName}! 👋</h2>
-                        <p>Great news! Your latest prediction analysis is complete. Here are your personalized insights:</p>
+                        <p>Great news! Your latest ${data.predictionType.toLowerCase()} analysis is complete. Here are your personalized insights:</p>
                         
-                        <div class="score-display">
-                            <p style="margin: 0; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; opacity: 0.9;">Your Score</p>
+                        <div class="score-display ${
+                            data.predictionType === 'Stress Level' 
+                                ? (parseFloat(data.prediction) >= 8 ? 'stress-very-high' : parseFloat(data.prediction) >= 6 ? 'stress-high' : parseFloat(data.prediction) >= 3 ? 'stress-moderate' : 'stress-low')
+                                : data.predictionType === 'Mental Wellness'
+                                ? (parseFloat(data.prediction) >= 80 ? 'wellness-excellent' : parseFloat(data.prediction) >= 70 ? 'wellness-good' : parseFloat(data.prediction) >= 60 ? 'wellness-fair' : 'wellness-poor')
+                                : (parseFloat(data.prediction) >= 7 ? 'academic-high' : parseFloat(data.prediction) >= 5 ? 'academic-moderate' : 'academic-low')
+                        }">
+                            <p style="margin: 0; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; opacity: 0.9;">
+                                ${data.predictionType === 'Stress Level' ? 'Your Stress Level' : data.predictionType === 'Mental Wellness' ? 'Your Wellness Score' : 'Your Addiction Score'}
+                            </p>
                             <div class="score-number">${data.prediction}</div>
                             <div class="progress-bar" style="width: 80%; margin: 20px auto;">
-                                <div class="progress-fill" style="width: ${Math.min(parseFloat(data.prediction) * 10, 100)}%;"></div>
+                                <div class="progress-fill" style="width: ${
+                                    data.predictionType === 'Mental Wellness' 
+                                        ? parseFloat(data.prediction) 
+                                        : data.predictionType === 'Stress Level'
+                                        ? parseFloat(data.prediction) * 10
+                                        : parseFloat(data.prediction) * 11.11
+                                }%;"></div>
                             </div>
-                            <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.95;">${data.interpretation}</p>
+                            <p style="margin: 10px 0 0 0; font-size: 18px; font-weight: 600; opacity: 0.95;">${data.interpretation}</p>
                         </div>
+                        
+                        ${data.predictionType === 'Stress Level' ? `
+                        <div class="info-card" style="border-left: 4px solid ${
+                            parseFloat(data.prediction) >= 8 ? '#ef4444' : 
+                            parseFloat(data.prediction) >= 6 ? '#fb923c' : 
+                            parseFloat(data.prediction) >= 3 ? '#fbbf24' : '#4ade80'
+                        };">
+                            <h3>😰 Stress Level Breakdown</h3>
+                            <p><strong>Current Level:</strong> ${
+                                parseFloat(data.prediction) >= 8 ? 'Very High (8-10) - Immediate Action Needed' : 
+                                parseFloat(data.prediction) >= 6 ? 'High (6-7.9) - Take Action Soon' : 
+                                parseFloat(data.prediction) >= 3 ? 'Moderate (3-5.9) - Monitor Carefully' : 'Low (0-2.9) - Excellent!'
+                            }</p>
+                            <p><strong>Risk Assessment:</strong> ${
+                                parseFloat(data.prediction) >= 8 ? 'Your stress levels are critically high. Consider professional support.' : 
+                                parseFloat(data.prediction) >= 6 ? 'Your stress is elevated and may impact your well-being.' : 
+                                parseFloat(data.prediction) >= 3 ? 'Your stress is manageable but keep monitoring it.' : 'Your stress is well-controlled. Great job!'
+                            }</p>
+                        </div>
+                        ` : ''}
                         
                         <div class="info-card">
                             <h3>📈 Analysis Details</h3>
                             <p><strong>Model Used:</strong> ${data.modelName}</p>
                             <p><strong>Analysis Date:</strong> ${data.date}</p>
                             <p><strong>Prediction Type:</strong> ${data.predictionType}</p>
+                            ${data.predictionType === 'Stress Level' ? `<p><strong>Category:</strong> ${
+                                parseFloat(data.prediction) >= 8 ? '🔴 Very High Stress' : 
+                                parseFloat(data.prediction) >= 6 ? '🟠 High Stress' : 
+                                parseFloat(data.prediction) >= 3 ? '🟡 Moderate Stress' : '🟢 Low Stress'
+                            }</p>` : ''}
                         </div>
                         
-                        <div class="info-card">
-                            <h3>💡 Recommendations</h3>
-                            <p>${data.recommendations}</p>
+                        <div class="info-card" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-left: 4px solid #0ea5e9;">
+                            <h3>💡 Personalized Recommendations</h3>
+                            ${(data.recommendationsList && Array.isArray(data.recommendationsList))
+                                ? data.recommendationsList.map((rec, index) => `
+                                    <div class="recommendation-item">
+                                        <strong style="color: #667eea;">${index + 1}.</strong> ${rec}
+                                    </div>
+                                `).join('') 
+                                : `<p>${data.recommendations || 'Continue monitoring your wellness and maintain healthy habits.'}</p>`
+                            }
                         </div>
+                        
+                        ${data.predictionType === 'Stress Level' ? `
+                        <div class="alert-box" style="background: #fff3cd; border-left: 4px solid #fbbf24;">
+                            <p style="margin: 0; color: #856404;"><strong>⚠️ Important:</strong> If you're experiencing severe stress, anxiety, or depression, please consult with a mental health professional. WellSync predictions are for informational purposes only and not a substitute for professional medical advice.</p>
+                        </div>
+                        ` : ''}
                         
                         <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 25px; border-radius: 12px; margin: 30px 0; text-align: center;">
                             <p style="margin: 0; color: #ffffff; font-size: 18px; font-weight: 600;">📎 Detailed PDF Report Attached</p>
@@ -566,14 +657,161 @@ const getEmailTemplate = (type, data) => {
                             </p>
                         </div>
                         
-                        <p style="text-align: center; color: #666; margin-top: 25px;">Keep tracking your wellness journey with WellSync! 🌟</p>
+                        <p style="text-align: center; color: #666; margin-top: 25px;">
+                            ${data.predictionType === 'Stress Level' 
+                                ? 'Take care of your mental health - you deserve it! 🌈' 
+                                : 'Keep tracking your wellness journey with WellSync! 🌟'}
+                        </p>
                         
-                        <p style="margin-top: 30px; color: #667eea; font-weight: 600;">Keep thriving,<br>The WellSync Team 💜</p>
+                        <p style="margin-top: 30px; color: #667eea; font-weight: 600;">
+                            ${data.predictionType === 'Stress Level' ? 'Stay strong' : 'Keep thriving'},<br>The WellSync Team 💜
+                        </p>
                     </div>
                     <div class="footer">
                         <p>&copy; 2026 WellSync. All rights reserved.</p>
                         <p style="margin-top: 10px; font-size: 11px; color: #999;">
-                            📧 Check your email attachments for the detailed PDF report.
+                            📧 Check your email attachments for the detailed PDF report.<br>
+                            ${data.predictionType === 'Stress Level' ? 'Need support? Visit our resources page or contact a mental health professional.' : 'Questions? Contact us at wellsync.lk@gmail.com'}
+                        </p>
+                    </div>
+                </div>
+            </body>
+            </html>
+        `,
+        
+        weeklyWellness: `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                ${baseStyle}
+                <style>
+                    .priority-high { border-left: 4px solid #dc3545; }
+                    .priority-medium { border-left: 4px solid #ffc107; }
+                    .priority-low { border-left: 4px solid #28a745; }
+                    
+                    .stat-card {
+                        display: inline-block;
+                        width: 150px;
+                        padding: 20px;
+                        margin: 10px;
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        border-radius: 12px;
+                        text-align: center;
+                        color: white;
+                    }
+                    
+                    .stat-number {
+                        font-size: 36px;
+                        font-weight: bold;
+                        margin: 10px 0;
+                    }
+                    
+                    .stat-label {
+                        font-size: 12px;
+                        opacity: 0.9;
+                        text-transform: uppercase;
+                        letter-spacing: 1px;
+                    }
+                </style>
+            </head>
+            <body style="margin: 0; padding: 20px; background: #f0f2f5;">
+                <div class="container">
+                    <div class="header">
+                        <div class="icon-wrapper">📊</div>
+                        <h1>Weekly Wellness Update</h1>
+                        <p style="margin-top: 10px; font-size: 16px; opacity: 0.95;">Your Personalized Health Insights</p>
+                    </div>
+                    <div class="content">
+                        <h2>Hi ${data.firstName}! 👋</h2>
+                        <p>${data.summary}</p>
+                        
+                        ${data.hasData && data.stats ? `
+                        <div style="text-align: center; margin: 30px 0;">
+                            <h3 style="color: #667eea; margin-bottom: 20px;">Your Weekly Stats</h3>
+                            <div style="display: flex; justify-content: center; flex-wrap: wrap;">
+                                ${data.stats.mentalWellness !== null ? `
+                                <div class="stat-card">
+                                    <div class="stat-label">Mental Wellness</div>
+                                    <div class="stat-number">${data.stats.mentalWellness.toFixed(1)}</div>
+                                    <div class="stat-label">/ 100</div>
+                                </div>
+                                ` : ''}
+                                
+                                ${data.stats.stress !== null ? `
+                                <div class="stat-card" style="background: linear-gradient(135deg, ${
+                                    data.stats.stress >= 7 ? '#dc3545 0%, #c82333 100%' :
+                                    data.stats.stress >= 4 ? '#ffc107 0%, #e0a800 100%' :
+                                    '#28a745 0%, #218838 100%'
+                                });">
+                                    <div class="stat-label">Stress Level</div>
+                                    <div class="stat-number">${data.stats.stress.toFixed(1)}</div>
+                                    <div class="stat-label">/ 10</div>
+                                </div>
+                                ` : ''}
+                                
+                                ${data.stats.academic !== null ? `
+                                <div class="stat-card">
+                                    <div class="stat-label">Digital Wellness</div>
+                                    <div class="stat-number">${data.stats.academic.toFixed(1)}</div>
+                                    <div class="stat-label">/ 9</div>
+                                </div>
+                                ` : ''}
+                            </div>
+                            <p style="color: #666; margin-top: 20px; font-size: 14px;">
+                                Based on ${data.stats.totalPredictions} prediction${data.stats.totalPredictions !== 1 ? 's' : ''} this month
+                            </p>
+                        </div>
+                        ` : ''}
+                        
+                        <h3 style="color: #667eea; margin-top: 40px;">📌 This Week's Recommendations</h3>
+                        
+                        ${(data.recommendations && Array.isArray(data.recommendations) ? data.recommendations : []).map((rec, index) => `
+                            <div class="info-card priority-${(rec.priority || 'medium').toLowerCase()}" style="margin: 15px 0; animation-delay: ${index * 0.1}s;">
+                                <h4 style="color: #667eea; margin: 0 0 10px 0; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">
+                                    ${rec.category || 'Wellness Tip'}
+                                    <span style="float: right; font-size: 10px; padding: 3px 8px; border-radius: 10px; background: ${
+                                        rec.priority === 'High' ? '#dc3545' :
+                                        rec.priority === 'Medium' ? '#ffc107' :
+                                        '#28a745'
+                                    }; color: white;">
+                                        ${rec.priority || 'Medium'} Priority
+                                    </span>
+                                </h4>
+                                <p style="margin: 10px 0 0 0; color: #333; line-height: 1.6;">${rec.tip || rec}</p>
+                            </div>
+                        `).join('')}
+                        
+                        <div class="highlight" style="margin-top: 40px;">
+                            <h3 style="color: #667eea; margin: 0 0 15px 0;">💡 Quick Wellness Tips</h3>
+                            <ul style="margin: 0; padding-left: 20px;">
+                                <li style="margin: 10px 0;">Track your progress - Use the WellSync app regularly to monitor your wellness journey</li>
+                                <li style="margin: 10px 0;">Stay consistent - Small daily habits compound into major improvements over time</li>
+                                <li style="margin: 10px 0;">Be patient - Real change takes time, usually 21-30 days to form new habits</li>
+                                <li style="margin: 10px 0;">Seek support - Don't hesitate to reach out to friends, family, or professionals when needed</li>
+                            </ul>
+                        </div>
+                        
+                        <div style="text-align: center; margin: 40px 0;">
+                            <p style="color: #666; font-size: 14px;">Want more personalized insights?</p>
+                            <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/dashboard" class="button">
+                                View Your Dashboard →
+                            </a>
+                        </div>
+                        
+                        <p style="text-align: center; color: #666; margin-top: 30px; font-size: 14px;">
+                            Keep up the great work on your wellness journey! 🌟
+                        </p>
+                        
+                        <p style="margin-top: 30px; color: #667eea; font-weight: 600;">Stay well,<br>The WellSync Team 💜</p>
+                    </div>
+                    <div class="footer">
+                        <p style="font-weight: 600; color: #333; margin-bottom: 15px;">Weekly Wellness Update - ${data.date}</p>
+                        <p>&copy; 2026 WellSync. All rights reserved.</p>
+                        <p style="margin-top: 10px; font-size: 11px; color: #999;">
+                            You received this email because you're subscribed to WellSync weekly updates.<br>
+                            To unsubscribe, update your preferences in your account settings.
                         </p>
                     </div>
                 </div>

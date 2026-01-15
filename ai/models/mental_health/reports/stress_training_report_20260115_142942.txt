@@ -1,0 +1,72 @@
+================================================================================
+STRESS LEVEL PREDICTION - TRAINING REPORT
+================================================================================
+
+Date: 2026-01-15 14:29:42
+Dataset: ../../../ai/data/ScreenTime_MentalWellness.csv
+Training samples: 320
+Testing samples: 80
+Number of features: 36
+
+================================================================================
+BASELINE MODEL RESULTS
+================================================================================
+
+Linear Ridge:
+  Train R²: 0.9088
+  Test R²:  0.8373
+  RMSE:     0.8074
+  MAE:      0.6116
+  CV R² (mean ± std): 0.8849 ± 0.0272
+
+Gradient Boosting:
+  Train R²: 0.9993
+  Test R²:  0.7960
+  RMSE:     0.9043
+  MAE:      0.6267
+  CV R² (mean ± std): 0.8550 ± 0.0306
+
+Random Forest:
+  Train R²: 0.9812
+  Test R²:  0.7951
+  RMSE:     0.9063
+  MAE:      0.6755
+  CV R² (mean ± std): 0.8601 ± 0.0295
+
+Extra Trees:
+  Train R²: 1.0000
+  Test R²:  0.7929
+  RMSE:     0.9112
+  MAE:      0.6553
+  CV R² (mean ± std): 0.8594 ± 0.0288
+
+Decision Tree:
+  Train R²: 0.9956
+  Test R²:  0.7664
+  RMSE:     0.9675
+  MAE:      0.6747
+  CV R² (mean ± std): 0.8001 ± 0.0416
+
+Support Vector Regressor:
+  Train R²: 0.9886
+  Test R²:  0.7496
+  RMSE:     1.0019
+  MAE:      0.7578
+  CV R² (mean ± std): 0.7912 ± 0.0585
+
+K-Nearest Neighbors:
+  Train R²: 0.8239
+  Test R²:  0.6598
+  RMSE:     1.1678
+  MAE:      0.8492
+  CV R² (mean ± std): 0.7264 ± 0.0538
+
+================================================================================
+BEST MODEL
+================================================================================
+
+Model: Tuned Linear Ridge
+R² Score: 0.8373
+RMSE: 0.8074
+MAE: 0.6116
+

@@ -157,13 +157,49 @@ exports.getAvailableModels = async () => {
 };
 
 /**
+ * Get stress level prediction from AI service
+ */
+exports.predictStressLevel = async (inputData) => {
+    try {
+        const startTime = Date.now();
+        
+        const response = await aiClient.post('/predict/stress', inputData);
+        
+        const processingTime = Date.now() - startTime;
+        
+        return {
+            success: true,
+            data: response.data,
+            processingTime
+        };
+    } catch (error) {
+        logger.error(`Stress Level Prediction Error: ${error.message}`);
+        
+        if (error.response) {
+            throw new Error(`AI Service Error: ${error.response.data.detail || error.response.statusText}`);
+        } else if (error.code === 'ECONNREFUSED') {
+            throw new Error('AI Service is not available. Please try again later.');
+        } else {
+            throw new Error(`Prediction failed: ${error.message}`);
+        }
+    }
+};
+
+/**
  * Get example input data
  */
 exports.getExampleData = async (predictionType) => {
     try {
-        const endpoint = predictionType === 'mental_wellness' 
-            ? '/examples/mental-wellness'
-            : '/examples/academic-impact';
+        let endpoint;
+        if (predictionType === 'mental_wellness') {
+            endpoint = '/examples/mental-wellness';
+        } else if (predictionType === 'academic_impact') {
+            endpoint = '/examples/academic-impact';
+        } else if (predictionType === 'stress_level') {
+            endpoint = '/examples/stress';
+        } else {
+            throw new Error('Invalid prediction type');
+        }
             
         const response = await aiClient.get(endpoint);
         return {

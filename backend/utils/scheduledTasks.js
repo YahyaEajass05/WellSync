@@ -8,6 +8,7 @@ const Analytics = require('../models/Analytics');
 const Prediction = require('../models/Prediction');
 const User = require('../models/User');
 const notificationService = require('./notificationService');
+const { sendWeeklyEmailsToAllUsers } = require('./weeklyEmailService');
 const logger = require('./logger');
 
 /**
@@ -202,6 +203,21 @@ exports.sendInactiveUserReminders = async () => {
 };
 
 /**
+ * Send weekly wellness emails to all users (run weekly on Monday at 9 AM)
+ */
+exports.sendWeeklyWellnessEmails = async () => {
+    try {
+        logger.info('Starting weekly wellness email batch...');
+        const results = await sendWeeklyEmailsToAllUsers();
+        logger.info(`Weekly wellness emails completed: ${results.successful} sent, ${results.failed} failed`);
+        return results;
+    } catch (error) {
+        logger.error(`Failed to send weekly wellness emails: ${error.message}`);
+        throw error;
+    }
+};
+
+/**
  * Initialize scheduled tasks
  */
 exports.initScheduledTasks = () => {
@@ -224,7 +240,15 @@ exports.initScheduledTasks = () => {
         }
     }, 60 * 60 * 1000); // Check every hour
 
-    logger.info('Scheduled tasks initialized');
+    // Send weekly wellness emails every Monday at 9 AM
+    setInterval(() => {
+        const now = new Date();
+        if (now.getDay() === 1 && now.getHours() === 9) {
+            exports.sendWeeklyWellnessEmails();
+        }
+    }, 60 * 60 * 1000); // Check every hour
+
+    logger.info('Scheduled tasks initialized (includes weekly wellness emails every Monday at 9 AM)');
 };
 
 module.exports = exports;

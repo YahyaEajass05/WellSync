@@ -173,6 +173,92 @@ exports.predictAcademicImpact = asyncHandler(async (req, res) => {
 });
 
 /**
+ * @desc    Get stress level prediction
+ * @route   POST /api/predictions/stress-level
+ * @access  Private
+ */
+exports.predictStressLevel = asyncHandler(async (req, res) => {
+    const startTime = Date.now();
+    
+    // Get prediction from AI service
+    const aiResponse = await aiService.predictStressLevel(req.body);
+    
+    // Save prediction to database
+    const prediction = await Prediction.create({
+        user: req.user.id,
+        predictionType: 'stress_level',
+        inputData: req.body,
+        result: {
+            prediction: aiResponse.data.prediction,
+            interpretation: aiResponse.data.interpretation,
+            modelName: aiResponse.data.model_name,
+            stressCategory: aiResponse.data.stress_category,
+            recommendations: aiResponse.data.recommendations,
+            confidenceMetrics: {
+                modelR2Score: aiResponse.data.confidence_metrics?.model_r2_score,
+                modelMAE: aiResponse.data.confidence_metrics?.model_mae
+            },
+            inputFeaturesProcessed: aiResponse.data.input_features_processed
+        },
+        metadata: {
+            ipAddress: req.ip,
+            userAgent: req.get('user-agent'),
+            processingTime: aiResponse.processingTime,
+            apiVersion: '1.0.0'
+        }
+    });
+
+    const totalTime = Date.now() - startTime;
+    
+    logger.info(`Stress level prediction created for user: ${req.user.email}`, {
+        predictionId: prediction._id,
+        score: prediction.result.prediction,
+        category: prediction.result.stressCategory,
+        processingTime: totalTime
+    });
+
+    // Send notification
+    try {
+        await notificationService.notifyPredictionCompleted(
+            req.user.id,
+            'stress_level',
+            prediction.result.prediction,
+            prediction.result.interpretation
+        );
+    } catch (error) {
+        logger.error(`Failed to send prediction notification: ${error.message}`);
+    }
+
+    // Check for milestones
+    const totalPredictions = await Prediction.countDocuments({ user: req.user.id });
+    if ([10, 25, 50, 100, 250].includes(totalPredictions)) {
+        try {
+            await notificationService.notifyMilestone(req.user.id, totalPredictions, totalPredictions);
+        } catch (error) {
+            logger.error(`Failed to send milestone notification: ${error.message}`);
+        }
+    }
+
+    res.status(201).json({
+        success: true,
+        message: 'Stress level prediction completed successfully',
+        data: {
+            prediction: {
+                id: prediction._id,
+                score: prediction.result.prediction,
+                category: prediction.result.stressCategory,
+                interpretation: prediction.result.interpretation,
+                recommendations: prediction.result.recommendations,
+                modelUsed: prediction.result.modelName,
+                confidence: prediction.result.confidenceMetrics,
+                createdAt: prediction.createdAt
+            },
+            processingTime: totalTime
+        }
+    });
+});
+
+/**
  * @desc    Get all predictions for current user
  * @route   GET /api/predictions
  * @access  Private
@@ -334,7 +420,8 @@ exports.getUserStats = asyncHandler(async (req, res) => {
             byType: stats,
             summary: {
                 mentalWellness: stats.find(s => s._id === 'mental_wellness') || { count: 0, averagePrediction: 0 },
-                academicImpact: stats.find(s => s._id === 'academic_impact') || { count: 0, averagePrediction: 0 }
+                academicImpact: stats.find(s => s._id === 'academic_impact') || { count: 0, averagePrediction: 0 },
+                stressLevel: stats.find(s => s._id === 'stress_level') || { count: 0, averagePrediction: 0 }
             }
         }
     });
@@ -349,7 +436,7 @@ exports.getPredictionTrends = asyncHandler(async (req, res) => {
     const { type } = req.params;
     const { days = 30 } = req.query;
 
-    if (!['mental_wellness', 'academic_impact'].includes(type)) {
+    if (!['mental_wellness', 'academic_impact', 'stress_level'].includes(type)) {
         return res.status(400).json({
             success: false,
             error: 'Invalid prediction type'
@@ -406,10 +493,10 @@ exports.emailPredictionReport = asyncHandler(async (req, res) => {
 exports.getExampleData = asyncHandler(async (req, res) => {
     const { type } = req.params;
 
-    if (!['mental_wellness', 'academic_impact'].includes(type)) {
+    if (!['mental_wellness', 'academic_impact', 'stress_level'].includes(type)) {
         return res.status(400).json({
             success: false,
-            error: 'Invalid prediction type. Use mental_wellness or academic_impact'
+            error: 'Invalid prediction type. Use mental_wellness, academic_impact, or stress_level'
         });
     }
 

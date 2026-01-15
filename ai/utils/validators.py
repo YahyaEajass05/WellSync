@@ -91,6 +91,51 @@ class AcademicImpactInput(BaseModel):
         }
 
 
+class StressPredictionInput(BaseModel):
+    """Input schema for Stress Level prediction"""
+    
+    age: int = Field(..., ge=18, le=100, description="Age of the person")
+    gender: str = Field(..., description="Gender (Male/Female/Other)")
+    occupation: str = Field(..., description="Occupation type")
+    work_mode: str = Field(..., description="Work mode (Remote/Hybrid/Office)")
+    screen_time_hours: float = Field(..., ge=0, le=24, description="Total daily screen time in hours")
+    work_screen_hours: float = Field(..., ge=0, le=24, description="Work-related screen time")
+    leisure_screen_hours: float = Field(..., ge=0, le=24, description="Leisure screen time")
+    sleep_hours: float = Field(..., ge=0, le=24, description="Average sleep hours per night")
+    sleep_quality_1_5: int = Field(..., ge=1, le=5, description="Sleep quality rating (1-5)")
+    productivity_0_100: int = Field(..., ge=0, le=100, description="Productivity score (0-100)")
+    exercise_minutes_per_week: int = Field(..., ge=0, description="Weekly exercise in minutes")
+    social_hours_per_week: float = Field(..., ge=0, description="Weekly social interaction hours")
+    mental_wellness_index_0_100: float = Field(..., ge=0, le=100, description="Mental wellness index (0-100)")
+    
+    @validator('work_screen_hours', 'leisure_screen_hours')
+    def validate_screen_time_breakdown(cls, v, values):
+        if 'screen_time_hours' in values:
+            total = values.get('screen_time_hours', 0)
+            if v > total:
+                raise ValueError(f"Screen time component cannot exceed total screen time")
+        return v
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "age": 28,
+                "gender": "Male",
+                "occupation": "Software Engineer",
+                "work_mode": "Hybrid",
+                "screen_time_hours": 9.5,
+                "work_screen_hours": 7.0,
+                "leisure_screen_hours": 2.5,
+                "sleep_hours": 6.5,
+                "sleep_quality_1_5": 3,
+                "productivity_0_100": 65,
+                "exercise_minutes_per_week": 120,
+                "social_hours_per_week": 8.0,
+                "mental_wellness_index_0_100": 55.0
+            }
+        }
+
+
 class PredictionResponse(BaseModel):
     """Response schema for predictions"""
     
@@ -132,3 +177,8 @@ def validate_mental_wellness_input(data: Dict[str, Any]) -> MentalWellnessInput:
 def validate_academic_impact_input(data: Dict[str, Any]) -> AcademicImpactInput:
     """Validate academic impact input data"""
     return AcademicImpactInput(**data)
+
+
+def validate_stress_prediction_input(data: Dict[str, Any]) -> StressPredictionInput:
+    """Validate stress prediction input data"""
+    return StressPredictionInput(**data)

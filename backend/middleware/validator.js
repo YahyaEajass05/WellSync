@@ -169,6 +169,39 @@ exports.emailValidation = [
         .normalizeEmail()
 ];
 
+// Stress level prediction validation
+exports.stressLevelValidation = [
+    body('age')
+        .isInt({ min: 18, max: 100 }).withMessage('Age must be between 18 and 100'),
+    body('gender')
+        .notEmpty().withMessage('Gender is required')
+        .isIn(['Male', 'Female', 'Other']).withMessage('Invalid gender'),
+    body('occupation')
+        .trim()
+        .notEmpty().withMessage('Occupation is required'),
+    body('work_mode')
+        .notEmpty().withMessage('Work mode is required')
+        .isIn(['Remote', 'Hybrid', 'Office']).withMessage('Invalid work mode'),
+    body('screen_time_hours')
+        .isFloat({ min: 0, max: 24 }).withMessage('Screen time must be between 0 and 24 hours'),
+    body('work_screen_hours')
+        .isFloat({ min: 0, max: 24 }).withMessage('Work screen hours must be between 0 and 24'),
+    body('leisure_screen_hours')
+        .isFloat({ min: 0, max: 24 }).withMessage('Leisure screen hours must be between 0 and 24'),
+    body('sleep_hours')
+        .isFloat({ min: 0, max: 24 }).withMessage('Sleep hours must be between 0 and 24'),
+    body('sleep_quality_1_5')
+        .isInt({ min: 1, max: 5 }).withMessage('Sleep quality must be between 1 and 5'),
+    body('productivity_0_100')
+        .isInt({ min: 0, max: 100 }).withMessage('Productivity must be between 0 and 100'),
+    body('exercise_minutes_per_week')
+        .isInt({ min: 0 }).withMessage('Exercise minutes must be a positive number'),
+    body('social_hours_per_week')
+        .isFloat({ min: 0 }).withMessage('Social hours must be a positive number'),
+    body('mental_wellness_index_0_100')
+        .isFloat({ min: 0, max: 100 }).withMessage('Mental wellness index must be between 0 and 100')
+];
+
 // Prediction ID validation
 exports.predictionIdValidation = [
     param('id')
