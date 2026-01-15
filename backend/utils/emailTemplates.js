@@ -404,7 +404,7 @@ const getEmailTemplate = (type, data) => {
                         </div>
                         
                         <div class="alert-box">
-                            <p style="margin: 0; color: #856404;"><strong>⏰ Important:</strong> This code will expire in 15 minutes for your security.</p>
+                            <p style="margin: 0; color: #856404;"><strong>⏰ Important:</strong> This code will expire in 5 minutes for your security.</p>
                         </div>
                         
                         <p style="margin-top: 25px;">If you didn't create this account, please ignore this email or contact our support team.</p>
@@ -416,7 +416,7 @@ const getEmailTemplate = (type, data) => {
                         <p>&copy; 2026 WellSync. All rights reserved.</p>
                         <p style="margin-top: 10px; font-size: 11px; color: #999;">
                             You received this email because you signed up for WellSync.<br>
-                            Need help? Contact us at support@wellsync.com
+                            Need help? Contact us at wellsync.lk@gmail.com
                         </p>
                     </div>
                 </div>
@@ -451,7 +451,7 @@ const getEmailTemplate = (type, data) => {
                         </div>
                         
                         <div class="alert-box">
-                            <p style="margin: 0; color: #856404;"><strong>⏰ Hurry!</strong> This code will expire in 15 minutes.</p>
+                            <p style="margin: 0; color: #856404;"><strong>⏰ Hurry!</strong> This code will expire in 5 minutes.</p>
                         </div>
                         
                         <p style="margin-top: 25px;">If you didn't request this verification, you can safely ignore this email.</p>
@@ -461,7 +461,7 @@ const getEmailTemplate = (type, data) => {
                     <div class="footer">
                         <p>&copy; 2026 WellSync. All rights reserved.</p>
                         <p style="margin-top: 10px; font-size: 11px; color: #999;">
-                            Need help? Contact us at support@wellsync.com
+                            Need help? Contact us at wellsync.lk@gmail.com
                         </p>
                     </div>
                 </div>
@@ -497,7 +497,7 @@ const getEmailTemplate = (type, data) => {
                         </div>
                         
                         <div class="alert-box">
-                            <p style="margin: 0; color: #856404;"><strong>⏰ Time Sensitive:</strong> This code will expire in 15 minutes for security reasons.</p>
+                            <p style="margin: 0; color: #856404;"><strong>⏰ Time Sensitive:</strong> This code will expire in 5 minutes for security reasons.</p>
                         </div>
                         
                         <div style="background: #e7f3ff; border-left: 4px solid #2196F3; padding: 15px; margin: 20px 0; border-radius: 8px;">
@@ -510,7 +510,7 @@ const getEmailTemplate = (type, data) => {
                     <div class="footer">
                         <p>&copy; 2026 WellSync. All rights reserved.</p>
                         <p style="margin-top: 10px; font-size: 11px; color: #999;">
-                            For security concerns, contact us at security@wellsync.com
+                            For security concerns, contact us at wellsync.lk@gmail.com
                         </p>
                     </div>
                 </div>
@@ -558,8 +558,12 @@ const getEmailTemplate = (type, data) => {
                             <p>${data.recommendations}</p>
                         </div>
                         
-                        <div style="text-align: center; margin: 30px 0;">
-                            <a href="${data.dashboardLink}" class="button">View Full Dashboard →</a>
+                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 25px; border-radius: 12px; margin: 30px 0; text-align: center;">
+                            <p style="margin: 0; color: #ffffff; font-size: 18px; font-weight: 600;">📎 Detailed PDF Report Attached</p>
+                            <p style="margin: 10px 0 0 0; color: rgba(255,255,255,0.9); font-size: 14px;">
+                                Your comprehensive analysis report is attached to this email.<br>
+                                Open the PDF for detailed insights, visualizations, and personalized recommendations.
+                            </p>
                         </div>
                         
                         <p style="text-align: center; color: #666; margin-top: 25px;">Keep tracking your wellness journey with WellSync! 🌟</p>
@@ -569,7 +573,7 @@ const getEmailTemplate = (type, data) => {
                     <div class="footer">
                         <p>&copy; 2026 WellSync. All rights reserved.</p>
                         <p style="margin-top: 10px; font-size: 11px; color: #999;">
-                            Want to improve your score? Visit your dashboard for personalized tips.
+                            📧 Check your email attachments for the detailed PDF report.
                         </p>
                     </div>
                 </div>
@@ -630,7 +634,7 @@ const getEmailTemplate = (type, data) => {
                         <p style="font-weight: 600; color: #333; margin-bottom: 15px;">Need Help Getting Started?</p>
                         <p>&copy; 2026 WellSync. All rights reserved.</p>
                         <p style="margin-top: 10px; font-size: 11px; color: #999;">
-                            Questions? Check our help center or contact support@wellsync.com
+                            Questions? Check our help center or contact wellsync.lk@gmail.com
                         </p>
                     </div>
                 </div>

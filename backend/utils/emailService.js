@@ -17,7 +17,8 @@ const sendEmail = async (options) => {
             to: options.to,
             subject: options.subject,
             html: options.html,
-            text: options.text
+            text: options.text,
+            attachments: options.attachments || []
         };
 
         const info = await transporter.sendMail(mailOptions);
@@ -78,28 +79,40 @@ exports.sendPasswordResetEmail = async (user, resetCode) => {
 };
 
 /**
- * Send prediction report email
+ * Send prediction report email with PDF attachment
  */
 exports.sendPredictionReportEmail = async (user, predictionData) => {
-    const dashboardLink = `${process.env.FRONTEND_URL}/dashboard`;
+    const { generatePredictionReportPDF } = require('./pdfGenerator');
+    
+    // Generate PDF report
+    const pdfBuffer = await generatePredictionReportPDF(user, predictionData);
+    
+    const predictionType = predictionData.predictionType === 'mental_wellness' 
+        ? 'Mental Wellness' 
+        : 'Academic Impact';
     
     const html = getEmailTemplate('predictionReport', {
         firstName: user.firstName,
-        predictionType: predictionData.predictionType === 'mental_wellness' 
-            ? 'Mental Wellness' 
-            : 'Academic Impact',
+        predictionType: predictionType,
         prediction: predictionData.result.prediction.toFixed(2),
         interpretation: predictionData.result.interpretation,
         modelName: predictionData.result.modelName,
         date: new Date(predictionData.createdAt).toLocaleDateString(),
-        recommendations: getRecommendations(predictionData),
-        dashboardLink
+        recommendations: getRecommendations(predictionData)
     });
 
+    // Send email with PDF attachment
     await sendEmail({
         to: user.email,
-        subject: `Your ${predictionData.predictionType === 'mental_wellness' ? 'Mental Wellness' : 'Academic Impact'} Report - WellSync`,
-        html
+        subject: `Your ${predictionType} Report - WellSync`,
+        html,
+        attachments: [
+            {
+                filename: `WellSync_${predictionType.replace(' ', '_')}_Report_${new Date().toISOString().split('T')[0]}.pdf`,
+                content: pdfBuffer,
+                contentType: 'application/pdf'
+            }
+        ]
     });
 };
 

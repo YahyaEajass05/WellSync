@@ -8,16 +8,6 @@ const logger = require('../utils/logger');
 
 // Create transporter
 const createTransporter = () => {
-    const config = {
-        host: process.env.EMAIL_HOST,
-        port: parseInt(process.env.EMAIL_PORT),
-        secure: process.env.EMAIL_SECURE === 'true',
-        auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASSWORD
-        }
-    };
-
     // For development, use ethereal email if credentials not provided
     if (process.env.NODE_ENV === 'development' && !process.env.EMAIL_USER) {
         logger.warn('⚠️  Email credentials not configured. Using Ethereal for testing.');
@@ -30,6 +20,20 @@ const createTransporter = () => {
             }
         });
     }
+
+    const config = {
+        service: process.env.EMAIL_SERVICE || 'gmail',
+        host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+        port: parseInt(process.env.EMAIL_PORT) || 587,
+        secure: process.env.EMAIL_SECURE === 'true',
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASSWORD
+        },
+        tls: {
+            rejectUnauthorized: false
+        }
+    };
 
     return nodemailer.createTransport(config);
 };
