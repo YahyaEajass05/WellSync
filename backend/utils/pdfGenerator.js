@@ -240,68 +240,23 @@ exports.generatePredictionReportPDF = async (user, predictionData) => {
 
             yPos += 25;
 
-            // Model Details Box
-            const detailsBoxHeight = 110;
+            // Simplified Analysis Details Box (Removed technical metrics)
+            const detailsBoxHeight = 60;
             doc.roundedRect(margin, yPos, contentWidth, detailsBoxHeight, 8)
                .fillAndStroke('#ffffff', '#e0e0e0');
 
             let detailY = yPos + 20;
 
-            // Model Name
+            // Analysis Date Only
             doc.fontSize(10)
                .font('Helvetica-Bold')
                .fillColor('#667eea')
-               .text('AI Model Used:', margin + 20, detailY);
+               .text('Analysis Date:', margin + 20, detailY);
 
             doc.fontSize(11)
                .font('Helvetica')
                .fillColor('#333333')
-               .text(predictionData.result.modelName || 'Advanced ML Ensemble', margin + 200, detailY);
-
-            detailY += 25;
-
-            // Accuracy
-            if (predictionData.result.confidence) {
-                const r2Score = predictionData.result.confidence.r2Score || 
-                               predictionData.result.confidence.model_r2_score || 0.89;
-                const mae = predictionData.result.confidence.mae || 
-                           predictionData.result.confidence.model_mae || 0;
-
-                doc.fontSize(10)
-                   .font('Helvetica-Bold')
-                   .fillColor('#667eea')
-                   .text('Model Accuracy:', margin + 20, detailY);
-
-                doc.fontSize(11)
-                   .font('Helvetica')
-                   .fillColor('#333333')
-                   .text(`${(r2Score * 100).toFixed(1)}% (R² Score: ${r2Score.toFixed(4)})`, margin + 200, detailY);
-
-                detailY += 25;
-
-                doc.fontSize(10)
-                   .font('Helvetica-Bold')
-                   .fillColor('#667eea')
-                   .text('Mean Absolute Error:', margin + 20, detailY);
-
-                doc.fontSize(11)
-                   .font('Helvetica')
-                   .fillColor('#333333')
-                   .text(`${mae.toFixed(2)} points`, margin + 200, detailY);
-            }
-
-            detailY += 25;
-
-            // Analysis Date
-            doc.fontSize(10)
-               .font('Helvetica-Bold')
-               .fillColor('#667eea')
-               .text('Analysis Performed:', margin + 20, detailY);
-
-            doc.fontSize(11)
-               .font('Helvetica')
-               .fillColor('#333333')
-               .text(`${dateString} at ${timeString}`, margin + 200, detailY);
+               .text(`${dateString} at ${timeString}`, margin + 180, detailY);
 
             yPos += detailsBoxHeight + 30;
 
@@ -393,63 +348,7 @@ exports.generatePredictionReportPDF = async (user, predictionData) => {
                 yPos += recHeight + 15;
             });
 
-            // ===============================
-            // INPUT DATA SUMMARY (NEW SECTION)
-            // ===============================
-            
-            yPos += 20;
-
-            if (yPos > pageHeight - 200) {
-                doc.addPage();
-                yPos = margin;
-            }
-
-            doc.fontSize(16)
-               .font('Helvetica-Bold')
-               .fillColor('#333333')
-               .text('INPUT DATA SUMMARY', margin, yPos);
-
-            yPos += 25;
-
-            const inputSummary = getInputDataSummary(predictionData);
-            
-            const columnWidth = (contentWidth - 20) / 2;
-            let column1Y = yPos;
-            let column2Y = yPos;
-
-            inputSummary.forEach((item, index) => {
-                const isLeftColumn = index % 2 === 0;
-                const xPos = isLeftColumn ? margin : margin + columnWidth + 20;
-                const currentY = isLeftColumn ? column1Y : column2Y;
-
-                if (currentY > pageHeight - 100) {
-                    doc.addPage();
-                    column1Y = margin;
-                    column2Y = margin;
-                }
-
-                // Data item box
-                doc.roundedRect(xPos, isLeftColumn ? column1Y : column2Y, columnWidth, 45, 5)
-                   .fillAndStroke('#f8f9fa', '#e0e0e0');
-
-                doc.fontSize(9)
-                   .font('Helvetica-Bold')
-                   .fillColor('#667eea')
-                   .text(item.label, xPos + 15, (isLeftColumn ? column1Y : column2Y) + 12);
-
-                doc.fontSize(12)
-                   .font('Helvetica-Bold')
-                   .fillColor('#333333')
-                   .text(item.value, xPos + 15, (isLeftColumn ? column1Y : column2Y) + 26);
-
-                if (isLeftColumn) {
-                    column1Y += 55;
-                } else {
-                    column2Y += 55;
-                }
-            });
-
-            yPos = Math.max(column1Y, column2Y) + 20;
+            // INPUT DATA SUMMARY SECTION REMOVED FOR CLEANER REPORT
 
             // ===============================
             // FOOTER
@@ -478,7 +377,7 @@ exports.generatePredictionReportPDF = async (user, predictionData) => {
 
             doc.fontSize(8)
                .fillColor('#cccccc')
-               .text('© 2026 WellSync. All rights reserved. | Confidential Report', margin, footerY + 40, {
+               .text('(c) 2026 WellSync. All rights reserved. Confidential Report', margin, footerY + 40, {
                    width: contentWidth,
                    align: 'center'
                });
@@ -621,44 +520,7 @@ function getDetailedRecommendations(predictionData) {
     return recommendations;
 }
 
-/**
- * Get input data summary
- */
-function getInputDataSummary(predictionData) {
-    const summary = [];
-    const inputData = predictionData.inputData || {};
-
-    if (predictionData.predictionType === 'mental_wellness') {
-        if (inputData.age) summary.push({ label: 'Age', value: `${inputData.age} years` });
-        if (inputData.gender) summary.push({ label: 'Gender', value: inputData.gender });
-        if (inputData.occupation) summary.push({ label: 'Occupation', value: inputData.occupation });
-        if (inputData.work_mode) summary.push({ label: 'Work Mode', value: inputData.work_mode });
-        if (inputData.screen_time_hours !== undefined) summary.push({ label: 'Total Screen Time', value: `${inputData.screen_time_hours} hrs/day` });
-        if (inputData.work_screen_hours !== undefined) summary.push({ label: 'Work Screen Time', value: `${inputData.work_screen_hours} hrs/day` });
-        if (inputData.leisure_screen_hours !== undefined) summary.push({ label: 'Leisure Screen Time', value: `${inputData.leisure_screen_hours} hrs/day` });
-        if (inputData.sleep_hours !== undefined) summary.push({ label: 'Sleep Duration', value: `${inputData.sleep_hours} hrs/night` });
-        if (inputData.sleep_quality_1_5 !== undefined) summary.push({ label: 'Sleep Quality', value: `${inputData.sleep_quality_1_5}/5` });
-        if (inputData.stress_level_0_10 !== undefined) summary.push({ label: 'Stress Level', value: `${inputData.stress_level_0_10}/10` });
-        if (inputData.productivity_0_100 !== undefined) summary.push({ label: 'Productivity', value: `${inputData.productivity_0_100}%` });
-        if (inputData.exercise_minutes_per_week !== undefined) summary.push({ label: 'Exercise', value: `${inputData.exercise_minutes_per_week} min/week` });
-        if (inputData.social_hours_per_week !== undefined) summary.push({ label: 'Social Time', value: `${inputData.social_hours_per_week} hrs/week` });
-    } else {
-        // Academic Impact
-        if (inputData.age) summary.push({ label: 'Age', value: `${inputData.age} years` });
-        if (inputData.gender) summary.push({ label: 'Gender', value: inputData.gender });
-        if (inputData.academic_level) summary.push({ label: 'Academic Level', value: inputData.academic_level });
-        if (inputData.country) summary.push({ label: 'Country', value: inputData.country });
-        if (inputData.most_used_platform) summary.push({ label: 'Main Platform', value: inputData.most_used_platform });
-        if (inputData.avg_daily_usage_hours !== undefined) summary.push({ label: 'Daily SM Usage', value: `${inputData.avg_daily_usage_hours} hrs/day` });
-        if (inputData.sleep_hours_per_night !== undefined) summary.push({ label: 'Sleep Duration', value: `${inputData.sleep_hours_per_night} hrs/night` });
-        if (inputData.mental_health_score !== undefined) summary.push({ label: 'Mental Health', value: `${inputData.mental_health_score}/10` });
-        if (inputData.conflicts_over_social_media !== undefined) summary.push({ label: 'SM Conflicts', value: `${inputData.conflicts_over_social_media}/5` });
-        if (inputData.affects_academic_performance) summary.push({ label: 'Affects Academics', value: inputData.affects_academic_performance });
-        if (inputData.relationship_status) summary.push({ label: 'Relationship', value: inputData.relationship_status });
-    }
-
-    return summary;
-}
+// Input data summary function removed - cleaner report without detailed input listing
 
 /**
  * Save PDF to file (for testing)
