@@ -259,6 +259,19 @@ const sendWeeklyEmailToUser = async (user) => {
     try {
         const weeklyData = await getWeeklyRecommendations(user);
         
+        // Get recent predictions for PDF
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        
+        const recentPredictions = await Prediction.find({
+            user: user._id,
+            createdAt: { $gte: thirtyDaysAgo }
+        }).sort({ createdAt: -1 }).limit(20);
+        
+        // Generate PDF report
+        const { generateWeeklyWellnessReportPDF } = require('./pdfGenerator');
+        const pdfBuffer = await generateWeeklyWellnessReportPDF(user, weeklyData, recentPredictions);
+        
         const html = getEmailTemplate('weeklyWellness', {
             firstName: user.firstName,
             summary: weeklyData.summary,
@@ -272,13 +285,23 @@ const sendWeeklyEmailToUser = async (user) => {
             })
         });
         
+        const dateStr = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+        const pdfFilename = `WellSync_Weekly_Report_${new Date().toISOString().split('T')[0]}.pdf`;
+        
         await sendEmail({
             to: user.email,
-            subject: `📊 Your Weekly Wellness Update - ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}`,
-            html
+            subject: `📊 Your Weekly Wellness Update - ${dateStr}`,
+            html,
+            attachments: [
+                {
+                    filename: pdfFilename,
+                    content: pdfBuffer,
+                    contentType: 'application/pdf'
+                }
+            ]
         });
         
-        logger.info(`Weekly email sent to ${user.email}`);
+        logger.info(`Weekly email with PDF sent to ${user.email}`);
         return { success: true, email: user.email };
         
     } catch (error) {

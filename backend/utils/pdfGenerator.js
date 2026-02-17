@@ -548,4 +548,521 @@ function getDetailedRecommendations(predictionData) {
     return recs;
 }
 
+/**
+ * Generate Weekly Wellness Report PDF
+ * Includes: Prediction history, trends, recommendations, and summary
+ */
+exports.generateWeeklyWellnessReportPDF = async (user, weeklyData, predictions) => {
+    return new Promise((resolve, reject) => {
+        try {
+            const doc = new PDFDocument({
+                size: 'A4',
+                margins: { top: 50, bottom: 50, left: 50, right: 50 }
+            });
+
+            const chunks = [];
+            doc.on('data', chunk => chunks.push(chunk));
+            doc.on('end', () => resolve(Buffer.concat(chunks)));
+            doc.on('error', reject);
+
+            const reportDate = new Date();
+            const dateString = reportDate.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            // Calculate week range
+            const weekStart = new Date(reportDate);
+            weekStart.setDate(weekStart.getDate() - 7);
+            const weekRange = `${weekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${reportDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+
+            // ============= PAGE 1: HEADER & SUMMARY =============
+            
+            // Header with gradient
+            doc.rect(0, 0, 595, 120).fill('#667eea');
+            
+            doc.fontSize(36)
+               .font('Helvetica-Bold')
+               .fillColor('#ffffff')
+               .text('WellSync', 50, 35);
+            
+            doc.fontSize(14)
+               .font('Helvetica')
+               .fillColor('#ffffff')
+               .text('Weekly Wellness Report', 50, 80);
+
+            // Date badge
+            doc.roundedRect(380, 35, 165, 30, 5)
+               .fill('#ffffff');
+            
+            doc.fontSize(10)
+               .font('Helvetica-Bold')
+               .fillColor('#667eea')
+               .text(weekRange, 380, 45, { width: 165, align: 'center' });
+
+            // User Information
+            let y = 150;
+            doc.fontSize(12)
+               .font('Helvetica-Bold')
+               .fillColor('#333333')
+               .text('REPORT DETAILS', 50, y);
+            
+            doc.moveTo(50, y + 18).lineTo(545, y + 18).stroke('#e0e0e0');
+            
+            y += 30;
+            doc.fontSize(10)
+               .font('Helvetica-Bold')
+               .fillColor('#666666')
+               .text('Name:', 50, y)
+               .font('Helvetica')
+               .text(`${user.firstName} ${user.lastName}`, 150, y);
+            
+            y += 20;
+            doc.font('Helvetica-Bold')
+               .text('Email:', 50, y)
+               .font('Helvetica')
+               .text(user.email, 150, y);
+            
+            y += 20;
+            doc.font('Helvetica-Bold')
+               .text('Report Period:', 50, y)
+               .font('Helvetica')
+               .text(weekRange, 150, y);
+            
+            y += 20;
+            doc.font('Helvetica-Bold')
+               .text('Generated:', 50, y)
+               .font('Helvetica')
+               .text(dateString, 150, y);
+
+            // Weekly Summary
+            y += 50;
+            doc.fontSize(14)
+               .font('Helvetica-Bold')
+               .fillColor('#333333')
+               .text('WEEKLY SUMMARY', 50, y);
+            
+            doc.moveTo(50, y + 20).lineTo(545, y + 20).stroke('#e0e0e0');
+            
+            y += 35;
+            
+            doc.roundedRect(50, y, 495, 80, 10)
+               .fill('#f8f9fa');
+            
+            doc.fontSize(11)
+               .font('Helvetica')
+               .fillColor('#333333')
+               .text(weeklyData.summary || 'Your weekly wellness summary.', 70, y + 20, {
+                   width: 455,
+                   align: 'left',
+                   lineGap: 3
+               });
+
+            // Stats Cards
+            y += 100;
+            
+            if (weeklyData.hasData && weeklyData.stats) {
+                doc.fontSize(14)
+                   .font('Helvetica-Bold')
+                   .fillColor('#333333')
+                   .text('YOUR WEEKLY METRICS', 50, y);
+                
+                doc.moveTo(50, y + 20).lineTo(545, y + 20).stroke('#e0e0e0');
+                
+                y += 40;
+                
+                const stats = weeklyData.stats;
+                const cardWidth = 155;
+                const cardHeight = 100;
+                const cardSpacing = 15;
+                
+                let cardX = 50;
+                let cardIndex = 0;
+                
+                // Mental Wellness Card
+                if (stats.mentalWellness !== null && stats.mentalWellness !== undefined) {
+                    const color = stats.mentalWellness >= 75 ? '#28a745' : stats.mentalWellness >= 60 ? '#17a2b8' : '#ffc107';
+                    
+                    doc.roundedRect(cardX, y, cardWidth, cardHeight, 8)
+                       .fill(color);
+                    
+                    doc.fontSize(10)
+                       .font('Helvetica-Bold')
+                       .fillColor('#ffffff')
+                       .text('Mental Wellness', cardX + 10, y + 15, { width: cardWidth - 20, align: 'center' });
+                    
+                    doc.fontSize(36)
+                       .font('Helvetica-Bold')
+                       .fillColor('#ffffff')
+                       .text(stats.mentalWellness.toFixed(1), cardX + 10, y + 35, { width: cardWidth - 20, align: 'center' });
+                    
+                    doc.fontSize(10)
+                       .font('Helvetica')
+                       .fillColor('#ffffff')
+                       .text('/ 100', cardX + 10, y + 75, { width: cardWidth - 20, align: 'center' });
+                    
+                    cardX += cardWidth + cardSpacing;
+                    cardIndex++;
+                }
+                
+                // Stress Level Card
+                if (stats.stress !== null && stats.stress !== undefined) {
+                    const color = stats.stress >= 7 ? '#dc3545' : stats.stress >= 4 ? '#ffc107' : '#28a745';
+                    
+                    doc.roundedRect(cardX, y, cardWidth, cardHeight, 8)
+                       .fill(color);
+                    
+                    doc.fontSize(10)
+                       .font('Helvetica-Bold')
+                       .fillColor('#ffffff')
+                       .text('Stress Level', cardX + 10, y + 15, { width: cardWidth - 20, align: 'center' });
+                    
+                    doc.fontSize(36)
+                       .font('Helvetica-Bold')
+                       .fillColor('#ffffff')
+                       .text(stats.stress.toFixed(1), cardX + 10, y + 35, { width: cardWidth - 20, align: 'center' });
+                    
+                    doc.fontSize(10)
+                       .font('Helvetica')
+                       .fillColor('#ffffff')
+                       .text('/ 10', cardX + 10, y + 75, { width: cardWidth - 20, align: 'center' });
+                    
+                    cardX += cardWidth + cardSpacing;
+                    cardIndex++;
+                }
+                
+                // Academic Impact Card
+                if (stats.academic !== null && stats.academic !== undefined) {
+                    const color = stats.academic >= 6 ? '#dc3545' : stats.academic >= 4 ? '#ffc107' : '#28a745';
+                    
+                    doc.roundedRect(cardX, y, cardWidth, cardHeight, 8)
+                       .fill(color);
+                    
+                    doc.fontSize(10)
+                       .font('Helvetica-Bold')
+                       .fillColor('#ffffff')
+                       .text('Digital Wellness', cardX + 10, y + 15, { width: cardWidth - 20, align: 'center' });
+                    
+                    doc.fontSize(36)
+                       .font('Helvetica-Bold')
+                       .fillColor('#ffffff')
+                       .text(stats.academic.toFixed(1), cardX + 10, y + 35, { width: cardWidth - 20, align: 'center' });
+                    
+                    doc.fontSize(10)
+                       .font('Helvetica')
+                       .fillColor('#ffffff')
+                       .text('/ 9', cardX + 10, y + 75, { width: cardWidth - 20, align: 'center' });
+                }
+                
+                y += cardHeight + 20;
+                
+                // Total predictions badge
+                doc.fontSize(9)
+                   .font('Helvetica')
+                   .fillColor('#666666')
+                   .text(`Based on ${stats.totalPredictions} prediction${stats.totalPredictions !== 1 ? 's' : ''} this period`, 50, y, {
+                       width: 495,
+                       align: 'center'
+                   });
+            }
+
+            // ============= PAGE 2: PREDICTION HISTORY =============
+            
+            doc.addPage();
+            y = 50;
+            
+            doc.fontSize(18)
+               .font('Helvetica-Bold')
+               .fillColor('#667eea')
+               .text('PREDICTION HISTORY', 50, y);
+            
+            doc.moveTo(50, y + 25).lineTo(545, y + 25).stroke('#667eea');
+            
+            y += 40;
+            
+            if (predictions && predictions.length > 0) {
+                // Sort predictions by date (most recent first)
+                const sortedPredictions = predictions.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                
+                sortedPredictions.forEach((pred, index) => {
+                    // Check if we need a new page
+                    if (y > 700) {
+                        doc.addPage();
+                        y = 50;
+                    }
+                    
+                    const predType = pred.predictionType === 'mental_wellness' ? 'Mental Wellness' 
+                        : pred.predictionType === 'stress_level' ? 'Stress Level' 
+                        : 'Academic Impact';
+                    
+                    const predDate = new Date(pred.createdAt).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    
+                    const score = pred.result.prediction;
+                    const maxScore = pred.predictionType === 'mental_wellness' ? 100 
+                        : pred.predictionType === 'stress_level' ? 10 
+                        : 9;
+                    
+                    // Prediction card
+                    doc.roundedRect(50, y, 495, 90, 8)
+                       .stroke('#e0e0e0');
+                    
+                    // Type badge
+                    const badgeColor = pred.predictionType === 'mental_wellness' ? '#17a2b8'
+                        : pred.predictionType === 'stress_level' ? '#fd7e14'
+                        : '#6f42c1';
+                    
+                    doc.roundedRect(60, y + 10, 120, 20, 5)
+                       .fill(badgeColor);
+                    
+                    doc.fontSize(9)
+                       .font('Helvetica-Bold')
+                       .fillColor('#ffffff')
+                       .text(predType, 60, y + 15, { width: 120, align: 'center' });
+                    
+                    // Date
+                    doc.fontSize(8)
+                       .font('Helvetica')
+                       .fillColor('#999999')
+                       .text(predDate, 60, y + 37);
+                    
+                    // Score
+                    doc.fontSize(32)
+                       .font('Helvetica-Bold')
+                       .fillColor(getScoreColor(score, pred.predictionType))
+                       .text(score.toFixed(1), 220, y + 25);
+                    
+                    doc.fontSize(16)
+                       .font('Helvetica')
+                       .fillColor('#999999')
+                       .text(`/ ${maxScore}`, 290, y + 37);
+                    
+                    // Interpretation
+                    doc.fontSize(10)
+                       .font('Helvetica')
+                       .fillColor('#333333')
+                       .text(pred.result.interpretation || 'Analysis complete', 350, y + 30, {
+                           width: 180,
+                           align: 'left'
+                       });
+                    
+                    // Progress bar
+                    const barY = y + 65;
+                    const barWidth = 470;
+                    const fillWidth = (barWidth * score / maxScore);
+                    
+                    doc.rect(60, barY, barWidth, 8)
+                       .fill('#e0e0e0');
+                    
+                    doc.rect(60, barY, fillWidth, 8)
+                       .fill(getScoreColor(score, pred.predictionType));
+                    
+                    y += 100;
+                });
+            } else {
+                doc.fontSize(11)
+                   .font('Helvetica')
+                   .fillColor('#666666')
+                   .text('No predictions recorded during this period.', 50, y, {
+                       width: 495,
+                       align: 'center'
+                   });
+            }
+
+            // ============= PAGE 3: RECOMMENDATIONS =============
+            
+            doc.addPage();
+            y = 50;
+            
+            doc.fontSize(18)
+               .font('Helvetica-Bold')
+               .fillColor('#667eea')
+               .text('PERSONALIZED RECOMMENDATIONS', 50, y);
+            
+            doc.moveTo(50, y + 25).lineTo(545, y + 25).stroke('#667eea');
+            
+            y += 40;
+            
+            if (weeklyData.recommendations && weeklyData.recommendations.length > 0) {
+                weeklyData.recommendations.forEach((rec, index) => {
+                    // Check if we need a new page
+                    if (y > 680) {
+                        doc.addPage();
+                        y = 50;
+                    }
+                    
+                    const priority = rec.priority || 'Medium';
+                    const category = rec.category || 'Wellness';
+                    const tip = rec.tip || rec;
+                    
+                    // Priority color
+                    const priorityColor = priority === 'High' ? '#dc3545' 
+                        : priority === 'Medium' ? '#ffc107' 
+                        : '#28a745';
+                    
+                    doc.roundedRect(50, y, 495, 90, 8)
+                       .stroke('#e0e0e0');
+                    
+                    // Priority badge
+                    doc.roundedRect(60, y + 10, 80, 18, 5)
+                       .fill(priorityColor);
+                    
+                    doc.fontSize(8)
+                       .font('Helvetica-Bold')
+                       .fillColor('#ffffff')
+                       .text(priority.toUpperCase(), 60, y + 14, { width: 80, align: 'center' });
+                    
+                    // Category
+                    doc.fontSize(11)
+                       .font('Helvetica-Bold')
+                       .fillColor('#667eea')
+                       .text(category, 150, y + 12);
+                    
+                    // Recommendation text
+                    doc.fontSize(10)
+                       .font('Helvetica')
+                       .fillColor('#333333')
+                       .text(tip, 60, y + 40, {
+                           width: 470,
+                           align: 'left',
+                           lineGap: 2
+                       });
+                    
+                    y += 100;
+                });
+            } else {
+                doc.fontSize(11)
+                   .font('Helvetica')
+                   .fillColor('#666666')
+                   .text('Continue maintaining your healthy wellness habits!', 50, y, {
+                       width: 495,
+                       align: 'center'
+                   });
+            }
+
+            // ============= PAGE 4: WELLNESS TIPS & FOOTER =============
+            
+            doc.addPage();
+            y = 50;
+            
+            doc.fontSize(18)
+               .font('Helvetica-Bold')
+               .fillColor('#667eea')
+               .text('QUICK WELLNESS TIPS', 50, y);
+            
+            doc.moveTo(50, y + 25).lineTo(545, y + 25).stroke('#667eea');
+            
+            y += 40;
+            
+            const wellnessTips = [
+                'Set Achievable Goals: Break large wellness goals into smaller, manageable daily or weekly targets.',
+                'Track Your Progress: Use the WellSync app regularly to monitor your wellness journey and identify patterns.',
+                'Be Consistent: Small daily habits compound into major improvements over time - consistency beats intensity.',
+                'Prioritize Sleep: Quality sleep (7-9 hours) is the foundation of mental and physical health.',
+                'Move More: Even 10 minutes of daily physical activity can significantly improve mood and energy.',
+                'Practice Mindfulness: Take 5 minutes daily for deep breathing, meditation, or simply being present.',
+                'Stay Connected: Regular social interaction is crucial for mental wellbeing and stress management.',
+                'Set Boundaries: Learn to say no to commitments that drain your energy or compromise your wellness.',
+                'Stay Hydrated: Drink 8 glasses of water daily - dehydration affects mood, energy, and cognition.',
+                'Celebrate Progress: Acknowledge and celebrate small victories on your wellness journey.'
+            ];
+            
+            wellnessTips.forEach((tip, index) => {
+                if (y > 700) {
+                    doc.addPage();
+                    y = 50;
+                }
+                
+                // Add bullet point
+                doc.fontSize(12)
+                   .font('Helvetica-Bold')
+                   .fillColor('#667eea')
+                   .text('•', 55, y);
+                
+                doc.fontSize(10)
+                   .font('Helvetica')
+                   .fillColor('#333333')
+                   .text(tip, 70, y, {
+                       width: 460,
+                       align: 'left',
+                       lineGap: 2
+                   });
+                
+                y += 35;
+            });
+
+            // Motivation quote
+            y += 20;
+            if (y > 650) {
+                doc.addPage();
+                y = 50;
+            }
+            
+            doc.roundedRect(50, y, 495, 80, 10)
+               .fill('#e8f4f8');
+            
+            doc.fontSize(14)
+               .font('Helvetica-BoldOblique')
+               .fillColor('#667eea')
+               .text('"Your wellness journey is unique. Progress, not perfection."', 70, y + 25, {
+                   width: 455,
+                   align: 'center',
+                   lineGap: 3
+               });
+
+            // Disclaimer
+            y += 100;
+            
+            doc.fontSize(11)
+               .font('Helvetica-Bold')
+               .fillColor('#666666')
+               .text('IMPORTANT DISCLAIMER', 50, y);
+            
+            y += 20;
+            
+            doc.fontSize(9)
+               .font('Helvetica')
+               .fillColor('#666666')
+               .text(
+                   'This weekly wellness report is generated by AI algorithms and is intended for informational and motivational purposes only. ' +
+                   'It should not be used as a substitute for professional medical advice, diagnosis, or treatment. ' +
+                   'If you are experiencing severe stress, anxiety, depression, or other mental health concerns, ' +
+                   'please consult with a qualified healthcare professional immediately. ' +
+                   'The recommendations provided are general wellness suggestions and may not be suitable for all individuals.',
+                   50, y, {
+                       width: 495,
+                       align: 'justify',
+                       lineGap: 2
+                   }
+               );
+
+            // Footer
+            doc.fontSize(8)
+               .font('Helvetica')
+               .fillColor('#999999')
+               .text(
+                   'WellSync Weekly Wellness Report | Confidential',
+                   50, 780,
+                   { width: 495, align: 'center' }
+               );
+            
+            doc.text(
+                `Generated on ${dateString} | wellsync.lk@gmail.com | © 2026 WellSync`,
+                50, 795,
+                { width: 495, align: 'center' }
+            );
+
+            doc.end();
+
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
 module.exports = exports;
