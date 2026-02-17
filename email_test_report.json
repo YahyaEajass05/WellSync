@@ -1,0 +1,120 @@
+{
+  "timestamp": "2026-02-04T19:12:48.557Z",
+  "totalTemplates": 8,
+  "generated": 8,
+  "failed": 0,
+  "withSVG": 8,
+  "withoutSVG": 0,
+  "results": {
+    "generated": [
+      {
+        "name": "Welcome Email",
+        "subject": "Welcome to WellSync!",
+        "checks": {
+          "svg": true,
+          "gradient": true,
+          "branding": true,
+          "html": true,
+          "responsive": true
+        },
+        "filename": "email_preview_1_Welcome_Email.html"
+      },
+      {
+        "name": "Email Verification",
+        "subject": "Verify Your Email - WellSync",
+        "checks": {
+          "svg": true,
+          "gradient": true,
+          "branding": true,
+          "html": true,
+          "responsive": true
+        },
+        "filename": "email_preview_2_Email_Verification.html"
+      },
+      {
+        "name": "Password Reset",
+        "subject": "Reset Your Password - WellSync",
+        "checks": {
+          "svg": true,
+          "gradient": true,
+          "branding": true,
+          "html": true,
+          "responsive": true
+        },
+        "filename": "email_preview_3_Password_Reset.html"
+      },
+      {
+        "name": "Mental Wellness Report",
+        "subject": "Your Mental Wellness Report - WellSync",
+        "checks": {
+          "svg": true,
+          "gradient": true,
+          "branding": true,
+          "html": true,
+          "responsive": true
+        },
+        "filename": "email_preview_4_Mental_Wellness_Report.html"
+      },
+      {
+        "name": "Stress Level Report",
+        "subject": "Your Stress Level Report - WellSync",
+        "checks": {
+          "svg": true,
+          "gradient": true,
+          "branding": true,
+          "html": true,
+          "responsive": true
+        },
+        "filename": "email_preview_5_Stress_Level_Report.html"
+      },
+      {
+        "name": "Academic Impact Report",
+        "subject": "Your Academic Impact Report - WellSync",
+        "checks": {
+          "svg": true,
+          "gradient": true,
+          "branding": true,
+          "html": true,
+          "responsive": true
+        },
+        "filename": "email_preview_6_Academic_Impact_Report.html"
+      },
+      {
+        "name": "Weekly Wellness Update",
+        "subject": "Your Weekly Wellness Update - WellSync",
+        "checks": {
+          "svg": true,
+          "gradient": true,
+          "branding": true,
+          "html": true,
+          "responsive": true
+        },
+        "filename": "email_preview_7_Weekly_Wellness_Update.html"
+      },
+      {
+        "name": "Account Activation",
+        "subject": "Account Activated - WellSync",
+        "checks": {
+          "svg": true,
+          "gradient": true,
+          "branding": true,
+          "html": true,
+          "responsive": true
+        },
+        "filename": "email_preview_8_Account_Activation.html"
+      }
+    ],
+    "failed": [],
+    "svgCheck": [
+      "Welcome Email",
+      "Email Verification",
+      "Password Reset",
+      "Mental Wellness Report",
+      "Stress Level Report",
+      "Academic Impact Report",
+      "Weekly Wellness Update",
+      "Account Activation"
+    ],
+    "noSVG": []
+  }
+}
