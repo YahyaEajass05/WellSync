@@ -1,116 +1,149 @@
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Email Template Preview Index</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WellSync Email Templates - Preview</title>
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1B4965 0%, #17A2B8 100%);
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+        .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 40px 20px;
-            background: #f0f2f5;
         }
         h1 {
-            color: #667eea;
+            color: white;
             text-align: center;
             margin-bottom: 40px;
+            font-size: 42px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .subtitle {
+            color: rgba(255,255,255,0.9);
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 18px;
         }
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
+            gap: 30px;
         }
         .card {
             background: white;
-            padding: 25px;
             border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
         .card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
         }
-        .card h3 {
-            color: #333;
+        .card h2 {
+            color: #1B4965;
             margin-bottom: 15px;
+            font-size: 24px;
         }
-        .card a {
+        .card p {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .btn {
             display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #17A2B8 0%, #1B4965 100%);
             color: white;
-            padding: 10px 20px;
-            border-radius: 20px;
             text-decoration: none;
-            transition: opacity 0.3s ease;
-        }
-        .card a:hover {
-            opacity: 0.9;
-        }
-        .badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 12px;
+            border-radius: 8px;
             font-weight: 600;
-            margin-top: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(23, 162, 184, 0.3);
         }
-        .badge-wellness { background: #4ade80; color: white; }
-        .badge-stress { background: #fbbf24; color: #333; }
-        .badge-academic { background: #60a5fa; color: white; }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(23, 162, 184, 0.4);
+        }
+        .emoji {
+            font-size: 40px;
+            margin-bottom: 15px;
+            display: block;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
-    <h1>📧 WellSync Email Template Previews</h1>
-    <p style="text-align: center; color: #666; margin-bottom: 40px;">
-        Click on any card below to preview the email template
-    </p>
-    <div class="grid">
+    <div class="container">
+        <h1>📧 WellSync Email Templates</h1>
+        <p class="subtitle">Professional Email Templates with WellSync Branding - Updated February 2026</p>
         
-                <div class="card">
-                    <h3>Mental Wellness - High Score</h3>
-                    <span class="badge badge-wellness">Mental Wellness</span>
-                    <p style="color: #666; margin-top: 10px;">Score: 85.50</p>
-                    <a href="1_Mental_Wellness_-_High_Score.html" target="_blank">View Template →</a>
-                </div>
+        <div class="grid">
+            <div class="card">
+                <span class="emoji">👋</span>
+                <h2>Welcome Email</h2>
+                <p>Sent when a new user registers with verification code.</p>
+                <a href="1_Welcome_Email.html" class="btn" target="_blank">Preview Template →</a>
+            </div>
             
-                <div class="card">
-                    <h3>Stress Level - Low Stress</h3>
-                    <span class="badge badge-stress">Stress Level</span>
-                    <p style="color: #666; margin-top: 10px;">Score: 2.50</p>
-                    <a href="2_Stress_Level_-_Low_Stress.html" target="_blank">View Template →</a>
-                </div>
+            <div class="card">
+                <span class="emoji">✉️</span>
+                <h2>Email Verification</h2>
+                <p>Sent to verify user's email address with secure code.</p>
+                <a href="2_Email_Verification.html" class="btn" target="_blank">Preview Template →</a>
+            </div>
             
-                <div class="card">
-                    <h3>Stress Level - Moderate Stress</h3>
-                    <span class="badge badge-stress">Stress Level</span>
-                    <p style="color: #666; margin-top: 10px;">Score: 5.20</p>
-                    <a href="3_Stress_Level_-_Moderate_Stress.html" target="_blank">View Template →</a>
-                </div>
+            <div class="card">
+                <span class="emoji">🔒</span>
+                <h2>Password Reset</h2>
+                <p>Sent when user requests to reset their password.</p>
+                <a href="3_Password_Reset.html" class="btn" target="_blank">Preview Template →</a>
+            </div>
             
-                <div class="card">
-                    <h3>Stress Level - High Stress</h3>
-                    <span class="badge badge-stress">Stress Level</span>
-                    <p style="color: #666; margin-top: 10px;">Score: 7.80</p>
-                    <a href="4_Stress_Level_-_High_Stress.html" target="_blank">View Template →</a>
-                </div>
+            <div class="card">
+                <span class="emoji">💚</span>
+                <h2>Mental Wellness Report</h2>
+                <p>AI-powered mental wellness prediction with insights.</p>
+                <a href="4_Mental_Wellness_Report.html" class="btn" target="_blank">Preview Template →</a>
+            </div>
             
-                <div class="card">
-                    <h3>Stress Level - Very High Stress</h3>
-                    <span class="badge badge-stress">Stress Level</span>
-                    <p style="color: #666; margin-top: 10px;">Score: 9.10</p>
-                    <a href="5_Stress_Level_-_Very_High_Stress.html" target="_blank">View Template →</a>
-                </div>
+            <div class="card">
+                <span class="emoji">😰</span>
+                <h2>Stress Level Report</h2>
+                <p>Stress level analysis with personalized recommendations.</p>
+                <a href="5_Stress_Level_Report.html" class="btn" target="_blank">Preview Template →</a>
+            </div>
             
-                <div class="card">
-                    <h3>Academic Impact - High Risk</h3>
-                    <span class="badge badge-academic">Academic Impact</span>
-                    <p style="color: #666; margin-top: 10px;">Score: 7.50</p>
-                    <a href="6_Academic_Impact_-_High_Risk.html" target="_blank">View Template →</a>
-                </div>
+            <div class="card">
+                <span class="emoji">📅</span>
+                <h2>Weekly Wellness Update</h2>
+                <p>Automated weekly summary with statistics and tips.</p>
+                <a href="6_Weekly_Wellness_Update.html" class="btn" target="_blank">Preview Template →</a>
+            </div>
             
+            <div class="card">
+                <span class="emoji">🎉</span>
+                <h2>Account Activation</h2>
+                <p>Confirmation email when account is successfully activated.</p>
+                <a href="7_Account_Activation.html" class="btn" target="_blank">Preview Template →</a>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p><strong>WellSync</strong> - Your AI-Powered Wellness Companion</p>
+            <p>© 2026 WellSync. All rights reserved.</p>
+        </div>
     </div>
 </body>
 </html>

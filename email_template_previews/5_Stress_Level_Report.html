@@ -1,0 +1,511 @@
+
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                
+        <style>
+            /* Reset & Base Styles */
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body { 
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; 
+                line-height: 1.7; 
+                color: #374151; 
+                background: #f4f7f9;
+            }
+            
+            /* Main Container */
+            .container { 
+                max-width: 600px; 
+                margin: 20px auto; 
+                background: #ffffff;
+                border-radius: 16px;
+                overflow: hidden;
+                box-shadow: 0 10px 40px rgba(27, 73, 101, 0.12);
+            }
+            
+            /* Professional Header with WellSync Branding */
+            .header { 
+                background: linear-gradient(135deg, #1B4965 0%, #17A2B8 100%); 
+                color: white; 
+                padding: 50px 40px 40px 40px; 
+                text-align: center; 
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .header::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: linear-gradient(45deg, transparent, rgba(255,255,255,0.08), transparent);
+                animation: shine 4s infinite;
+            }
+            
+            @keyframes shine {
+                0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+                100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+            }
+            
+            .header h1 { 
+                font-size: 34px; 
+                font-weight: 700; 
+                margin: 20px 0 0 0;
+                position: relative;
+                z-index: 1;
+                text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            }
+            
+            .header p.subtitle {
+                margin: 12px 0 0 0;
+                font-size: 16px;
+                opacity: 0.95;
+                position: relative;
+                z-index: 1;
+            }
+            
+            /* Animated Icon */
+            .icon-wrapper {
+                font-size: 64px;
+                margin-bottom: 20px;
+                animation: bounce 2s infinite;
+            }
+            
+            @keyframes bounce {
+                0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+                40% { transform: translateY(-15px); }
+                60% { transform: translateY(-8px); }
+            }
+            
+            /* Content Area */
+            .content { 
+                background: #ffffff; 
+                padding: 45px 40px;
+            }
+            
+            .content h2 { 
+                color: #1B4965; 
+                margin-bottom: 20px;
+                font-size: 26px;
+                font-weight: 600;
+            }
+            
+            .content p { 
+                margin-bottom: 16px; 
+                color: #4a5568;
+                font-size: 16px;
+                line-height: 1.8;
+            }
+            
+            .content ul {
+                list-style: none;
+                padding: 0;
+                margin: 24px 0;
+            }
+            
+            .content ul li {
+                padding: 14px 0;
+                padding-left: 35px;
+                position: relative;
+                color: #4a5568;
+                font-size: 15px;
+            }
+            
+            .content ul li::before {
+                content: '✓';
+                position: absolute;
+                left: 0;
+                color: #17A2B8;
+                font-weight: bold;
+                font-size: 22px;
+                top: 12px;
+            }
+            
+            /* Professional CTA Button */
+            .button { 
+                display: inline-block; 
+                padding: 16px 42px; 
+                background: linear-gradient(135deg, #17A2B8 0%, #1B4965 100%);
+                color: white !important; 
+                text-decoration: none; 
+                border-radius: 8px; 
+                margin: 25px 0;
+                font-weight: 600;
+                font-size: 16px;
+                box-shadow: 0 4px 16px rgba(23, 162, 184, 0.3);
+                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .button::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: rgba(255,255,255,0.15);
+                transition: left 0.5s ease;
+            }
+            
+            .button:hover::before {
+                left: 100%;
+            }
+            
+            .button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 24px rgba(23, 162, 184, 0.4);
+            }
+            
+            /* Highlight Box */
+            .highlight { 
+                background: linear-gradient(135deg, #e3f2fd 0%, #e0f2f1 100%);
+                padding: 32px; 
+                border-radius: 12px;
+                margin: 30px 0;
+                border-left: 4px solid #17A2B8;
+                box-shadow: 0 2px 12px rgba(23, 162, 184, 0.1);
+            }
+            
+            /* Verification Code Display */
+            .code-box {
+                background: linear-gradient(135deg, #17A2B8 0%, #1B4965 100%);
+                padding: 35px;
+                border-radius: 12px;
+                text-align: center;
+                margin: 28px 0;
+                box-shadow: 0 8px 24px rgba(23, 162, 184, 0.25);
+                position: relative;
+            }
+            
+            .code-box::before {
+                content: '';
+                position: absolute;
+                top: -2px;
+                left: -2px;
+                right: -2px;
+                bottom: -2px;
+                background: linear-gradient(135deg, #17A2B8, #1B4965);
+                border-radius: 12px;
+                z-index: -1;
+                opacity: 0.5;
+                filter: blur(10px);
+            }
+            
+            .verification-code {
+                font-size: 52px;
+                font-weight: 800;
+                letter-spacing: 18px;
+                color: #ffffff;
+                text-shadow: 0 3px 12px rgba(0,0,0,0.25);
+                font-family: 'Courier New', 'Consolas', monospace;
+                margin: 8px 0;
+            }
+            
+            .code-label {
+                color: rgba(255,255,255,0.95);
+                font-size: 13px;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                margin-top: 12px;
+                font-weight: 500;
+            }
+            
+            /* Info Cards */
+            .info-card {
+                background: #f8fafc;
+                padding: 24px;
+                border-radius: 10px;
+                margin: 18px 0;
+                border-left: 5px solid #17A2B8;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            }
+            
+            .info-card h3 {
+                color: #1B4965;
+                margin-bottom: 12px;
+                font-size: 20px;
+                font-weight: 600;
+            }
+            
+            .info-card p {
+                margin: 8px 0;
+                color: #4a5568;
+                line-height: 1.7;
+            }
+            
+            /* Score Display */
+            .score-display {
+                text-align: center;
+                padding: 40px 30px;
+                background: linear-gradient(135deg, #17A2B8 0%, #1B4965 100%);
+                border-radius: 12px;
+                margin: 28px 0;
+                color: white;
+                box-shadow: 0 8px 24px rgba(23, 162, 184, 0.25);
+            }
+            
+            .score-number {
+                font-size: 72px;
+                font-weight: 800;
+                text-shadow: 0 3px 12px rgba(0,0,0,0.2);
+                margin: 12px 0;
+            }
+            
+            /* Footer */
+            .footer { 
+                text-align: center; 
+                padding: 35px 30px;
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                color: #6c757d; 
+                font-size: 13px;
+                border-top: 3px solid #17A2B8;
+            }
+            
+            .footer p { 
+                margin: 8px 0; 
+                line-height: 1.6;
+            }
+            
+            .footer strong {
+                color: #1B4965;
+            }
+            
+            .footer a {
+                color: #17A2B8;
+                text-decoration: none;
+            }
+            
+            .footer a:hover {
+                text-decoration: underline;
+            }
+            
+            /* Alert/Warning Box */
+            .alert-box {
+                background: #fff3cd;
+                border-left: 5px solid #F59E0B;
+                padding: 18px 20px;
+                margin: 22px 0;
+                border-radius: 8px;
+            }
+            
+            .alert-box p {
+                margin: 0;
+                color: #856404;
+            }
+            
+            /* Success Badge */
+            .badge {
+                display: inline-block;
+                padding: 10px 20px;
+                background: #10B981;
+                color: white;
+                border-radius: 25px;
+                font-size: 13px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 1.5px;
+                box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            }
+            
+            /* Progress Bar */
+            .progress-bar {
+                width: 100%;
+                height: 10px;
+                background: rgba(255,255,255,0.3);
+                border-radius: 10px;
+                overflow: hidden;
+                margin: 20px 0;
+            }
+            
+            .progress-fill {
+                height: 100%;
+                background: rgba(255,255,255,0.9);
+                border-radius: 10px;
+                transition: width 1.5s ease-out;
+            }
+            
+            /* Divider */
+            .divider {
+                height: 2px;
+                background: linear-gradient(90deg, transparent, #17A2B8, transparent);
+                margin: 30px 0;
+                opacity: 0.3;
+            }
+            
+            /* Responsive Design */
+            @media only screen and (max-width: 600px) {
+                .container { 
+                    border-radius: 0; 
+                    margin: 0;
+                }
+                .header { 
+                    padding: 35px 25px 30px 25px; 
+                }
+                .header h1 { 
+                    font-size: 28px; 
+                }
+                .content { 
+                    padding: 35px 25px; 
+                }
+                .verification-code { 
+                    font-size: 40px; 
+                    letter-spacing: 12px; 
+                }
+                .score-number { 
+                    font-size: 56px; 
+                }
+                .button {
+                    display: block;
+                    text-align: center;
+                }
+            }
+        </style>
+    
+                <style>
+                    /* Prediction Type Specific Styles */
+                    .stress-low { background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%); }
+                    .stress-moderate { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); }
+                    .stress-high { background: linear-gradient(135deg, #fb923c 0%, #f97316 100%); }
+                    .stress-very-high { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+                    
+                    .wellness-excellent { background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%); }
+                    .wellness-good { background: linear-gradient(135deg, #17A2B8 0%, #1B4965 100%); }
+                    .wellness-fair { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); }
+                    .wellness-poor { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+                    
+                    .academic-low { background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%); }
+                    .academic-moderate { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); }
+                    .academic-high { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+                    
+                    /* Recommendation List Styles */
+                    .recommendation-item {
+                        background: #f8fafc;
+                        padding: 16px 20px;
+                        margin: 12px 0;
+                        border-radius: 8px;
+                        border-left: 4px solid #17A2B8;
+                    }
+                </style>
+            </head>
+            <body style="margin: 0; padding: 20px; background: #f4f7f9;">
+                <div class="container">
+                    <div class="header">
+                        
+        <svg width="120" height="80" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" style="margin: 0 auto; display: block;">
+            <defs>
+                <linearGradient id="wellsyncGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#1B4965;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#17A2B8;stop-opacity:1" />
+                </linearGradient>
+            </defs>
+            <!-- WellSync Text Logo -->
+            <text x="20" y="120" font-family="Arial, sans-serif" font-size="70" font-weight="bold" fill="#1B4965">Well</text>
+            <text x="210" y="120" font-family="Arial, sans-serif" font-size="70" font-weight="bold" fill="#17A2B8">Sync</text>
+            <!-- Decorative Wave -->
+            <path d="M 180 140 Q 200 130, 220 140 T 260 140" stroke="#17A2B8" stroke-width="8" fill="none" stroke-linecap="round"/>
+            <!-- Small wellness icon above S -->
+            <circle cx="215" cy="50" r="25" fill="none" stroke="#17A2B8" stroke-width="3"/>
+            <path d="M 205 50 L 212 57 L 225 44" fill="none" stroke="#10B981" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    
+                        <h1>📊 Your Stress Level Report</h1>
+                        <p class="subtitle">AI-Powered Insights Ready</p>
+                    </div>
+                    <div class="content">
+                        <h2>Hello David! 📈</h2>
+                        <p>Great news! Your latest stress level analysis is complete. Here are your personalized AI-powered insights:</p>
+                        
+                        <div class="score-display stress-high">
+                            <p style="margin: 0; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; opacity: 0.9;">
+                                Your Stress Level
+                            </p>
+                            <div class="score-number">7.2</div>
+                            <div class="progress-bar" style="width: 80%; margin: 20px auto;">
+                                <div class="progress-fill" style="width: 72%;"></div>
+                            </div>
+                            <p style="margin: 10px 0 0 0; font-size: 18px; font-weight: 600; opacity: 0.95;">High Stress - Consider stress management techniques</p>
+                        </div>
+                        
+                        
+                        <div class="info-card" style="border-left: 4px solid #fb923c;">
+                            <h3> Stress Level Breakdown</h3>
+                            <p><strong>Current Level:</strong> High (6-7.9) - Take Action Soon</p>
+                            <p><strong>Risk Assessment:</strong> Your stress is elevated and may impact your well-being.</p>
+                        </div>
+                        
+                        
+                        <div class="info-card">
+                            <h3> Analysis Details</h3>
+                            <p><strong>Model Used:</strong> Random Forest Classifier</p>
+                            <p><strong>Analysis Date:</strong> Tuesday, February 17, 2026</p>
+                            <p><strong>Prediction Type:</strong> Stress Level</p>
+                            <p><strong>Category:</strong>  High Stress</p>
+                        </div>
+                        
+                        <div class="info-card" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-left: 4px solid #0ea5e9;">
+                            <h3> Personalized Recommendations</h3>
+                            
+                                    <div class="recommendation-item">
+                                        <strong style="color: #667eea;">1.</strong> Practice deep breathing exercises for 5-10 minutes daily
+                                    </div>
+                                
+                                    <div class="recommendation-item">
+                                        <strong style="color: #667eea;">2.</strong> Take regular breaks during study or work sessions
+                                    </div>
+                                
+                                    <div class="recommendation-item">
+                                        <strong style="color: #667eea;">3.</strong> Engage in physical activity or exercise to reduce stress
+                                    </div>
+                                
+                                    <div class="recommendation-item">
+                                        <strong style="color: #667eea;">4.</strong> Consider talking to a counselor or mental health professional
+                                    </div>
+                                
+                                    <div class="recommendation-item">
+                                        <strong style="color: #667eea;">5.</strong> Limit caffeine intake, especially in the evening
+                                    </div>
+                                
+                        </div>
+                        
+                        
+                        <div class="alert-box" style="background: #fff3cd; border-left: 4px solid #fbbf24;">
+                            <p style="margin: 0; color: #856404;"><strong> Important:</strong> If you're experiencing severe stress, anxiety, or depression, please consult with a mental health professional. WellSync predictions are for informational purposes only and not a substitute for professional medical advice.</p>
+                        </div>
+                        
+                        
+                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 25px; border-radius: 12px; margin: 30px 0; text-align: center;">
+                            <p style="margin: 0; color: #ffffff; font-size: 18px; font-weight: 600;"> Detailed PDF Report Attached</p>
+                            <p style="margin: 10px 0 0 0; color: rgba(255,255,255,0.9); font-size: 14px;">
+                                Your comprehensive analysis report is attached to this email.<br>
+                                Open the PDF for detailed insights, visualizations, and personalized recommendations.
+                            </p>
+                        </div>
+                        
+                        <p style="text-align: center; color: #666; margin-top: 25px;">
+                            Take care of your mental health - you deserve it! 
+                        </p>
+                        
+                        <div class="divider"></div>
+                        
+                        <p style="margin-top: 30px; color: #1B4965; font-weight: 600; font-size: 16px;">
+                            Stay strong,<br>The WellSync Team 💙
+                        </p>
+                    </div>
+                    <div class="footer">
+                        <p style="font-weight: 600; color: #1B4965; margin-bottom: 12px; font-size: 14px;">WellSync - Your AI-Powered Wellness Companion</p>
+                        <p>&copy; 2026 WellSync. All rights reserved.</p>
+                        <p style="margin-top: 12px;">
+                             Check your email attachments for the detailed PDF report.<br>
+                            Need support? Visit our resources page or contact a mental health professional.
+                        </p>
+                    </div>
+                </div>
+            </body>
+            </html>
+        

@@ -1,0 +1,443 @@
+
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                
+        <style>
+            /* Reset & Base Styles */
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body { 
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; 
+                line-height: 1.7; 
+                color: #374151; 
+                background: #f4f7f9;
+            }
+            
+            /* Main Container */
+            .container { 
+                max-width: 600px; 
+                margin: 20px auto; 
+                background: #ffffff;
+                border-radius: 16px;
+                overflow: hidden;
+                box-shadow: 0 10px 40px rgba(27, 73, 101, 0.12);
+            }
+            
+            /* Professional Header with WellSync Branding */
+            .header { 
+                background: linear-gradient(135deg, #1B4965 0%, #17A2B8 100%); 
+                color: white; 
+                padding: 50px 40px 40px 40px; 
+                text-align: center; 
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .header::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: linear-gradient(45deg, transparent, rgba(255,255,255,0.08), transparent);
+                animation: shine 4s infinite;
+            }
+            
+            @keyframes shine {
+                0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+                100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+            }
+            
+            .header h1 { 
+                font-size: 34px; 
+                font-weight: 700; 
+                margin: 20px 0 0 0;
+                position: relative;
+                z-index: 1;
+                text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            }
+            
+            .header p.subtitle {
+                margin: 12px 0 0 0;
+                font-size: 16px;
+                opacity: 0.95;
+                position: relative;
+                z-index: 1;
+            }
+            
+            /* Animated Icon */
+            .icon-wrapper {
+                font-size: 64px;
+                margin-bottom: 20px;
+                animation: bounce 2s infinite;
+            }
+            
+            @keyframes bounce {
+                0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+                40% { transform: translateY(-15px); }
+                60% { transform: translateY(-8px); }
+            }
+            
+            /* Content Area */
+            .content { 
+                background: #ffffff; 
+                padding: 45px 40px;
+            }
+            
+            .content h2 { 
+                color: #1B4965; 
+                margin-bottom: 20px;
+                font-size: 26px;
+                font-weight: 600;
+            }
+            
+            .content p { 
+                margin-bottom: 16px; 
+                color: #4a5568;
+                font-size: 16px;
+                line-height: 1.8;
+            }
+            
+            .content ul {
+                list-style: none;
+                padding: 0;
+                margin: 24px 0;
+            }
+            
+            .content ul li {
+                padding: 14px 0;
+                padding-left: 35px;
+                position: relative;
+                color: #4a5568;
+                font-size: 15px;
+            }
+            
+            .content ul li::before {
+                content: '✓';
+                position: absolute;
+                left: 0;
+                color: #17A2B8;
+                font-weight: bold;
+                font-size: 22px;
+                top: 12px;
+            }
+            
+            /* Professional CTA Button */
+            .button { 
+                display: inline-block; 
+                padding: 16px 42px; 
+                background: linear-gradient(135deg, #17A2B8 0%, #1B4965 100%);
+                color: white !important; 
+                text-decoration: none; 
+                border-radius: 8px; 
+                margin: 25px 0;
+                font-weight: 600;
+                font-size: 16px;
+                box-shadow: 0 4px 16px rgba(23, 162, 184, 0.3);
+                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .button::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: rgba(255,255,255,0.15);
+                transition: left 0.5s ease;
+            }
+            
+            .button:hover::before {
+                left: 100%;
+            }
+            
+            .button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 24px rgba(23, 162, 184, 0.4);
+            }
+            
+            /* Highlight Box */
+            .highlight { 
+                background: linear-gradient(135deg, #e3f2fd 0%, #e0f2f1 100%);
+                padding: 32px; 
+                border-radius: 12px;
+                margin: 30px 0;
+                border-left: 4px solid #17A2B8;
+                box-shadow: 0 2px 12px rgba(23, 162, 184, 0.1);
+            }
+            
+            /* Verification Code Display */
+            .code-box {
+                background: linear-gradient(135deg, #17A2B8 0%, #1B4965 100%);
+                padding: 35px;
+                border-radius: 12px;
+                text-align: center;
+                margin: 28px 0;
+                box-shadow: 0 8px 24px rgba(23, 162, 184, 0.25);
+                position: relative;
+            }
+            
+            .code-box::before {
+                content: '';
+                position: absolute;
+                top: -2px;
+                left: -2px;
+                right: -2px;
+                bottom: -2px;
+                background: linear-gradient(135deg, #17A2B8, #1B4965);
+                border-radius: 12px;
+                z-index: -1;
+                opacity: 0.5;
+                filter: blur(10px);
+            }
+            
+            .verification-code {
+                font-size: 52px;
+                font-weight: 800;
+                letter-spacing: 18px;
+                color: #ffffff;
+                text-shadow: 0 3px 12px rgba(0,0,0,0.25);
+                font-family: 'Courier New', 'Consolas', monospace;
+                margin: 8px 0;
+            }
+            
+            .code-label {
+                color: rgba(255,255,255,0.95);
+                font-size: 13px;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                margin-top: 12px;
+                font-weight: 500;
+            }
+            
+            /* Info Cards */
+            .info-card {
+                background: #f8fafc;
+                padding: 24px;
+                border-radius: 10px;
+                margin: 18px 0;
+                border-left: 5px solid #17A2B8;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            }
+            
+            .info-card h3 {
+                color: #1B4965;
+                margin-bottom: 12px;
+                font-size: 20px;
+                font-weight: 600;
+            }
+            
+            .info-card p {
+                margin: 8px 0;
+                color: #4a5568;
+                line-height: 1.7;
+            }
+            
+            /* Score Display */
+            .score-display {
+                text-align: center;
+                padding: 40px 30px;
+                background: linear-gradient(135deg, #17A2B8 0%, #1B4965 100%);
+                border-radius: 12px;
+                margin: 28px 0;
+                color: white;
+                box-shadow: 0 8px 24px rgba(23, 162, 184, 0.25);
+            }
+            
+            .score-number {
+                font-size: 72px;
+                font-weight: 800;
+                text-shadow: 0 3px 12px rgba(0,0,0,0.2);
+                margin: 12px 0;
+            }
+            
+            /* Footer */
+            .footer { 
+                text-align: center; 
+                padding: 35px 30px;
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                color: #6c757d; 
+                font-size: 13px;
+                border-top: 3px solid #17A2B8;
+            }
+            
+            .footer p { 
+                margin: 8px 0; 
+                line-height: 1.6;
+            }
+            
+            .footer strong {
+                color: #1B4965;
+            }
+            
+            .footer a {
+                color: #17A2B8;
+                text-decoration: none;
+            }
+            
+            .footer a:hover {
+                text-decoration: underline;
+            }
+            
+            /* Alert/Warning Box */
+            .alert-box {
+                background: #fff3cd;
+                border-left: 5px solid #F59E0B;
+                padding: 18px 20px;
+                margin: 22px 0;
+                border-radius: 8px;
+            }
+            
+            .alert-box p {
+                margin: 0;
+                color: #856404;
+            }
+            
+            /* Success Badge */
+            .badge {
+                display: inline-block;
+                padding: 10px 20px;
+                background: #10B981;
+                color: white;
+                border-radius: 25px;
+                font-size: 13px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 1.5px;
+                box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            }
+            
+            /* Progress Bar */
+            .progress-bar {
+                width: 100%;
+                height: 10px;
+                background: rgba(255,255,255,0.3);
+                border-radius: 10px;
+                overflow: hidden;
+                margin: 20px 0;
+            }
+            
+            .progress-fill {
+                height: 100%;
+                background: rgba(255,255,255,0.9);
+                border-radius: 10px;
+                transition: width 1.5s ease-out;
+            }
+            
+            /* Divider */
+            .divider {
+                height: 2px;
+                background: linear-gradient(90deg, transparent, #17A2B8, transparent);
+                margin: 30px 0;
+                opacity: 0.3;
+            }
+            
+            /* Responsive Design */
+            @media only screen and (max-width: 600px) {
+                .container { 
+                    border-radius: 0; 
+                    margin: 0;
+                }
+                .header { 
+                    padding: 35px 25px 30px 25px; 
+                }
+                .header h1 { 
+                    font-size: 28px; 
+                }
+                .content { 
+                    padding: 35px 25px; 
+                }
+                .verification-code { 
+                    font-size: 40px; 
+                    letter-spacing: 12px; 
+                }
+                .score-number { 
+                    font-size: 56px; 
+                }
+                .button {
+                    display: block;
+                    text-align: center;
+                }
+            }
+        </style>
+    
+            </head>
+            <body style="margin: 0; padding: 20px; background: #f4f7f9;">
+                <div class="container">
+                    <div class="header">
+                        
+        <svg width="120" height="80" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" style="margin: 0 auto; display: block;">
+            <defs>
+                <linearGradient id="wellsyncGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#1B4965;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#17A2B8;stop-opacity:1" />
+                </linearGradient>
+            </defs>
+            <!-- WellSync Text Logo -->
+            <text x="20" y="120" font-family="Arial, sans-serif" font-size="70" font-weight="bold" fill="#1B4965">Well</text>
+            <text x="210" y="120" font-family="Arial, sans-serif" font-size="70" font-weight="bold" fill="#17A2B8">Sync</text>
+            <!-- Decorative Wave -->
+            <path d="M 180 140 Q 200 130, 220 140 T 260 140" stroke="#17A2B8" stroke-width="8" fill="none" stroke-linecap="round"/>
+            <!-- Small wellness icon above S -->
+            <circle cx="215" cy="50" r="25" fill="none" stroke="#17A2B8" stroke-width="3"/>
+            <path d="M 205 50 L 212 57 L 225 44" fill="none" stroke="#10B981" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    
+                        <h1>🎉 Account Activated!</h1>
+                        <p class="subtitle">You're All Set to Begin Your Wellness Journey</p>
+                    </div>
+                    <div class="content">
+                        <div style="text-align: center; margin: 30px 0;">
+                            <span class="badge">✓ ACCOUNT ACTIVE</span>
+                        </div>
+                        
+                        <h2>Congratulations, Alex! 🎊</h2>
+                        <p>Your WellSync account has been successfully activated! You now have full access to all our powerful AI-driven wellness features.</p>
+                        
+                        <div class="divider"></div>
+                        
+                        <p style="font-weight: 600; color: #1B4965; margin-top: 25px; font-size: 17px;">🚀 What You Can Do Now:</p>
+                        <ul>
+                            <li>Get AI-powered mental wellness predictions</li>
+                            <li>Analyze how social media impacts your academics</li>
+                            <li>View historical data and wellness trends</li>
+                            <li>Receive personalized health recommendations</li>
+                            <li>Track your progress and improvements over time</li>
+                            <li>Access detailed reports and insights</li>
+                        </ul>
+                        
+                        <div class="highlight">
+                            <h3 style="color: #1B4965; margin: 0 0 15px 0; font-size: 18px;">📋 Quick Start Guide</h3>
+                            <p style="margin: 10px 0; padding-left: 20px;">1️⃣ Login to your account</p>
+                            <p style="margin: 10px 0; padding-left: 20px;">2️⃣ Complete your wellness profile</p>
+                            <p style="margin: 10px 0; padding-left: 20px;">3️⃣ Get your first AI prediction</p>
+                            <p style="margin: 10px 0; padding-left: 20px;">4️⃣ Explore your personalized dashboard</p>
+                        </div>
+                        
+                        <div style="text-align: center; margin: 35px 0;">
+                            <a href="http://localhost:3000/login" class="button">Login to Your Account →</a>
+                        </div>
+                        
+                        <p style="text-align: center; color: #4a5568; margin-top: 25px; font-size: 16px;">Your wellness journey starts now! 🌱</p>
+                        
+                        <div class="divider"></div>
+                        
+                        <p style="margin-top: 30px; color: #1B4965; font-weight: 600; font-size: 16px;">Welcome aboard,<br>The WellSync Team 💙</p>
+                    </div>
+                    <div class="footer">
+                        <p style="font-weight: 600; color: #1B4965; margin-bottom: 12px; font-size: 14px;">WellSync - Your AI-Powered Wellness Companion</p>
+                        <p>&copy; 2026 WellSync. All rights reserved.</p>
+                        <p style="margin-top: 12px;">
+                            Need help getting started? Contact us at <a href="mailto:wellsync.lk@gmail.com">wellsync.lk@gmail.com</a>
+                        </p>
+                    </div>
+                </div>
+            </body>
+            </html>
+        

@@ -1,35 +1,69 @@
 /**
  * Email Templates
- * HTML templates for various email types
+ * Professional HTML email templates with WellSync branding
+ * Updated: February 2026
  */
 
 const getEmailTemplate = (type, data) => {
+    // WellSync Professional Color Scheme
+    const colors = {
+        primary: '#17A2B8',      // WellSync Teal/Cyan (from logo)
+        secondary: '#1B4965',    // Navy Blue (from logo)
+        accent: '#17A2B8',       // Accent Cyan
+        success: '#10B981',      // Green
+        warning: '#F59E0B',      // Orange
+        danger: '#EF4444',       // Red
+        light: '#F8F9FA',        // Light gray
+        dark: '#1B4965',         // Dark navy
+        text: '#374151'          // Text gray
+    };
+
+    // WellSync Logo SVG (Base64 encoded for email compatibility)
+    const wellSyncLogoSVG = `
+        <svg width="120" height="80" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" style="margin: 0 auto; display: block;">
+            <defs>
+                <linearGradient id="wellsyncGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#1B4965;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#17A2B8;stop-opacity:1" />
+                </linearGradient>
+            </defs>
+            <!-- WellSync Text Logo -->
+            <text x="20" y="120" font-family="Arial, sans-serif" font-size="70" font-weight="bold" fill="#1B4965">Well</text>
+            <text x="210" y="120" font-family="Arial, sans-serif" font-size="70" font-weight="bold" fill="#17A2B8">Sync</text>
+            <!-- Decorative Wave -->
+            <path d="M 180 140 Q 200 130, 220 140 T 260 140" stroke="#17A2B8" stroke-width="8" fill="none" stroke-linecap="round"/>
+            <!-- Small wellness icon above S -->
+            <circle cx="215" cy="50" r="25" fill="none" stroke="#17A2B8" stroke-width="3"/>
+            <path d="M 205 50 L 212 57 L 225 44" fill="none" stroke="#10B981" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    `;
+
     const baseStyle = `
         <style>
             /* Reset & Base Styles */
             * { margin: 0; padding: 0; box-sizing: border-box; }
             body { 
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-                line-height: 1.6; 
-                color: #333; 
-                background: #f0f2f5;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; 
+                line-height: 1.7; 
+                color: ${colors.text}; 
+                background: #f4f7f9;
             }
             
-            /* Container */
+            /* Main Container */
             .container { 
                 max-width: 600px; 
-                margin: 0 auto; 
+                margin: 20px auto; 
                 background: #ffffff;
                 border-radius: 16px;
                 overflow: hidden;
-                box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+                box-shadow: 0 10px 40px rgba(27, 73, 101, 0.12);
             }
             
-            /* Animated Header */
+            /* Professional Header with WellSync Branding */
             .header { 
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                background: linear-gradient(135deg, ${colors.secondary} 0%, ${colors.primary} 100%); 
                 color: white; 
-                padding: 40px 30px; 
+                padding: 50px 40px 40px 40px; 
                 text-align: center; 
                 position: relative;
                 overflow: hidden;
@@ -42,8 +76,8 @@ const getEmailTemplate = (type, data) => {
                 left: -50%;
                 width: 200%;
                 height: 200%;
-                background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-                animation: shine 3s infinite;
+                background: linear-gradient(45deg, transparent, rgba(255,255,255,0.08), transparent);
+                animation: shine 4s infinite;
             }
             
             @keyframes shine {
@@ -52,17 +86,20 @@ const getEmailTemplate = (type, data) => {
             }
             
             .header h1 { 
-                font-size: 32px; 
+                font-size: 34px; 
                 font-weight: 700; 
-                margin: 0;
+                margin: 20px 0 0 0;
                 position: relative;
                 z-index: 1;
-                animation: fadeInDown 0.8s ease-out;
+                text-shadow: 0 2px 8px rgba(0,0,0,0.2);
             }
             
-            @keyframes fadeInDown {
-                from { opacity: 0; transform: translateY(-20px); }
-                to { opacity: 1; transform: translateY(0); }
+            .header p.subtitle {
+                margin: 12px 0 0 0;
+                font-size: 16px;
+                opacity: 0.95;
+                position: relative;
+                z-index: 1;
             }
             
             /* Animated Icon */
@@ -81,71 +118,59 @@ const getEmailTemplate = (type, data) => {
             /* Content Area */
             .content { 
                 background: #ffffff; 
-                padding: 40px 30px;
-                animation: fadeIn 1s ease-out;
-            }
-            
-            @keyframes fadeIn {
-                from { opacity: 0; }
-                to { opacity: 1; }
+                padding: 45px 40px;
             }
             
             .content h2 { 
-                color: #667eea; 
+                color: ${colors.secondary}; 
                 margin-bottom: 20px;
-                font-size: 24px;
+                font-size: 26px;
+                font-weight: 600;
             }
             
             .content p { 
-                margin-bottom: 15px; 
-                color: #555;
+                margin-bottom: 16px; 
+                color: #4a5568;
                 font-size: 16px;
+                line-height: 1.8;
             }
             
             .content ul {
                 list-style: none;
                 padding: 0;
-                margin: 20px 0;
+                margin: 24px 0;
             }
             
             .content ul li {
-                padding: 12px 0;
-                padding-left: 30px;
+                padding: 14px 0;
+                padding-left: 35px;
                 position: relative;
-                animation: slideInLeft 0.6s ease-out backwards;
-            }
-            
-            .content ul li:nth-child(1) { animation-delay: 0.2s; }
-            .content ul li:nth-child(2) { animation-delay: 0.4s; }
-            .content ul li:nth-child(3) { animation-delay: 0.6s; }
-            .content ul li:nth-child(4) { animation-delay: 0.8s; }
-            
-            @keyframes slideInLeft {
-                from { opacity: 0; transform: translateX(-20px); }
-                to { opacity: 1; transform: translateX(0); }
+                color: #4a5568;
+                font-size: 15px;
             }
             
             .content ul li::before {
                 content: '✓';
                 position: absolute;
                 left: 0;
-                color: #667eea;
+                color: ${colors.primary};
                 font-weight: bold;
-                font-size: 20px;
+                font-size: 22px;
+                top: 12px;
             }
             
-            /* Animated Button */
+            /* Professional CTA Button */
             .button { 
                 display: inline-block; 
-                padding: 16px 40px; 
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                padding: 16px 42px; 
+                background: linear-gradient(135deg, ${colors.primary} 0%, ${colors.secondary} 100%);
                 color: white !important; 
                 text-decoration: none; 
-                border-radius: 50px; 
+                border-radius: 8px; 
                 margin: 25px 0;
                 font-weight: 600;
                 font-size: 16px;
-                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+                box-shadow: 0 4px 16px rgba(23, 162, 184, 0.3);
                 transition: all 0.3s ease;
                 position: relative;
                 overflow: hidden;
@@ -158,7 +183,7 @@ const getEmailTemplate = (type, data) => {
                 left: -100%;
                 width: 100%;
                 height: 100%;
-                background: rgba(255,255,255,0.2);
+                background: rgba(255,255,255,0.15);
                 transition: left 0.5s ease;
             }
             
@@ -168,181 +193,165 @@ const getEmailTemplate = (type, data) => {
             
             .button:hover {
                 transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+                box-shadow: 0 6px 24px rgba(23, 162, 184, 0.4);
             }
             
-            /* Highlight Box with Animation */
+            /* Highlight Box */
             .highlight { 
-                background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-                padding: 30px; 
+                background: linear-gradient(135deg, #e3f2fd 0%, #e0f2f1 100%);
+                padding: 32px; 
                 border-radius: 12px;
                 margin: 30px 0;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-                animation: scaleIn 0.8s ease-out;
+                border-left: 4px solid ${colors.primary};
+                box-shadow: 0 2px 12px rgba(23, 162, 184, 0.1);
             }
             
-            @keyframes scaleIn {
-                from { opacity: 0; transform: scale(0.9); }
-                to { opacity: 1; transform: scale(1); }
-            }
-            
-            /* Code Display */
+            /* Verification Code Display */
             .code-box {
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                padding: 30px;
+                background: linear-gradient(135deg, ${colors.primary} 0%, ${colors.secondary} 100%);
+                padding: 35px;
                 border-radius: 12px;
                 text-align: center;
-                margin: 25px 0;
-                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-                animation: pulse 2s infinite;
+                margin: 28px 0;
+                box-shadow: 0 8px 24px rgba(23, 162, 184, 0.25);
+                position: relative;
             }
             
-            @keyframes pulse {
-                0%, 100% { transform: scale(1); }
-                50% { transform: scale(1.02); }
+            .code-box::before {
+                content: '';
+                position: absolute;
+                top: -2px;
+                left: -2px;
+                right: -2px;
+                bottom: -2px;
+                background: linear-gradient(135deg, ${colors.primary}, ${colors.secondary});
+                border-radius: 12px;
+                z-index: -1;
+                opacity: 0.5;
+                filter: blur(10px);
             }
             
             .verification-code {
-                font-size: 48px;
+                font-size: 52px;
                 font-weight: 800;
-                letter-spacing: 15px;
+                letter-spacing: 18px;
                 color: #ffffff;
-                text-shadow: 0 2px 10px rgba(0,0,0,0.2);
-                font-family: 'Courier New', monospace;
-                animation: glow 2s ease-in-out infinite;
-            }
-            
-            @keyframes glow {
-                0%, 100% { text-shadow: 0 0 10px rgba(255,255,255,0.5), 0 0 20px rgba(255,255,255,0.3); }
-                50% { text-shadow: 0 0 20px rgba(255,255,255,0.8), 0 0 30px rgba(255,255,255,0.5); }
+                text-shadow: 0 3px 12px rgba(0,0,0,0.25);
+                font-family: 'Courier New', 'Consolas', monospace;
+                margin: 8px 0;
             }
             
             .code-label {
-                color: rgba(255,255,255,0.9);
-                font-size: 14px;
+                color: rgba(255,255,255,0.95);
+                font-size: 13px;
                 text-transform: uppercase;
                 letter-spacing: 2px;
-                margin-top: 10px;
+                margin-top: 12px;
+                font-weight: 500;
             }
             
-            /* Stats/Info Cards */
+            /* Info Cards */
             .info-card {
-                background: #ffffff;
-                padding: 20px;
+                background: #f8fafc;
+                padding: 24px;
                 border-radius: 10px;
-                margin: 15px 0;
-                border-left: 4px solid #667eea;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-                transition: all 0.3s ease;
-            }
-            
-            .info-card:hover {
-                transform: translateX(5px);
-                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                margin: 18px 0;
+                border-left: 5px solid ${colors.primary};
+                box-shadow: 0 2px 8px rgba(0,0,0,0.04);
             }
             
             .info-card h3 {
-                color: #667eea;
-                margin-bottom: 10px;
+                color: ${colors.secondary};
+                margin-bottom: 12px;
                 font-size: 20px;
+                font-weight: 600;
             }
             
             .info-card p {
-                margin: 5px 0;
-                color: #666;
+                margin: 8px 0;
+                color: #4a5568;
+                line-height: 1.7;
             }
             
             /* Score Display */
             .score-display {
                 text-align: center;
-                padding: 30px;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                padding: 40px 30px;
+                background: linear-gradient(135deg, ${colors.primary} 0%, ${colors.secondary} 100%);
                 border-radius: 12px;
-                margin: 25px 0;
+                margin: 28px 0;
                 color: white;
+                box-shadow: 0 8px 24px rgba(23, 162, 184, 0.25);
             }
             
             .score-number {
-                font-size: 64px;
+                font-size: 72px;
                 font-weight: 800;
-                animation: countUp 1.5s ease-out;
-            }
-            
-            @keyframes countUp {
-                from { opacity: 0; transform: scale(0.5); }
-                to { opacity: 1; transform: scale(1); }
+                text-shadow: 0 3px 12px rgba(0,0,0,0.2);
+                margin: 12px 0;
             }
             
             /* Footer */
             .footer { 
                 text-align: center; 
-                padding: 30px;
-                background: #f8f9fa;
-                color: #666; 
+                padding: 35px 30px;
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                color: #6c757d; 
                 font-size: 13px;
-                border-top: 1px solid #e0e0e0;
+                border-top: 3px solid ${colors.primary};
             }
             
             .footer p { 
-                margin: 5px 0; 
+                margin: 8px 0; 
+                line-height: 1.6;
             }
             
-            .social-links {
-                margin: 20px 0;
+            .footer strong {
+                color: ${colors.secondary};
             }
             
-            .social-links a {
-                display: inline-block;
-                margin: 0 10px;
-                color: #667eea;
+            .footer a {
+                color: ${colors.primary};
                 text-decoration: none;
-                font-size: 24px;
-                transition: transform 0.3s ease;
             }
             
-            .social-links a:hover {
-                transform: scale(1.2);
+            .footer a:hover {
+                text-decoration: underline;
             }
             
-            /* Warning/Alert Box */
+            /* Alert/Warning Box */
             .alert-box {
                 background: #fff3cd;
-                border-left: 4px solid #ffc107;
-                padding: 15px;
-                margin: 20px 0;
+                border-left: 5px solid ${colors.warning};
+                padding: 18px 20px;
+                margin: 22px 0;
                 border-radius: 8px;
-                animation: slideInRight 0.6s ease-out;
             }
             
-            @keyframes slideInRight {
-                from { opacity: 0; transform: translateX(20px); }
-                to { opacity: 1; transform: translateX(0); }
+            .alert-box p {
+                margin: 0;
+                color: #856404;
             }
             
             /* Success Badge */
             .badge {
                 display: inline-block;
-                padding: 8px 16px;
-                background: #28a745;
+                padding: 10px 20px;
+                background: ${colors.success};
                 color: white;
-                border-radius: 20px;
-                font-size: 12px;
+                border-radius: 25px;
+                font-size: 13px;
                 font-weight: 600;
                 text-transform: uppercase;
-                letter-spacing: 1px;
-                animation: fadeInUp 0.8s ease-out;
-            }
-            
-            @keyframes fadeInUp {
-                from { opacity: 0; transform: translateY(20px); }
-                to { opacity: 1; transform: translateY(0); }
+                letter-spacing: 1.5px;
+                box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
             }
             
             /* Progress Bar */
             .progress-bar {
                 width: 100%;
-                height: 8px;
-                background: #e0e0e0;
+                height: 10px;
+                background: rgba(255,255,255,0.3);
                 border-radius: 10px;
                 overflow: hidden;
                 margin: 20px 0;
@@ -350,21 +359,45 @@ const getEmailTemplate = (type, data) => {
             
             .progress-fill {
                 height: 100%;
-                background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-                animation: progressAnimation 2s ease-out;
+                background: rgba(255,255,255,0.9);
+                border-radius: 10px;
+                transition: width 1.5s ease-out;
             }
             
-            @keyframes progressAnimation {
-                from { width: 0%; }
+            /* Divider */
+            .divider {
+                height: 2px;
+                background: linear-gradient(90deg, transparent, ${colors.primary}, transparent);
+                margin: 30px 0;
+                opacity: 0.3;
             }
             
             /* Responsive Design */
             @media only screen and (max-width: 600px) {
-                .container { border-radius: 0; }
-                .header h1 { font-size: 24px; }
-                .content { padding: 25px 20px; }
-                .verification-code { font-size: 36px; letter-spacing: 10px; }
-                .score-number { font-size: 48px; }
+                .container { 
+                    border-radius: 0; 
+                    margin: 0;
+                }
+                .header { 
+                    padding: 35px 25px 30px 25px; 
+                }
+                .header h1 { 
+                    font-size: 28px; 
+                }
+                .content { 
+                    padding: 35px 25px; 
+                }
+                .verification-code { 
+                    font-size: 40px; 
+                    letter-spacing: 12px; 
+                }
+                .score-number { 
+                    font-size: 56px; 
+                }
+                .button {
+                    display: block;
+                    text-align: center;
+                }
             }
         </style>
     `;
@@ -378,23 +411,26 @@ const getEmailTemplate = (type, data) => {
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 ${baseStyle}
             </head>
-            <body style="margin: 0; padding: 20px; background: #f0f2f5;">
+            <body style="margin: 0; padding: 20px; background: #f4f7f9;">
                 <div class="container">
                     <div class="header">
-                        <div class="icon-wrapper">🎉</div>
+                        ${wellSyncLogoSVG}
                         <h1>Welcome to WellSync!</h1>
-                        <p style="margin-top: 10px; font-size: 16px; opacity: 0.95;">Your Journey to Better Wellness Starts Here</p>
+                        <p class="subtitle">Your Journey to Better Wellness Starts Here</p>
                     </div>
                     <div class="content">
-                        <h2>Hi ${data.firstName}! 👋</h2>
-                        <p>We're thrilled to have you join the WellSync community! Get ready to take control of your mental wellness and academic success.</p>
+                        <h2>Hello ${data.firstName}! 👋</h2>
+                        <p>We're absolutely thrilled to have you join the WellSync community! You've taken the first step toward understanding and improving your mental wellness and academic performance.</p>
                         
-                        <p style="font-weight: 600; color: #667eea; margin-top: 25px;">What you can do with WellSync:</p>
+                        <div class="divider"></div>
+                        
+                        <p style="font-weight: 600; color: ${colors.secondary}; margin-top: 25px; font-size: 17px;">✨ What You Can Do with WellSync:</p>
                         <ul>
-                            <li>📊 Get personalized mental wellness predictions</li>
-                            <li>🎓 Analyze social media impact on academic performance</li>
-                            <li>📈 Track your wellness trends over time</li>
-                            <li>💡 Receive actionable insights for better health</li>
+                            <li>Get personalized mental wellness predictions powered by AI</li>
+                            <li>Analyze how social media impacts your academic performance</li>
+                            <li>Track your wellness trends and progress over time</li>
+                            <li>Receive actionable insights and recommendations</li>
+                            <li>Access detailed reports and analytics</li>
                         </ul>
                         
                         <div class="code-box">
@@ -404,19 +440,21 @@ const getEmailTemplate = (type, data) => {
                         </div>
                         
                         <div class="alert-box">
-                            <p style="margin: 0; color: #856404;"><strong>⏰ Important:</strong> This code will expire in 5 minutes for your security.</p>
+                            <p><strong>⏱️ Important:</strong> This code will expire in 5 minutes for your security.</p>
                         </div>
                         
-                        <p style="margin-top: 25px;">If you didn't create this account, please ignore this email or contact our support team.</p>
+                        <p style="margin-top: 25px; font-size: 15px;">If you didn't create this account, please ignore this email or contact our support team.</p>
                         
-                        <p style="margin-top: 30px; color: #667eea; font-weight: 600;">Best regards,<br>The WellSync Team 💜</p>
+                        <div class="divider"></div>
+                        
+                        <p style="margin-top: 30px; color: ${colors.secondary}; font-weight: 600; font-size: 16px;">Best regards,<br>The WellSync Team 💙</p>
                     </div>
                     <div class="footer">
-                        <p style="font-weight: 600; color: #333; margin-bottom: 15px;">Stay Connected</p>
+                        <p style="font-weight: 600; color: ${colors.secondary}; margin-bottom: 12px; font-size: 14px;">WellSync - Your AI-Powered Wellness Companion</p>
                         <p>&copy; 2026 WellSync. All rights reserved.</p>
-                        <p style="margin-top: 10px; font-size: 11px; color: #999;">
+                        <p style="margin-top: 12px;">
                             You received this email because you signed up for WellSync.<br>
-                            Need help? Contact us at wellsync.lk@gmail.com
+                            Need help? Contact us at <a href="mailto:wellsync.lk@gmail.com">wellsync.lk@gmail.com</a>
                         </p>
                     </div>
                 </div>
@@ -432,16 +470,16 @@ const getEmailTemplate = (type, data) => {
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 ${baseStyle}
             </head>
-            <body style="margin: 0; padding: 20px; background: #f0f2f5;">
+            <body style="margin: 0; padding: 20px; background: #f4f7f9;">
                 <div class="container">
                     <div class="header">
-                        <div class="icon-wrapper">✉️</div>
+                        ${wellSyncLogoSVG}
                         <h1>Verify Your Email</h1>
-                        <p style="margin-top: 10px; font-size: 16px; opacity: 0.95;">One More Step to Get Started</p>
+                        <p class="subtitle">One More Step to Get Started</p>
                     </div>
                     <div class="content">
-                        <h2>Hi ${data.firstName}! 👋</h2>
-                        <p>Thank you for signing up with WellSync! We're excited to have you on board.</p>
+                        <h2>Hello ${data.firstName}! ✉️</h2>
+                        <p>Thank you for signing up with WellSync! We're excited to have you on board and can't wait to help you on your wellness journey.</p>
                         <p>To complete your registration and unlock all features, please verify your email address using the code below:</p>
                         
                         <div class="code-box">
@@ -451,17 +489,25 @@ const getEmailTemplate = (type, data) => {
                         </div>
                         
                         <div class="alert-box">
-                            <p style="margin: 0; color: #856404;"><strong>⏰ Hurry!</strong> This code will expire in 5 minutes.</p>
+                            <p><strong>⏱️ Hurry!</strong> This code will expire in 5 minutes for security.</p>
                         </div>
                         
-                        <p style="margin-top: 25px;">If you didn't request this verification, you can safely ignore this email.</p>
+                        <div class="highlight">
+                            <p style="margin: 0; color: ${colors.secondary}; font-weight: 600;">🎯 After Verification:</p>
+                            <p style="margin: 10px 0 0 0; color: #4a5568;">You'll have full access to AI-powered predictions, personalized insights, and wellness tracking features.</p>
+                        </div>
                         
-                        <p style="margin-top: 30px; color: #667eea; font-weight: 600;">Best regards,<br>The WellSync Team 💜</p>
+                        <p style="margin-top: 25px; font-size: 15px;">If you didn't request this verification, you can safely ignore this email.</p>
+                        
+                        <div class="divider"></div>
+                        
+                        <p style="margin-top: 30px; color: ${colors.secondary}; font-weight: 600; font-size: 16px;">Best regards,<br>The WellSync Team 💙</p>
                     </div>
                     <div class="footer">
+                        <p style="font-weight: 600; color: ${colors.secondary}; margin-bottom: 12px; font-size: 14px;">WellSync - Your AI-Powered Wellness Companion</p>
                         <p>&copy; 2026 WellSync. All rights reserved.</p>
-                        <p style="margin-top: 10px; font-size: 11px; color: #999;">
-                            Need help? Contact us at wellsync.lk@gmail.com
+                        <p style="margin-top: 12px;">
+                            Need help? Contact us at <a href="mailto:wellsync.lk@gmail.com">wellsync.lk@gmail.com</a>
                         </p>
                     </div>
                 </div>
@@ -477,40 +523,52 @@ const getEmailTemplate = (type, data) => {
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 ${baseStyle}
             </head>
-            <body style="margin: 0; padding: 20px; background: #f0f2f5;">
+            <body style="margin: 0; padding: 20px; background: #f4f7f9;">
                 <div class="container">
                     <div class="header">
-                        <div class="icon-wrapper">🔐</div>
-                        <h1>Reset Your Password</h1>
-                        <p style="margin-top: 10px; font-size: 16px; opacity: 0.95;">Secure Password Recovery</p>
+                        ${wellSyncLogoSVG}
+                        <h1>🔒 Reset Your Password</h1>
+                        <p class="subtitle">Secure Password Recovery</p>
                     </div>
                     <div class="content">
-                        <h2>Hi ${data.firstName}! 👋</h2>
-                        <p>We received a request to reset your password for your WellSync account. No worries, it happens to the best of us!</p>
-                        
-                        <p style="font-weight: 600; color: #667eea; margin-top: 25px;">Your password reset code:</p>
+                        <h2>Hello ${data.firstName}! 🔐</h2>
+                        <p>We received a request to reset your password for your WellSync account. No worries—it happens to the best of us!</p>
+                        <p>Use the secure code below to create a new password and regain access to your account.</p>
                         
                         <div class="code-box">
-                            <p style="margin: 0; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; opacity: 0.9;">Reset Code</p>
+                            <p style="margin: 0; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; opacity: 0.9;">Password Reset Code</p>
                             <div class="verification-code">${data.resetCode}</div>
                             <p class="code-label">Use this code to set a new password</p>
                         </div>
                         
                         <div class="alert-box">
-                            <p style="margin: 0; color: #856404;"><strong>⏰ Time Sensitive:</strong> This code will expire in 5 minutes for security reasons.</p>
+                            <p><strong>⏱️ Time Sensitive:</strong> This code will expire in 5 minutes for security reasons.</p>
                         </div>
                         
-                        <div style="background: #e7f3ff; border-left: 4px solid #2196F3; padding: 15px; margin: 20px 0; border-radius: 8px;">
-                            <p style="margin: 0; color: #0d47a1;"><strong>🛡️ Security Notice:</strong></p>
-                            <p style="margin: 10px 0 0 0; color: #0d47a1;">If you didn't request this password reset, please ignore this email or contact our support team immediately. Your password will remain unchanged unless you use this code.</p>
+                        <div class="info-card" style="background: #e3f2fd; border-left: 5px solid #2196F3;">
+                            <h3 style="color: #1565c0; margin-bottom: 10px;">🛡️ Security Notice</h3>
+                            <p style="margin: 0;">If you didn't request this password reset, please ignore this email or contact our support team immediately. Your password will remain unchanged unless you use this code.</p>
                         </div>
                         
-                        <p style="margin-top: 30px; color: #667eea; font-weight: 600;">Stay secure,<br>The WellSync Team 💜</p>
+                        <div class="highlight">
+                            <p style="margin: 0; color: ${colors.secondary}; font-weight: 600;">💡 Password Tips:</p>
+                            <ul style="margin: 10px 0 0 0; padding-left: 20px;">
+                                <li style="margin: 8px 0;">Use at least 8 characters</li>
+                                <li style="margin: 8px 0;">Include uppercase and lowercase letters</li>
+                                <li style="margin: 8px 0;">Add numbers and special characters</li>
+                                <li style="margin: 8px 0;">Avoid common words or personal information</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="divider"></div>
+                        
+                        <p style="margin-top: 30px; color: ${colors.secondary}; font-weight: 600; font-size: 16px;">Stay secure,<br>The WellSync Team 💙</p>
                     </div>
                     <div class="footer">
+                        <p style="font-weight: 600; color: ${colors.secondary}; margin-bottom: 12px; font-size: 14px;">WellSync - Your AI-Powered Wellness Companion</p>
                         <p>&copy; 2026 WellSync. All rights reserved.</p>
-                        <p style="margin-top: 10px; font-size: 11px; color: #999;">
-                            For security concerns, contact us at wellsync.lk@gmail.com
+                        <p style="margin-top: 12px;">
+                            For security concerns, contact us at <a href="mailto:wellsync.lk@gmail.com">wellsync.lk@gmail.com</a>
                         </p>
                     </div>
                 </div>
@@ -533,7 +591,7 @@ const getEmailTemplate = (type, data) => {
                     .stress-very-high { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
                     
                     .wellness-excellent { background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%); }
-                    .wellness-good { background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%); }
+                    .wellness-good { background: linear-gradient(135deg, ${colors.primary} 0%, ${colors.secondary} 100%); }
                     .wellness-fair { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); }
                     .wellness-poor { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
                     
@@ -541,40 +599,26 @@ const getEmailTemplate = (type, data) => {
                     .academic-moderate { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); }
                     .academic-high { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
                     
-                    /* Icon styles for different types */
-                    .icon-stress { font-size: 64px; }
-                    .icon-wellness { font-size: 64px; }
-                    .icon-academic { font-size: 64px; }
-                    
                     /* Recommendation List Styles */
                     .recommendation-item {
-                        background: #f8f9fa;
-                        padding: 15px 20px;
-                        margin: 10px 0;
+                        background: #f8fafc;
+                        padding: 16px 20px;
+                        margin: 12px 0;
                         border-radius: 8px;
-                        border-left: 4px solid #667eea;
-                        animation: slideInLeft 0.6s ease-out backwards;
+                        border-left: 4px solid ${colors.primary};
                     }
-                    
-                    .recommendation-item:nth-child(1) { animation-delay: 0.2s; }
-                    .recommendation-item:nth-child(2) { animation-delay: 0.4s; }
-                    .recommendation-item:nth-child(3) { animation-delay: 0.6s; }
-                    .recommendation-item:nth-child(4) { animation-delay: 0.8s; }
-                    .recommendation-item:nth-child(5) { animation-delay: 1.0s; }
                 </style>
             </head>
-            <body style="margin: 0; padding: 20px; background: #f0f2f5;">
+            <body style="margin: 0; padding: 20px; background: #f4f7f9;">
                 <div class="container">
                     <div class="header">
-                        <div class="icon-wrapper ${data.predictionType === 'Stress Level' ? 'icon-stress' : data.predictionType === 'Mental Wellness' ? 'icon-wellness' : 'icon-academic'}">
-                            ${data.predictionType === 'Stress Level' ? '😰' : data.predictionType === 'Mental Wellness' ? '🧠' : '📚'}
-                        </div>
-                        <h1>Your ${data.predictionType} Report</h1>
-                        <p style="margin-top: 10px; font-size: 16px; opacity: 0.95;">AI-Powered Insights Ready</p>
+                        ${wellSyncLogoSVG}
+                        <h1>📊 Your ${data.predictionType || 'Prediction'} Report</h1>
+                        <p class="subtitle">AI-Powered Insights Ready</p>
                     </div>
                     <div class="content">
-                        <h2>Hi ${data.firstName}! 👋</h2>
-                        <p>Great news! Your latest ${data.predictionType.toLowerCase()} analysis is complete. Here are your personalized insights:</p>
+                        <h2>Hello ${data.firstName}! 📈</h2>
+                        <p>Great news! Your latest ${(data.predictionType || '').toLowerCase()} analysis is complete. Here are your personalized AI-powered insights:</p>
                         
                         <div class="score-display ${
                             data.predictionType === 'Stress Level' 
@@ -605,7 +649,7 @@ const getEmailTemplate = (type, data) => {
                             parseFloat(data.prediction) >= 6 ? '#fb923c' : 
                             parseFloat(data.prediction) >= 3 ? '#fbbf24' : '#4ade80'
                         };">
-                            <h3>😰 Stress Level Breakdown</h3>
+                            <h3> Stress Level Breakdown</h3>
                             <p><strong>Current Level:</strong> ${
                                 parseFloat(data.prediction) >= 8 ? 'Very High (8-10) - Immediate Action Needed' : 
                                 parseFloat(data.prediction) >= 6 ? 'High (6-7.9) - Take Action Soon' : 
@@ -620,19 +664,19 @@ const getEmailTemplate = (type, data) => {
                         ` : ''}
                         
                         <div class="info-card">
-                            <h3>📈 Analysis Details</h3>
+                            <h3> Analysis Details</h3>
                             <p><strong>Model Used:</strong> ${data.modelName}</p>
                             <p><strong>Analysis Date:</strong> ${data.date}</p>
                             <p><strong>Prediction Type:</strong> ${data.predictionType}</p>
                             ${data.predictionType === 'Stress Level' ? `<p><strong>Category:</strong> ${
-                                parseFloat(data.prediction) >= 8 ? '🔴 Very High Stress' : 
-                                parseFloat(data.prediction) >= 6 ? '🟠 High Stress' : 
-                                parseFloat(data.prediction) >= 3 ? '🟡 Moderate Stress' : '🟢 Low Stress'
+                                parseFloat(data.prediction) >= 8 ? ' Very High Stress' : 
+                                parseFloat(data.prediction) >= 6 ? ' High Stress' : 
+                                parseFloat(data.prediction) >= 3 ? ' Moderate Stress' : ' Low Stress'
                             }</p>` : ''}
                         </div>
                         
                         <div class="info-card" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-left: 4px solid #0ea5e9;">
-                            <h3>💡 Personalized Recommendations</h3>
+                            <h3> Personalized Recommendations</h3>
                             ${(data.recommendationsList && Array.isArray(data.recommendationsList))
                                 ? data.recommendationsList.map((rec, index) => `
                                     <div class="recommendation-item">
@@ -645,12 +689,12 @@ const getEmailTemplate = (type, data) => {
                         
                         ${data.predictionType === 'Stress Level' ? `
                         <div class="alert-box" style="background: #fff3cd; border-left: 4px solid #fbbf24;">
-                            <p style="margin: 0; color: #856404;"><strong>⚠️ Important:</strong> If you're experiencing severe stress, anxiety, or depression, please consult with a mental health professional. WellSync predictions are for informational purposes only and not a substitute for professional medical advice.</p>
+                            <p style="margin: 0; color: #856404;"><strong> Important:</strong> If you're experiencing severe stress, anxiety, or depression, please consult with a mental health professional. WellSync predictions are for informational purposes only and not a substitute for professional medical advice.</p>
                         </div>
                         ` : ''}
                         
                         <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 25px; border-radius: 12px; margin: 30px 0; text-align: center;">
-                            <p style="margin: 0; color: #ffffff; font-size: 18px; font-weight: 600;">📎 Detailed PDF Report Attached</p>
+                            <p style="margin: 0; color: #ffffff; font-size: 18px; font-weight: 600;"> Detailed PDF Report Attached</p>
                             <p style="margin: 10px 0 0 0; color: rgba(255,255,255,0.9); font-size: 14px;">
                                 Your comprehensive analysis report is attached to this email.<br>
                                 Open the PDF for detailed insights, visualizations, and personalized recommendations.
@@ -659,19 +703,22 @@ const getEmailTemplate = (type, data) => {
                         
                         <p style="text-align: center; color: #666; margin-top: 25px;">
                             ${data.predictionType === 'Stress Level' 
-                                ? 'Take care of your mental health - you deserve it! 🌈' 
-                                : 'Keep tracking your wellness journey with WellSync! 🌟'}
+                                ? 'Take care of your mental health - you deserve it! ' 
+                                : 'Keep tracking your wellness journey with WellSync! '}
                         </p>
                         
-                        <p style="margin-top: 30px; color: #667eea; font-weight: 600;">
-                            ${data.predictionType === 'Stress Level' ? 'Stay strong' : 'Keep thriving'},<br>The WellSync Team 💜
+                        <div class="divider"></div>
+                        
+                        <p style="margin-top: 30px; color: ${colors.secondary}; font-weight: 600; font-size: 16px;">
+                            ${data.predictionType === 'Stress Level' ? 'Stay strong' : 'Keep thriving'},<br>The WellSync Team 💙
                         </p>
                     </div>
                     <div class="footer">
+                        <p style="font-weight: 600; color: ${colors.secondary}; margin-bottom: 12px; font-size: 14px;">WellSync - Your AI-Powered Wellness Companion</p>
                         <p>&copy; 2026 WellSync. All rights reserved.</p>
-                        <p style="margin-top: 10px; font-size: 11px; color: #999;">
-                            📧 Check your email attachments for the detailed PDF report.<br>
-                            ${data.predictionType === 'Stress Level' ? 'Need support? Visit our resources page or contact a mental health professional.' : 'Questions? Contact us at wellsync.lk@gmail.com'}
+                        <p style="margin-top: 12px;">
+                             Check your email attachments for the detailed PDF report.<br>
+                            ${data.predictionType === 'Stress Level' ? 'Need support? Visit our resources page or contact a mental health professional.' : 'Questions? Contact us at <a href="mailto:wellsync.lk@gmail.com">wellsync.lk@gmail.com</a>'}
                         </p>
                     </div>
                 </div>
@@ -687,44 +734,45 @@ const getEmailTemplate = (type, data) => {
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 ${baseStyle}
                 <style>
-                    .priority-high { border-left: 4px solid #dc3545; }
-                    .priority-medium { border-left: 4px solid #ffc107; }
-                    .priority-low { border-left: 4px solid #28a745; }
+                    .priority-high { border-left: 5px solid #dc3545; }
+                    .priority-medium { border-left: 5px solid #ffc107; }
+                    .priority-low { border-left: 5px solid #28a745; }
                     
                     .stat-card {
                         display: inline-block;
                         width: 150px;
                         padding: 20px;
                         margin: 10px;
-                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        background: linear-gradient(135deg, ${colors.primary} 0%, ${colors.secondary} 100%);
                         border-radius: 12px;
                         text-align: center;
                         color: white;
+                        box-shadow: 0 4px 12px rgba(23, 162, 184, 0.25);
                     }
                     
                     .stat-number {
-                        font-size: 36px;
+                        font-size: 40px;
                         font-weight: bold;
                         margin: 10px 0;
                     }
                     
                     .stat-label {
                         font-size: 12px;
-                        opacity: 0.9;
+                        opacity: 0.95;
                         text-transform: uppercase;
                         letter-spacing: 1px;
                     }
                 </style>
             </head>
-            <body style="margin: 0; padding: 20px; background: #f0f2f5;">
+            <body style="margin: 0; padding: 20px; background: #f4f7f9;">
                 <div class="container">
                     <div class="header">
-                        <div class="icon-wrapper">📊</div>
-                        <h1>Weekly Wellness Update</h1>
-                        <p style="margin-top: 10px; font-size: 16px; opacity: 0.95;">Your Personalized Health Insights</p>
+                        ${wellSyncLogoSVG}
+                        <h1>📅 Weekly Wellness Update</h1>
+                        <p class="subtitle">Your Personalized Health Insights</p>
                     </div>
                     <div class="content">
-                        <h2>Hi ${data.firstName}! 👋</h2>
+                        <h2>Hello ${data.firstName}! 🌟</h2>
                         <p>${data.summary}</p>
                         
                         ${data.hasData && data.stats ? `
@@ -765,9 +813,9 @@ const getEmailTemplate = (type, data) => {
                         </div>
                         ` : ''}
                         
-                        <h3 style="color: #667eea; margin-top: 40px;">📌 This Week's Recommendations</h3>
+                        <h3 style="color: #667eea; margin-top: 40px;"> This Week's Recommendations</h3>
                         
-                        ${(data.recommendations && Array.isArray(data.recommendations) ? data.recommendations : []).map((rec, index) => `
+                        ${((data.recommendations && Array.isArray(data.recommendations) ? data.recommendations : [])).map((rec, index) => `
                             <div class="info-card priority-${(rec.priority || 'medium').toLowerCase()}" style="margin: 15px 0; animation-delay: ${index * 0.1}s;">
                                 <h4 style="color: #667eea; margin: 0 0 10px 0; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">
                                     ${rec.category || 'Wellness Tip'}
@@ -784,7 +832,7 @@ const getEmailTemplate = (type, data) => {
                         `).join('')}
                         
                         <div class="highlight" style="margin-top: 40px;">
-                            <h3 style="color: #667eea; margin: 0 0 15px 0;">💡 Quick Wellness Tips</h3>
+                            <h3 style="color: #667eea; margin: 0 0 15px 0;"> Quick Wellness Tips</h3>
                             <ul style="margin: 0; padding-left: 20px;">
                                 <li style="margin: 10px 0;">Track your progress - Use the WellSync app regularly to monitor your wellness journey</li>
                                 <li style="margin: 10px 0;">Stay consistent - Small daily habits compound into major improvements over time</li>
@@ -793,25 +841,37 @@ const getEmailTemplate = (type, data) => {
                             </ul>
                         </div>
                         
+                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 25px; border-radius: 12px; margin: 30px 0; text-align: center;">
+                            <p style="margin: 0; color: #ffffff; font-size: 18px; font-weight: 600;"> Detailed PDF Report Attached</p>
+                            <p style="margin: 10px 0 0 0; color: rgba(255,255,255,0.9); font-size: 14px;">
+                                Your comprehensive weekly wellness report is attached to this email.<br>
+                                Open the PDF for your complete prediction history, detailed trends, and personalized insights.
+                            </p>
+                        </div>
+                        
                         <div style="text-align: center; margin: 40px 0;">
                             <p style="color: #666; font-size: 14px;">Want more personalized insights?</p>
                             <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/dashboard" class="button">
-                                View Your Dashboard →
+                                View Your Dashboard &#8594;
                             </a>
                         </div>
                         
                         <p style="text-align: center; color: #666; margin-top: 30px; font-size: 14px;">
-                            Keep up the great work on your wellness journey! 🌟
+                            Keep up the great work on your wellness journey! 
                         </p>
                         
-                        <p style="margin-top: 30px; color: #667eea; font-weight: 600;">Stay well,<br>The WellSync Team 💜</p>
+                        <div class="divider"></div>
+                        
+                        <p style="margin-top: 30px; color: ${colors.secondary}; font-weight: 600; font-size: 16px;">Stay well,<br>The WellSync Team 💙</p>
                     </div>
                     <div class="footer">
-                        <p style="font-weight: 600; color: #333; margin-bottom: 15px;">Weekly Wellness Update - ${data.date}</p>
+                        <p style="font-weight: 600; color: ${colors.secondary}; margin-bottom: 12px; font-size: 14px;">WellSync - Your AI-Powered Wellness Companion</p>
+                        <p style="margin: 8px 0;">Weekly Wellness Update - ${data.date}</p>
                         <p>&copy; 2026 WellSync. All rights reserved.</p>
-                        <p style="margin-top: 10px; font-size: 11px; color: #999;">
+                        <p style="margin-top: 12px;">
                             You received this email because you're subscribed to WellSync weekly updates.<br>
-                            To unsubscribe, update your preferences in your account settings.
+                            To unsubscribe, update your preferences in your account settings.<br>
+                            Questions? Contact us at <a href="mailto:wellsync.lk@gmail.com">wellsync.lk@gmail.com</a>
                         </p>
                     </div>
                 </div>
@@ -827,52 +887,56 @@ const getEmailTemplate = (type, data) => {
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 ${baseStyle}
             </head>
-            <body style="margin: 0; padding: 20px; background: #f0f2f5;">
+            <body style="margin: 0; padding: 20px; background: #f4f7f9;">
                 <div class="container">
                     <div class="header">
-                        <div class="icon-wrapper">✅</div>
-                        <h1>Account Activated!</h1>
-                        <p style="margin-top: 10px; font-size: 16px; opacity: 0.95;">You're All Set to Begin</p>
+                        ${wellSyncLogoSVG}
+                        <h1>🎉 Account Activated!</h1>
+                        <p class="subtitle">You're All Set to Begin Your Wellness Journey</p>
                     </div>
                     <div class="content">
                         <div style="text-align: center; margin: 30px 0;">
-                            <span class="badge">ACCOUNT ACTIVE</span>
+                            <span class="badge">✓ ACCOUNT ACTIVE</span>
                         </div>
                         
                         <h2>Congratulations, ${data.firstName}! 🎊</h2>
-                        <p>Your WellSync account has been successfully activated! You now have full access to all our powerful features.</p>
+                        <p>Your WellSync account has been successfully activated! You now have full access to all our powerful AI-driven wellness features.</p>
                         
-                        <p style="font-weight: 600; color: #667eea; margin-top: 25px;">What you can do now:</p>
+                        <div class="divider"></div>
+                        
+                        <p style="font-weight: 600; color: ${colors.secondary}; margin-top: 25px; font-size: 17px;">🚀 What You Can Do Now:</p>
                         <ul>
-                            <li>🧠 Get Mental Wellness Predictions</li>
-                            <li>📚 Analyze Academic Impact</li>
-                            <li>📊 View Historical Data & Trends</li>
-                            <li>💡 Receive Personalized Recommendations</li>
-                            <li>📈 Track Your Progress Over Time</li>
-                            <li>🎯 Set Wellness Goals</li>
+                            <li>Get AI-powered mental wellness predictions</li>
+                            <li>Analyze how social media impacts your academics</li>
+                            <li>View historical data and wellness trends</li>
+                            <li>Receive personalized health recommendations</li>
+                            <li>Track your progress and improvements over time</li>
+                            <li>Access detailed reports and insights</li>
                         </ul>
                         
                         <div class="highlight">
-                            <h3 style="color: #667eea; margin: 0 0 15px 0;">🚀 Quick Start Guide</h3>
-                            <p style="margin: 8px 0;">1. Login to your account</p>
-                            <p style="margin: 8px 0;">2. Complete your profile</p>
-                            <p style="margin: 8px 0;">3. Get your first prediction</p>
-                            <p style="margin: 8px 0;">4. Explore your personalized dashboard</p>
+                            <h3 style="color: ${colors.secondary}; margin: 0 0 15px 0; font-size: 18px;">📋 Quick Start Guide</h3>
+                            <p style="margin: 10px 0; padding-left: 20px;">1️⃣ Login to your account</p>
+                            <p style="margin: 10px 0; padding-left: 20px;">2️⃣ Complete your wellness profile</p>
+                            <p style="margin: 10px 0; padding-left: 20px;">3️⃣ Get your first AI prediction</p>
+                            <p style="margin: 10px 0; padding-left: 20px;">4️⃣ Explore your personalized dashboard</p>
                         </div>
                         
-                        <div style="text-align: center; margin: 30px 0;">
-                            <a href="${data.loginLink}" class="button">Login to Your Account →</a>
+                        <div style="text-align: center; margin: 35px 0;">
+                            <a href="${data.loginLink || process.env.FRONTEND_URL + '/login'}" class="button">Login to Your Account →</a>
                         </div>
                         
-                        <p style="text-align: center; color: #666; margin-top: 25px;">Your wellness journey starts now! 🌟</p>
+                        <p style="text-align: center; color: #4a5568; margin-top: 25px; font-size: 16px;">Your wellness journey starts now! 🌱</p>
                         
-                        <p style="margin-top: 30px; color: #667eea; font-weight: 600;">Welcome aboard,<br>The WellSync Team 💜</p>
+                        <div class="divider"></div>
+                        
+                        <p style="margin-top: 30px; color: ${colors.secondary}; font-weight: 600; font-size: 16px;">Welcome aboard,<br>The WellSync Team 💙</p>
                     </div>
                     <div class="footer">
-                        <p style="font-weight: 600; color: #333; margin-bottom: 15px;">Need Help Getting Started?</p>
+                        <p style="font-weight: 600; color: ${colors.secondary}; margin-bottom: 12px; font-size: 14px;">WellSync - Your AI-Powered Wellness Companion</p>
                         <p>&copy; 2026 WellSync. All rights reserved.</p>
-                        <p style="margin-top: 10px; font-size: 11px; color: #999;">
-                            Questions? Check our help center or contact wellsync.lk@gmail.com
+                        <p style="margin-top: 12px;">
+                            Need help getting started? Contact us at <a href="mailto:wellsync.lk@gmail.com">wellsync.lk@gmail.com</a>
                         </p>
                     </div>
                 </div>
