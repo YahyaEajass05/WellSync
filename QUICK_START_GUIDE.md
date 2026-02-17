@@ -6,8 +6,8 @@ Get your WellSync system up and running in 5 minutes!
 
 ## 📋 Prerequisites
 
-- **Node.js** v14+ ([Download](https://nodejs.org/))
-- **Python** 3.8+ ([Download](https://www.python.org/))
+- **Node.js** v23+ ([Download](https://nodejs.org/))
+- **Python** 13.8+ ([Download](https://www.python.org/))
 - **MongoDB** v4.4+ ([Download](https://www.mongodb.com/try/download/community))
 - **Git** ([Download](https://git-scm.com/))
 

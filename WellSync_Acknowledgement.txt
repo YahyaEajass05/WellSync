@@ -1,0 +1,21 @@
+================================================================================
+ACKNOWLEDGEMENT
+================================================================================
+
+The successful completion of the WellSync project would not have been possible without the invaluable support, guidance, and encouragement of several individuals and institutions to whom I am deeply grateful.
+
+First and foremost, I would like to express my sincere gratitude to my project supervisor, Ms. Upeka Wijeshinghe, for her exceptional guidance, unwavering support, and insightful feedback throughout the development of this project. Her expertise in the field, constructive criticism, and continuous encouragement have been instrumental in shaping this work and enhancing my understanding of artificial intelligence applications in mental health and wellness domains. Her dedication to fostering innovation and academic excellence has inspired me to push the boundaries of my capabilities.
+
+I am profoundly thankful to ICBT Campus for providing an excellent academic environment, state-of-the-art facilities, and resources that enabled me to conduct comprehensive research and development work. The institution's commitment to nurturing technological innovation and practical learning experiences has been fundamental to the realization of this project.
+
+I would also like to acknowledge the faculty members and academic staff at ICBT Campus who have contributed to my educational journey, providing me with the theoretical foundation and practical skills necessary to undertake such a complex project involving machine learning, full-stack development, and healthcare informatics.
+
+Special thanks to my family and friends for their constant support, patience, and understanding during the challenging phases of this project. Their encouragement and belief in my abilities have been a source of strength and motivation.
+
+Finally, I am grateful to all the researchers and developers in the open-source community whose contributions to machine learning frameworks, web development tools, and documentation resources have made this project possible.
+
+Thank you all for being part of this meaningful journey.
+
+================================================================================
+END OF ACKNOWLEDGEMENT
+================================================================================
