@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { BarChart3, ArrowLeft, Loader2, Info } from 'lucide-react';
+import { BarChart3, ArrowLeft, Loader2, Info, Lightbulb, X } from 'lucide-react';
 import axios from '@/lib/api/axios-instance';
 import { toast } from 'sonner';
 
@@ -14,6 +14,37 @@ export default function AcademicImpactPredictionPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [prediction, setPrediction] = useState<any>(null);
+  const [showRecommendations, setShowRecommendations] = useState(false);
+
+  const getRecommendations = (score: number) => {
+    if (score >= 7) {
+      return [
+        'Set strict time limits: Use built-in app timers to limit social media to maximum 1-2 hours per day',
+        'Install app blockers: Use tools like Freedom, Cold Turkey, or Forest during study hours to prevent access',
+        'Create phone-free study zones: Physically remove your phone from your study area, keeping it in another room',
+        'Schedule specific social media times: Allow yourself designated 15-minute social media breaks, but only after completing study goals',
+        'Seek academic support: Meet with academic advisors or tutors to develop better study strategies',
+        'Consider professional help: Talk to a counselor about developing healthier digital habits and addressing potential addiction',
+        'Delete or disable the most addictive apps: Remove apps that consume most of your time for at least 30 days',
+        'Find offline alternatives: Replace scrolling time with in-person social activities, reading, or hobbies'
+      ];
+    } else if (score >= 5) {
+      return [
+        'Limit daily usage: Set a goal of 2-3 hours maximum social media use per day using screen time tracking',
+        'Disable notifications: Turn off all non-essential notifications during study hours and before bed',
+        'Use productivity techniques: Apply the Pomodoro method (25 min focus, 5 min break) with phone kept away',
+        'Schedule social media time: Choose specific times for checking social media rather than constant checking',
+        'Track your usage: Use apps to monitor your daily usage and set weekly reduction goals'
+      ];
+    } else {
+      return [
+        'Maintain your healthy habits: Continue your balanced approach to social media and academics',
+        'Stay aware: Keep monitoring your usage patterns to ensure they remain balanced',
+        'Use Do Not Disturb: Continue using focus modes during critical study or work periods',
+        'Be a role model: Share your strategies with peers who may struggle with social media balance'
+      ];
+    }
+  };
 
   const [formData, setFormData] = useState({
     age: '',
@@ -497,6 +528,14 @@ export default function AcademicImpactPredictionPage() {
             </div>
 
             <div className="flex gap-3 pt-4">
+              <Button
+                onClick={() => setShowRecommendations(true)}
+                variant="default"
+                className="flex-1"
+              >
+                <Lightbulb className="mr-2 h-4 w-4" />
+                View Recommendations
+              </Button>
               <Button onClick={() => router.push('/predictions')} variant="outline" className="flex-1">
                 View History
               </Button>
@@ -505,6 +544,7 @@ export default function AcademicImpactPredictionPage() {
                   setPrediction(null);
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
+                variant="outline"
                 className="flex-1"
               >
                 New Prediction
@@ -512,6 +552,52 @@ export default function AcademicImpactPredictionPage() {
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {/* Recommendations Modal */}
+      {showRecommendations && prediction && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-background rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-background border-b p-6 flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold flex items-center gap-2">
+                  <Lightbulb className="h-6 w-6 text-yellow-500" />
+                  Personalized Recommendations
+                </h2>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Based on your addiction score of {prediction.score.toFixed(1)}
+                </p>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowRecommendations(false)}
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+
+            <div className="p-6 space-y-4">
+              {getRecommendations(prediction.score).map((rec, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-start gap-4 p-4 rounded-lg border bg-card hover:bg-accent/5 transition-colors"
+                >
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
+                    {idx + 1}
+                  </div>
+                  <p className="flex-1 pt-1">{rec}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="sticky bottom-0 bg-background border-t p-4 flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setShowRecommendations(false)}>
+                Close
+              </Button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

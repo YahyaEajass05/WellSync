@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Heart, ArrowLeft, Loader2, Info, AlertCircle } from 'lucide-react';
+import { Heart, ArrowLeft, Loader2, Info, AlertCircle, Lightbulb, X } from 'lucide-react';
 import axios from '@/lib/api/axios-instance';
 import { toast } from 'sonner';
 
@@ -14,6 +14,47 @@ export default function StressLevelPredictionPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [prediction, setPrediction] = useState<any>(null);
+  const [showRecommendations, setShowRecommendations] = useState(false);
+
+  const getRecommendations = (score: number) => {
+    if (score >= 8) {
+      return [
+        'URGENT: Seek professional mental health support immediately from a licensed therapist or counselor',
+        'Practice emergency stress relief: Use deep breathing exercises (4-7-8 technique) multiple times daily',
+        'Prioritize restorative sleep: Aim for 8-9 hours of sleep nightly in a dark, quiet, cool environment',
+        'Eliminate non-essential stressors: Review your commitments and temporarily remove or delegate tasks where possible',
+        'Take frequent breaks: Step away from work/study every 45-60 minutes for at least 5-10 minutes',
+        'Reduce screen exposure: Limit screen time to essential activities only, especially 2 hours before bed',
+        'Engage in gentle physical activity: Even a 10-minute walk can reduce stress hormones significantly',
+        'Connect with support systems: Talk to trusted friends, family members, or join a support group'
+      ];
+    } else if (score >= 6) {
+      return [
+        'Implement daily stress management: Practice meditation, yoga, or progressive muscle relaxation for 15-20 minutes',
+        'Improve sleep quality and duration: Establish a calming bedtime routine and aim for 7-9 hours',
+        'Reduce screen time: Cut back screen use by 1-2 hours daily, particularly before bedtime',
+        'Create regular work breaks: Use the Pomodoro Technique (25 minutes work, 5 minutes break)',
+        'Exercise regularly: Engage in moderate aerobic exercise for 30-45 minutes, 4-5 times per week',
+        'Consider professional counseling: Speaking with a therapist can provide valuable stress management strategies'
+      ];
+    } else if (score >= 3) {
+      return [
+        'Continue monitoring stress levels: Keep a stress journal to identify patterns and triggers',
+        'Maintain healthy sleep habits: Stick to your 7-9 hour sleep schedule with consistent times',
+        'Keep up regular exercise: Continue your current physical activity routine',
+        'Practice weekly mindfulness: Dedicate time each week to meditation, yoga, or relaxation',
+        'Balance work and leisure: Ensure adequate time for hobbies, socializing, and relaxation'
+      ];
+    } else {
+      return [
+        'Excellent work! Continue your current stress management practices',
+        'Maintain your healthy lifestyle habits: Keep up good sleep, exercise, and work-life balance',
+        'Stay proactive: Continue using stress management techniques to build resilience',
+        'Support others: Share your successful strategies with friends or family who may be struggling',
+        'Keep building resilience: Try new stress management techniques to expand your coping toolkit'
+      ];
+    }
+  };
 
   const [formData, setFormData] = useState({
     age: '',
@@ -522,6 +563,14 @@ export default function StressLevelPredictionPage() {
             </div>
 
             <div className="flex gap-3 pt-4">
+              <Button
+                onClick={() => setShowRecommendations(true)}
+                variant="default"
+                className="flex-1"
+              >
+                <Lightbulb className="mr-2 h-4 w-4" />
+                View Recommendations
+              </Button>
               <Button onClick={() => router.push('/predictions')} variant="outline" className="flex-1">
                 View History
               </Button>
@@ -530,6 +579,7 @@ export default function StressLevelPredictionPage() {
                   setPrediction(null);
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
+                variant="outline"
                 className="flex-1"
               >
                 New Assessment
@@ -537,6 +587,52 @@ export default function StressLevelPredictionPage() {
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {/* Recommendations Modal */}
+      {showRecommendations && prediction && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-background rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-background border-b p-6 flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold flex items-center gap-2">
+                  <Lightbulb className="h-6 w-6 text-yellow-500" />
+                  Personalized Recommendations
+                </h2>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Based on your stress level of {prediction.score.toFixed(1)} / 10
+                </p>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowRecommendations(false)}
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+
+            <div className="p-6 space-y-4">
+              {getRecommendations(prediction.score).map((rec, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-start gap-4 p-4 rounded-lg border bg-card hover:bg-accent/5 transition-colors"
+                >
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
+                    {idx + 1}
+                  </div>
+                  <p className="flex-1 pt-1">{rec}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="sticky bottom-0 bg-background border-t p-4 flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setShowRecommendations(false)}>
+                Close
+              </Button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

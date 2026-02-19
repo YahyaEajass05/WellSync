@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Brain, ArrowLeft, Loader2, Info } from 'lucide-react';
+import { Brain, ArrowLeft, Loader2, Info, Lightbulb, X } from 'lucide-react';
 import { useAuthStore } from '@/lib/store/authStore';
 import axios from '@/lib/api/axios-instance';
 import { toast } from 'sonner';
@@ -16,6 +16,44 @@ export default function MentalWellnessPredictionPage() {
   const { user } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
   const [prediction, setPrediction] = useState<any>(null);
+  const [showRecommendations, setShowRecommendations] = useState(false);
+
+  const getRecommendations = (score: number) => {
+    if (score >= 80) {
+      return [
+        'Continue your excellent sleep schedule: Maintain 7-9 hours of quality sleep each night with consistent bedtimes.',
+        'Enhance your exercise routine: Aim for 150+ minutes of moderate aerobic activity per week, plus strength training twice weekly.',
+        'Optimize screen time: Keep recreational screen use under 3 hours daily, with no screens 1 hour before bedtime.',
+        'Strengthen social connections: Schedule regular quality time with friends and family, at least 10-15 hours weekly.',
+        'Practice daily mindfulness: Dedicate 10-15 minutes to meditation, deep breathing, or journaling to maintain mental clarity.'
+      ];
+    } else if (score >= 70) {
+      return [
+        'Aim for 7-9 hours of quality sleep each night',
+        'Increase exercise to 150+ minutes per week',
+        'Reduce non-work screen time',
+        'Practice stress management techniques',
+        'Maintain work-life balance'
+      ];
+    } else if (score >= 60) {
+      return [
+        'Prioritize sleep - aim for consistent 7-9 hours',
+        'Start with 30 minutes of exercise 3x per week',
+        'Limit screen time, especially before bed',
+        'Take regular breaks from work/study',
+        'Consider mindfulness or meditation'
+      ];
+    } else {
+      return [
+        'Seek professional mental health support',
+        'Establish a consistent sleep routine',
+        'Reduce screen time significantly',
+        'Start gentle physical activity (walking, yoga)',
+        'Connect with friends and family',
+        'Consider stress counseling or therapy'
+      ];
+    }
+  };
 
   const [formData, setFormData] = useState({
     age: '',
@@ -525,6 +563,14 @@ export default function MentalWellnessPredictionPage() {
             {/* Actions */}
             <div className="flex gap-3 pt-4">
               <Button
+                onClick={() => setShowRecommendations(true)}
+                variant="default"
+                className="flex-1"
+              >
+                <Lightbulb className="mr-2 h-4 w-4" />
+                View Recommendations
+              </Button>
+              <Button
                 onClick={() => router.push('/predictions')}
                 variant="outline"
                 className="flex-1"
@@ -536,6 +582,7 @@ export default function MentalWellnessPredictionPage() {
                   setPrediction(null);
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
+                variant="outline"
                 className="flex-1"
               >
                 New Prediction
@@ -543,6 +590,55 @@ export default function MentalWellnessPredictionPage() {
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {/* Recommendations Modal */}
+      {showRecommendations && prediction && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-background rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="sticky top-0 bg-background border-b p-6 flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold flex items-center gap-2">
+                  <Lightbulb className="h-6 w-6 text-yellow-500" />
+                  Personalized Recommendations
+                </h2>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Based on your mental wellness score of {prediction.score.toFixed(1)}
+                </p>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowRecommendations(false)}
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6 space-y-4">
+              {getRecommendations(prediction.score).map((rec, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-start gap-4 p-4 rounded-lg border bg-card hover:bg-accent/5 transition-colors"
+                >
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
+                    {idx + 1}
+                  </div>
+                  <p className="flex-1 pt-1">{rec}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="sticky bottom-0 bg-background border-t p-4 flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setShowRecommendations(false)}>
+                Close
+              </Button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
