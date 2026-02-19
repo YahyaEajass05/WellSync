@@ -27,14 +27,12 @@ export default function PredictionsPage() {
             View and manage your wellness predictions
           </p>
         </div>
-        <div className="flex gap-2">
-          <Link href="/predictions/mental-wellness">
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              New Prediction
-            </Button>
-          </Link>
-        </div>
+        <Link href="/predictions/mental-wellness">
+          <Button>
+            <Plus className="mr-2 h-4 w-4" />
+            New Prediction
+          </Button>
+        </Link>
       </div>
 
       {/* Quick Actions */}
