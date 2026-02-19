@@ -96,40 +96,45 @@ export default function PredictionsPage() {
         <CardContent>
           {predictions.length > 0 ? (
             <div className="space-y-4">
-              {predictions.map((prediction) => (
-                <div
-                  key={prediction._id}
-                  className="flex items-center justify-between border rounded-lg p-4"
-                >
-                  <div className="flex items-center gap-4">
-                    <div
-                      className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold"
-                      style={{
-                        backgroundColor: `${getWellnessColor(
-                          prediction.result.prediction
-                        )}20`,
-                        color: getWellnessColor(prediction.result.prediction),
-                      }}
-                    >
-                      {prediction.result.prediction.toFixed(0)}
+              {predictions.map((prediction) => {
+                // Safely get prediction value with fallback
+                const predictionValue = prediction.result?.prediction ?? 0;
+                const predictionType = prediction.predictionType || 'unknown';
+                const displayType = predictionType.replace(/_/g, ' ');
+                
+                return (
+                  <div
+                    key={prediction._id}
+                    className="flex items-center justify-between border rounded-lg p-4"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div
+                        className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold"
+                        style={{
+                          backgroundColor: `${getWellnessColor(predictionValue)}20`,
+                          color: getWellnessColor(predictionValue),
+                        }}
+                      >
+                        {predictionValue.toFixed(0)}
+                      </div>
+                      <div>
+                        <h3 className="font-semibold capitalize">
+                          {displayType}
+                        </h3>
+                        <p className="text-sm text-muted-foreground">
+                          {prediction.result?.interpretation || 'No interpretation'}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {formatDateTime(prediction.createdAt)}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="font-semibold capitalize">
-                        {prediction.predictionType.replace('_', ' ')}
-                      </h3>
-                      <p className="text-sm text-muted-foreground">
-                        {prediction.result.interpretation || 'No interpretation'}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {formatDateTime(prediction.createdAt)}
-                      </p>
-                    </div>
+                    <Button variant="outline" size="sm">
+                      View Details
+                    </Button>
                   </div>
-                  <Button variant="outline" size="sm">
-                    View Details
-                  </Button>
-                </div>
-              ))}
+                );
+              })}
             </div>
           ) : (
             <div className="text-center py-12">
