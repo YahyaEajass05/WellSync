@@ -1,14 +1,17 @@
 'use client';
 
 import Link from 'next/link';
+import { useState } from 'react';
 import { usePredictions } from '@/lib/hooks/usePredictions';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Brain, BarChart3, Heart, Plus } from 'lucide-react';
+import { Brain, BarChart3, Heart, Plus, X, Calendar, TrendingUp, Activity } from 'lucide-react';
 import { formatDateTime, getWellnessColor } from '@/lib/utils';
+import type { Prediction } from '@/types';
 
 export default function PredictionsPage() {
   const { predictions, isLoading } = usePredictions();
+  const [selectedPrediction, setSelectedPrediction] = useState<Prediction | null>(null);
 
   if (isLoading) {
     return (
@@ -113,7 +116,7 @@ export default function PredictionsPage() {
                           color: getWellnessColor(predictionValue),
                         }}
                       >
-                        {predictionValue.toFixed(0)}
+                        {predictionValue.toFixed(1)}
                       </div>
                       <div>
                         <h3 className="font-semibold capitalize">
@@ -127,7 +130,11 @@ export default function PredictionsPage() {
                         </p>
                       </div>
                     </div>
-                    <Button variant="outline" size="sm">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => setSelectedPrediction(prediction)}
+                    >
                       View Details
                     </Button>
                   </div>
@@ -150,6 +157,154 @@ export default function PredictionsPage() {
           )}
         </CardContent>
       </Card>
+
+      {/* Prediction Details Modal */}
+      {selectedPrediction && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-background rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="sticky top-0 bg-background border-b p-6 flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold capitalize">
+                  {(selectedPrediction.predictionType || 'unknown').replace(/_/g, ' ')}
+                </h2>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {formatDateTime(selectedPrediction.createdAt)}
+                </p>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setSelectedPrediction(null)}
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6 space-y-6">
+              {/* Score Display */}
+              <div className="text-center p-6 rounded-lg border" style={{
+                backgroundColor: `${getWellnessColor(selectedPrediction.result?.prediction ?? 0)}10`,
+                borderColor: getWellnessColor(selectedPrediction.result?.prediction ?? 0)
+              }}>
+                <div className="text-5xl font-bold mb-2" style={{
+                  color: getWellnessColor(selectedPrediction.result?.prediction ?? 0)
+                }}>
+                  {(selectedPrediction.result?.prediction ?? 0).toFixed(2)}
+                </div>
+                <div className="text-lg font-semibold mb-1">
+                  {selectedPrediction.result?.interpretation || 'No interpretation'}
+                </div>
+                {selectedPrediction.result?.stressCategory && (
+                  <div className="text-sm text-muted-foreground">
+                    Category: {selectedPrediction.result.stressCategory}
+                  </div>
+                )}
+              </div>
+
+              {/* Model Information */}
+              <div>
+                <h3 className="font-semibold mb-3 flex items-center gap-2">
+                  <Activity className="h-4 w-4" />
+                  Model Information
+                </h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-3 rounded-lg bg-muted">
+                    <div className="text-xs text-muted-foreground">Model Used</div>
+                    <div className="font-medium">{selectedPrediction.result?.modelName || 'N/A'}</div>
+                  </div>
+                  <div className="p-3 rounded-lg bg-muted">
+                    <div className="text-xs text-muted-foreground">Features Processed</div>
+                    <div className="font-medium">{selectedPrediction.result?.inputFeaturesProcessed || 'N/A'}</div>
+                  </div>
+                  {selectedPrediction.result?.confidenceMetrics?.modelR2Score !== undefined && (
+                    <div className="p-3 rounded-lg bg-muted">
+                      <div className="text-xs text-muted-foreground">R² Score</div>
+                      <div className="font-medium">{(selectedPrediction.result.confidenceMetrics.modelR2Score * 100).toFixed(1)}%</div>
+                    </div>
+                  )}
+                  {selectedPrediction.result?.confidenceMetrics?.modelMAE !== undefined && (
+                    <div className="p-3 rounded-lg bg-muted">
+                      <div className="text-xs text-muted-foreground">Mean Absolute Error</div>
+                      <div className="font-medium">{selectedPrediction.result.confidenceMetrics.modelMAE.toFixed(2)}</div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Recommendations */}
+              {selectedPrediction.result?.recommendations && selectedPrediction.result.recommendations.length > 0 && (
+                <div>
+                  <h3 className="font-semibold mb-3 flex items-center gap-2">
+                    <TrendingUp className="h-4 w-4" />
+                    Recommendations
+                  </h3>
+                  <ul className="space-y-2">
+                    {selectedPrediction.result.recommendations.map((rec, idx) => (
+                      <li key={idx} className="flex items-start gap-2 p-3 rounded-lg bg-muted">
+                        <span className="text-primary mt-1">•</span>
+                        <span className="flex-1">{rec}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Input Data */}
+              <div>
+                <h3 className="font-semibold mb-3 flex items-center gap-2">
+                  <Calendar className="h-4 w-4" />
+                  Input Data
+                </h3>
+                <div className="grid grid-cols-2 gap-3">
+                  {Object.entries(selectedPrediction.inputData || {}).map(([key, value]) => (
+                    <div key={key} className="p-3 rounded-lg bg-muted">
+                      <div className="text-xs text-muted-foreground capitalize">
+                        {key.replace(/_/g, ' ')}
+                      </div>
+                      <div className="font-medium">
+                        {typeof value === 'number' ? value.toFixed(2) : String(value)}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Metadata */}
+              {selectedPrediction.metadata && (
+                <div>
+                  <h3 className="font-semibold mb-3">Metadata</h3>
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    {selectedPrediction.metadata.processingTime && (
+                      <div className="p-3 rounded-lg bg-muted">
+                        <div className="text-xs text-muted-foreground">Processing Time</div>
+                        <div className="font-medium">{selectedPrediction.metadata.processingTime}ms</div>
+                      </div>
+                    )}
+                    {selectedPrediction.metadata.apiVersion && (
+                      <div className="p-3 rounded-lg bg-muted">
+                        <div className="text-xs text-muted-foreground">API Version</div>
+                        <div className="font-medium">{selectedPrediction.metadata.apiVersion}</div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="sticky bottom-0 bg-background border-t p-4 flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setSelectedPrediction(null)}>
+                Close
+              </Button>
+              <Button>
+                Email Report
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
