@@ -5,13 +5,30 @@ import { useState } from 'react';
 import { usePredictions } from '@/lib/hooks/usePredictions';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Brain, BarChart3, Heart, Plus, X, Calendar, TrendingUp, Activity } from 'lucide-react';
+import { Brain, BarChart3, Heart, Plus, X, Calendar, TrendingUp, Activity, Mail } from 'lucide-react';
 import { formatDateTime, getWellnessColor } from '@/lib/utils';
+import { predictionsApi } from '@/lib/api';
+import { toast } from 'sonner';
 import type { Prediction } from '@/types';
 
 export default function PredictionsPage() {
   const { predictions, isLoading } = usePredictions();
   const [selectedPrediction, setSelectedPrediction] = useState<Prediction | null>(null);
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
+
+  const handleEmailReport = async () => {
+    if (!selectedPrediction) return;
+
+    setIsSendingEmail(true);
+    try {
+      await predictionsApi.emailReport(selectedPrediction._id);
+      toast.success('Prediction report sent to your email!');
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to send email report');
+    } finally {
+      setIsSendingEmail(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -298,8 +315,21 @@ export default function PredictionsPage() {
               <Button variant="outline" onClick={() => setSelectedPrediction(null)}>
                 Close
               </Button>
-              <Button>
-                Email Report
+              <Button 
+                onClick={handleEmailReport}
+                disabled={isSendingEmail}
+              >
+                {isSendingEmail ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <Mail className="mr-2 h-4 w-4" />
+                    Email Report
+                  </>
+                )}
               </Button>
             </div>
           </div>
