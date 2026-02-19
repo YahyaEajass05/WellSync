@@ -223,15 +223,84 @@ export default function AcademicImpactPredictionPage() {
 
                 <div>
                   <Label htmlFor="country">Country *</Label>
-                  <Input
+                  <select
                     id="country"
                     name="country"
-                    type="text"
                     required
                     value={formData.country}
                     onChange={handleInputChange}
-                    placeholder="e.g., USA"
-                  />
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  >
+                    <option value="USA">United States</option>
+                    <option value="UK">United Kingdom</option>
+                    <option value="Canada">Canada</option>
+                    <option value="Australia">Australia</option>
+                    <option value="India">India</option>
+                    <option value="China">China</option>
+                    <option value="Japan">Japan</option>
+                    <option value="Germany">Germany</option>
+                    <option value="France">France</option>
+                    <option value="Italy">Italy</option>
+                    <option value="Spain">Spain</option>
+                    <option value="Brazil">Brazil</option>
+                    <option value="Mexico">Mexico</option>
+                    <option value="South Korea">South Korea</option>
+                    <option value="Indonesia">Indonesia</option>
+                    <option value="Pakistan">Pakistan</option>
+                    <option value="Bangladesh">Bangladesh</option>
+                    <option value="Nigeria">Nigeria</option>
+                    <option value="Egypt">Egypt</option>
+                    <option value="South Africa">South Africa</option>
+                    <option value="Turkey">Turkey</option>
+                    <option value="Iran">Iran</option>
+                    <option value="Thailand">Thailand</option>
+                    <option value="Vietnam">Vietnam</option>
+                    <option value="Philippines">Philippines</option>
+                    <option value="Poland">Poland</option>
+                    <option value="Ukraine">Ukraine</option>
+                    <option value="Malaysia">Malaysia</option>
+                    <option value="Saudi Arabia">Saudi Arabia</option>
+                    <option value="Argentina">Argentina</option>
+                    <option value="Colombia">Colombia</option>
+                    <option value="Peru">Peru</option>
+                    <option value="Netherlands">Netherlands</option>
+                    <option value="Belgium">Belgium</option>
+                    <option value="Sweden">Sweden</option>
+                    <option value="Switzerland">Switzerland</option>
+                    <option value="Norway">Norway</option>
+                    <option value="Denmark">Denmark</option>
+                    <option value="Finland">Finland</option>
+                    <option value="Austria">Austria</option>
+                    <option value="Portugal">Portugal</option>
+                    <option value="Greece">Greece</option>
+                    <option value="Czech Republic">Czech Republic</option>
+                    <option value="Romania">Romania</option>
+                    <option value="Hungary">Hungary</option>
+                    <option value="New Zealand">New Zealand</option>
+                    <option value="Singapore">Singapore</option>
+                    <option value="UAE">United Arab Emirates</option>
+                    <option value="Israel">Israel</option>
+                    <option value="Ireland">Ireland</option>
+                    <option value="Sri Lanka">Sri Lanka</option>
+                    <option value="Nepal">Nepal</option>
+                    <option value="Myanmar">Myanmar</option>
+                    <option value="Kenya">Kenya</option>
+                    <option value="Ethiopia">Ethiopia</option>
+                    <option value="Ghana">Ghana</option>
+                    <option value="Morocco">Morocco</option>
+                    <option value="Algeria">Algeria</option>
+                    <option value="Tunisia">Tunisia</option>
+                    <option value="Chile">Chile</option>
+                    <option value="Venezuela">Venezuela</option>
+                    <option value="Ecuador">Ecuador</option>
+                    <option value="Bolivia">Bolivia</option>
+                    <option value="Paraguay">Paraguay</option>
+                    <option value="Uruguay">Uruguay</option>
+                    <option value="Costa Rica">Costa Rica</option>
+                    <option value="Panama">Panama</option>
+                    <option value="Jamaica">Jamaica</option>
+                    <option value="Other">Other</option>
+                  </select>
                 </div>
 
                 <div>
