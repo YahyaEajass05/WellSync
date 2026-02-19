@@ -286,22 +286,11 @@ exports.getPredictions = asyncHandler(async (req, res) => {
     res.status(200).json({
         success: true,
         data: {
-            predictions: predictions.map(p => ({
-                id: p._id,
-                type: p.predictionType,
-                score: p.result.prediction,
-                interpretation: p.result.interpretation,
-                modelUsed: p.result.modelName,
-                createdAt: p.createdAt,
-                isFavorite: p.isFavorite,
-                tags: p.tags
-            })),
-            pagination: {
-                total,
-                page: parseInt(page),
-                pages: Math.ceil(total / parseInt(limit)),
-                limit: parseInt(limit)
-            }
+            predictions,  // Return full prediction objects
+            total,
+            page: parseInt(page),
+            limit: parseInt(limit),
+            pages: Math.ceil(total / parseInt(limit))
         }
     });
 });
