@@ -480,6 +480,19 @@ exports.emailPredictionReport = asyncHandler(async (req, res) => {
  * @access  Private
  */
 exports.downloadPredictionPDF = asyncHandler(async (req, res) => {
+    const User = require('../models/User');
+    const { generatePredictionReportPDF } = require('../utils/pdfGenerator');
+
+    // Fetch full user object with firstName and lastName
+    const user = await User.findById(req.user.id).select('firstName lastName email');
+
+    if (!user) {
+        return res.status(404).json({
+            success: false,
+            error: 'User not found'
+        });
+    }
+
     const prediction = await Prediction.findOne({
         _id: req.params.id,
         user: req.user.id
@@ -492,11 +505,9 @@ exports.downloadPredictionPDF = asyncHandler(async (req, res) => {
         });
     }
 
-    const { generatePredictionReportPDF } = require('../utils/pdfGenerator');
-    
     try {
-        // Generate PDF
-        const pdfBuffer = await generatePredictionReportPDF(req.user, prediction);
+        // Generate PDF with full user object
+        const pdfBuffer = await generatePredictionReportPDF(user, prediction);
         
         const predictionType = prediction.predictionType === 'mental_wellness' 
             ? 'Mental_Wellness' 
@@ -514,12 +525,13 @@ exports.downloadPredictionPDF = asyncHandler(async (req, res) => {
         // Send PDF buffer
         res.send(pdfBuffer);
         
-        logger.info(`PDF downloaded for prediction ${prediction._id} by user ${req.user.email}`);
+        logger.info(`PDF downloaded for prediction ${prediction._id} by user ${user.email}`);
     } catch (error) {
-        logger.error(`PDF generation error: ${error.message}`);
+        logger.error(`PDF generation error: ${error.message}`, { stack: error.stack });
         return res.status(500).json({
             success: false,
-            error: 'Failed to generate PDF report'
+            error: 'Failed to generate PDF report',
+            details: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
 });
