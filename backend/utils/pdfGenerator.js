@@ -451,96 +451,155 @@ function getDetailedRecommendations(predictionData) {
     const score = predictionData.result.prediction;
     const type = predictionData.predictionType;
     
-    // Use AI model recommendations if available
-    if (predictionData.result.recommendations && Array.isArray(predictionData.result.recommendations)) {
+    // Use AI model recommendations if available (stress level from AI)
+    if (type === 'stress_level' && predictionData.result.recommendations && 
+        Array.isArray(predictionData.result.recommendations) && 
+        predictionData.result.recommendations.length > 0) {
         return predictionData.result.recommendations;
     }
     
     const recs = [];
     
     if (type === 'mental_wellness') {
-        if (score >= 70) {
+        if (score >= 80) {
+            // EXCELLENT (80-100)
             recs.push(
-                'Continue your excellent sleep schedule: Maintain 7-9 hours of quality sleep each night with consistent bedtimes.',
-                'Enhance your exercise routine: Aim for 150+ minutes of moderate aerobic activity per week, plus strength training twice weekly.',
-                'Optimize screen time: Keep recreational screen use under 3 hours daily, with no screens 1 hour before bedtime.',
-                'Strengthen social connections: Schedule regular quality time with friends and family, at least 10-15 hours weekly.',
-                'Practice daily mindfulness: Dedicate 10-15 minutes to meditation, deep breathing, or journaling to maintain mental clarity.'
+                '🌟 EXCELLENT WELLNESS - Score: ' + score.toFixed(1) + '/100',
+                'Sleep Optimization: Your sleep is great! Continue maintaining 7-9 hours with a consistent schedule. Try adding relaxation techniques like gentle stretching or reading before bed to further enhance sleep quality.',
+                'Exercise Excellence: Maintain your 150+ minutes/week of aerobic activity. Add variety with swimming, cycling, or yoga to prevent workout monotony and challenge different muscle groups.',
+                'Screen Time Management: Your screen habits are excellent. Continue limiting recreational screen use to under 3 hours daily. Explore digital detox weekends periodically to recharge.',
+                'Social Connection: Keep nurturing your relationships. Schedule regular meaningful activities with friends and family. Consider mentoring others or joining community volunteer groups.',
+                'Mindfulness Practice: You\'re thriving! Deepen your practice with advanced meditation techniques like body scan or loving-kindness meditation for 15-20 minutes daily.',
+                'Nutrition & Hydration: Complement your wellness by eating a balanced diet rich in omega-3s, antioxidants, and staying hydrated with 8+ glasses of water daily.',
+                'Goal Setting: Set new wellness challenges - maybe a 5K run, a new sport, or a creative hobby to keep growing and stimulated.'
+            );
+        } else if (score >= 70) {
+            // GOOD (70-79)
+            recs.push(
+                '💙 GOOD WELLNESS - Score: ' + score.toFixed(1) + '/100',
+                'Sleep Improvement: You\'re doing well but aim for consistent 7-9 hours. Set a fixed bedtime alarm and create a wind-down routine: dim lights 30 minutes before bed and avoid caffeine after 2 PM.',
+                'Exercise Boost: Increase to 150 minutes/week of moderate aerobic exercise. Try brisk walking, swimming, or cycling. Add 2 strength training sessions weekly to boost mood and energy.',
+                'Screen Time Reduction: Cut leisure screen time by 30 minutes daily. Replace with outdoor activities, reading, or in-person socializing. Use app timers to enforce limits.',
+                'Stress Management: Introduce 10-minute daily meditation using apps like Headspace or Calm. Practice box breathing (4 counts in, hold, out, hold) when feeling overwhelmed.',
+                'Social Enhancement: Schedule at least one meaningful social activity weekly. Reconnect with someone you\'ve lost touch with. Quality over quantity in relationships matters most.',
+                'Productivity Optimization: Use the Pomodoro technique (25 min focus, 5 min break) to improve study/work efficiency and reduce mental fatigue.',
+                'Wellness Tracking: Start a wellness journal to track sleep, mood, exercise, and social time to identify patterns and areas for improvement.'
+            );
+        } else if (score >= 60) {
+            // BELOW AVERAGE (60-69)
+            recs.push(
+                '⚠️ BELOW AVERAGE WELLNESS - Score: ' + score.toFixed(1) + '/100 - Action Needed',
+                'Sleep Priority: Sleep deprivation is likely affecting your wellness. Create a strict sleep schedule, eliminate all screens 1 hour before bed, keep your bedroom cool (65-68°F), and use blackout curtains for better sleep quality.',
+                'Exercise Start: Begin with just 20-30 minutes of walking 3 times per week. Exercise releases endorphins that directly improve mental wellness. Even short walks after meals make a significant difference.',
+                'Screen Time Intervention: Immediately reduce screen time by 1-2 hours daily. Set app usage limits on your phone. Replace screen time with outdoor activities, reading, or face-to-face interactions.',
+                'Stress Reduction: Practice deep breathing for 5 minutes, 3 times daily. Download a free meditation app and commit to 10 minutes daily. Identify your top 3 stressors and create action plans for each.',
+                'Social Reconnection: Social isolation worsens wellness scores. Commit to at least 2 meaningful social interactions weekly - coffee with a friend, a club activity, or family dinner.',
+                'Professional Support: Consider consulting with a campus counselor, life coach, or therapist. Many offer free or low-cost sessions for students. Professional guidance can accelerate your wellness improvement.',
+                'Nutrition Focus: Improve your diet by adding more fruits, vegetables, and whole grains. Reduce processed foods, sugar, and excessive caffeine. Proper nutrition directly supports mental wellness.'
             );
         } else {
+            // POOR (below 60)
             recs.push(
-                'Establish a consistent sleep routine: Set a regular bedtime, create a relaxing pre-sleep ritual, and aim for 7-9 hours nightly.',
-                'Start a gentle exercise program: Begin with 30 minutes of walking or light activity 3-4 times per week, gradually increasing intensity.',
-                'Reduce screen time significantly: Limit total daily screen use to 8 hours or less, taking 5-minute breaks every hour.',
-                'Increase social engagement: Reach out to friends and family regularly, join social groups or clubs that interest you.',
-                'Seek professional support: Consider consulting with a mental health professional or wellness coach for personalized guidance.',
-                'Practice stress reduction: Learn and apply relaxation techniques such as progressive muscle relaxation or guided meditation.'
+                '🚨 POOR WELLNESS - Score: ' + score.toFixed(1) + '/100 - Immediate Action Required',
+                'URGENT - Seek Professional Help: Please consult with a mental health professional, campus counselor, or your doctor as soon as possible. Your score indicates multiple lifestyle factors significantly impacting your wellbeing.',
+                'Emergency Sleep Protocol: Your sleep needs immediate attention. Set a non-negotiable sleep schedule (same time every night). Remove all electronics from your bedroom. Use a sleep tracker app to monitor and improve quality.',
+                'Gentle Exercise Start: Even 10 minutes of walking daily can begin improving your mood through endorphin release. Start small - a walk around the block after breakfast or dinner. Gradually build to 30 minutes daily.',
+                'Digital Detox: Drastically reduce screen time. Try a 24-hour digital detox this weekend. Delete social media apps temporarily. Replace screen time with nature walks, journaling, or creative activities.',
+                'Immediate Stress Relief: Your stress levels need urgent attention. Practice 4-7-8 breathing immediately when stressed (inhale 4s, hold 7s, exhale 8s). Consider calling a mental health helpline for immediate support.',
+                'Rebuild Social Connections: Isolation compounds poor wellness scores. Reach out to at least one trusted person today - a friend, family member, or counselor. Connection is vital for recovery.',
+                'Lifestyle Overhaul: Create a comprehensive wellness plan with small, daily goals. Track water intake (8 glasses), meals (3 balanced meals), sleep (7-9 hours), and movement (10+ minutes). Use a habit tracking app.',
+                'Campus Resources: Utilize available resources - student wellness centers, peer support groups, academic advisors, and mental health services. You don\'t have to navigate this alone.'
             );
         }
     } else if (type === 'stress_level') {
         if (score >= 8) {
+            // VERY HIGH STRESS (8-10)
             recs.push(
-                'URGENT: Seek professional mental health support immediately from a licensed therapist or counselor.',
-                'Practice emergency stress relief: Use deep breathing exercises (4-7-8 technique) multiple times daily, especially when feeling overwhelmed.',
-                'Prioritize restorative sleep: Aim for 8-9 hours of sleep nightly. Create a dark, quiet, cool sleeping environment.',
-                'Eliminate non-essential stressors: Review your commitments and temporarily remove or delegate tasks where possible.',
-                'Take frequent breaks: Step away from work/study every 45-60 minutes for at least 5-10 minutes of movement or relaxation.',
-                'Reduce screen exposure: Limit screen time to essential activities only, especially avoiding screens 2 hours before bed.',
-                'Engage in gentle physical activity: Even a 10-minute walk can reduce stress hormones significantly.',
-                'Connect with support systems: Talk to trusted friends, family members, or join a support group to share your experiences.'
+                '🚨 VERY HIGH STRESS - Score: ' + score.toFixed(1) + '/10 - URGENT ATTENTION NEEDED',
+                'Seek Immediate Professional Help: Contact a mental health professional, therapist, or counselor TODAY. Very high stress can cause serious physical and mental health complications. Many campuses offer same-day crisis counseling.',
+                'Emergency Breathing Technique: Practice 4-7-8 breathing immediately: inhale through nose for 4 counts, hold for 7 counts, exhale through mouth for 8 counts. Repeat 4 times. Do this every hour.',
+                'Radical Schedule Reduction: Identify and immediately drop or delegate non-essential commitments. Your health comes first. Talk to professors about extensions or accommodations if needed.',
+                'Restorative Sleep Protocol: Aim for 8-9 hours regardless of workload. Sleep deprivation multiplies stress effects. Create a sleep sanctuary: dark, cool, quiet, and screen-free environment.',
+                'Physical Movement Now: Even a 10-minute walk significantly reduces cortisol (stress hormone) levels. Step outside immediately when feeling overwhelmed. Nature exposure reduces stress by 20-30%.',
+                'Remove Digital Stressors: Mute or delete social media apps temporarily. Turn off all news notifications. Limit screen time to essential activities only. Set phone to Do Not Disturb mode.',
+                'Build Support Network: Call or message a trusted person RIGHT NOW. Don\'t face this alone. Consider joining a peer support group or stress management workshop at your institution.',
+                'Crisis Resources: If stress feels overwhelming, contact the Student Wellness Center, National Mental Health Helpline (1-800-950-6264), or Crisis Text Line (text HOME to 741741) for immediate support.'
             );
         } else if (score >= 6) {
+            // HIGH STRESS (6-7)
             recs.push(
-                'Implement daily stress management: Practice meditation, yoga, or progressive muscle relaxation for 15-20 minutes daily.',
-                'Improve sleep quality and duration: Establish a calming bedtime routine and aim for 7-9 hours of quality sleep.',
-                'Reduce screen time: Cut back screen use by 1-2 hours daily, particularly avoiding screens before bedtime.',
-                'Create regular work breaks: Use the Pomodoro Technique (25 minutes work, 5 minutes break) to prevent stress buildup.',
-                'Exercise regularly: Engage in moderate aerobic exercise for 30-45 minutes, 4-5 times per week.',
-                'Consider professional counseling: Speaking with a therapist can provide valuable stress management strategies.'
+                '🔴 HIGH STRESS - Score: ' + score.toFixed(1) + '/10 - Action Required',
+                'Professional Support: Schedule an appointment with a counselor or therapist this week. High stress needs professional management strategies tailored to your specific situation and stressors.',
+                'Daily Mindfulness Practice: Commit to 15-20 minutes of meditation daily using apps like Headspace, Calm, or Insight Timer. Research shows consistent meditation reduces stress hormones by up to 30%.',
+                'Sleep Quality Focus: Establish a strict 7-9 hour sleep schedule. Create a 30-minute wind-down routine: reduce lighting, do light stretching, practice gratitude journaling, and avoid screens.',
+                'Regular Exercise: Aim for 30-45 minutes of moderate aerobic exercise 4-5 times weekly. Exercise is scientifically proven to be as effective as medication for mild-moderate stress and anxiety.',
+                'Pomodoro Work Technique: Work in focused 25-minute intervals with 5-minute breaks. After 4 cycles, take a 30-minute break. This prevents stress accumulation and maintains productivity.',
+                'Limit Stimulants: Reduce caffeine intake (max 2 cups coffee/day), avoid energy drinks, and eliminate alcohol which worsens anxiety and sleep quality despite initial relaxation sensation.',
+                'Nature Therapy: Spend at least 20-30 minutes outdoors daily. Research shows nature exposure significantly reduces cortisol levels and improves mood within minutes of being in green spaces.'
             );
         } else if (score >= 3) {
+            // MODERATE STRESS (3-5)
             recs.push(
-                'Continue monitoring stress levels: Keep a stress journal to identify patterns and triggers.',
-                'Maintain healthy sleep habits: Stick to your 7-9 hour sleep schedule with consistent times.',
-                'Keep up regular exercise: Continue your current physical activity routine to manage stress naturally.',
-                'Practice weekly mindfulness: Dedicate time each week to meditation, yoga, or other relaxation practices.',
-                'Balance work and leisure: Ensure you have adequate time for hobbies, socializing, and relaxation.'
+                '🟡 MODERATE STRESS - Score: ' + score.toFixed(1) + '/10 - Monitor and Manage',
+                'Stress Journaling: Keep a daily stress journal. Note stress triggers, intensity (1-10), and what helped reduce it. This awareness helps identify patterns and develop targeted coping strategies.',
+                'Consistent Sleep Schedule: Maintain your 7-9 hours with consistent wake times even on weekends. Irregular sleep patterns increase cortisol levels and worsen stress responses.',
+                'Regular Physical Activity: Ensure 150 minutes of moderate exercise weekly. Your current activity is helping - keep it consistent. Try adding yoga or tai chi for combined physical and mental benefits.',
+                'Mindfulness Integration: Practice 10-minute mindfulness meditation daily. Try mindful eating, mindful walking, or brief breathing exercises between tasks to maintain your stress at manageable levels.',
+                'Social Balance: Ensure adequate social connection. Plan one enjoyable social activity weekly. Strong social connections are the #1 predictor of stress resilience and mental wellness.',
+                'Time Management: Use a weekly planner to balance responsibilities. Prioritize tasks using the Eisenhower matrix (urgent/important grid) to reduce overwhelm and increase sense of control.',
+                'Preventive Self-Care: Schedule weekly self-care activities - hobbies, relaxation, or leisure. Prevention is easier than treatment when it comes to stress management.'
             );
         } else {
+            // LOW STRESS (0-2)
             recs.push(
-                'Excellent work! Continue your current stress management practices that are working so well.',
-                'Maintain your healthy lifestyle habits: Keep up your good sleep, exercise, and work-life balance.',
-                'Stay proactive: Continue using stress management techniques even when stress is low to build resilience.',
-                'Support others: Share your successful stress management strategies with friends or family who may be struggling.',
-                'Keep building resilience: Try new stress management techniques to expand your coping toolkit for future challenges.'
+                '✅ LOW STRESS - Score: ' + score.toFixed(1) + '/10 - Excellent Stress Management!',
+                'Celebrate and Maintain: Your stress management is exemplary! Identify exactly what\'s working (sleep quality, exercise, social support, time management) and consciously maintain these practices.',
+                'Build Stress Resilience: Use this low-stress period to strengthen your coping toolkit. Learn advanced techniques like progressive muscle relaxation or biofeedback to handle future stressors.',
+                'Share Your Strategies: Consider sharing your successful stress management approaches with peers, younger students, or through student wellness groups. Teaching reinforces your own practices.',
+                'Set Growth Goals: With stress well-managed, focus energy on personal and academic growth. Pursue a new skill, physical challenge, or meaningful project that brings purpose and fulfillment.',
+                'Maintain Healthy Routines: Continue your good sleep hygiene, exercise habits, and social connections. These are the foundations of your excellent stress resilience.',
+                'Proactive Planning: Identify upcoming potential stressors (exams, projects, transitions) and create proactive plans to maintain your low stress levels during challenging periods.',
+                'Wellness Leadership: You\'re in an excellent position to model and promote mental wellness. Consider peer mentoring, wellness advocacy, or supporting friends who may be struggling.'
             );
         }
     } else { // academic_impact
         if (score >= 7) {
+            // HIGH RISK (7-9)
             recs.push(
-                'Set strict time limits: Use built-in app timers to limit social media to maximum 1-2 hours per day.',
-                'Install app blockers: Use tools like Freedom, Cold Turkey, or Forest during study hours to prevent access.',
-                'Create phone-free study zones: Physically remove your phone from your study area, keeping it in another room.',
-                'Schedule specific social media times: Allow yourself designated 15-minute social media breaks, but only after completing study goals.',
-                'Seek academic support: Meet with academic advisors or tutors to develop better study strategies.',
-                'Consider professional help: Talk to a counselor about developing healthier digital habits and addressing potential addiction.',
-                'Delete or disable the most addictive apps: Remove apps that consume most of your time for at least 30 days.',
-                'Find offline alternatives: Replace scrolling time with in-person social activities, reading, or hobbies.'
+                '🚨 HIGH ADDICTION RISK - Score: ' + score.toFixed(1) + '/9 - Immediate Intervention Required',
+                'Emergency Digital Intervention: Delete or temporarily deactivate the top 2-3 most addictive social media apps from your phone TODAY. Research shows a 30-day break significantly resets dopamine patterns.',
+                'Strict App Time Limits: Use Screen Time (iOS) or Digital Wellbeing (Android) to set hard limits of 30-60 minutes maximum total social media daily. Enable downtime during study hours (e.g., 8am-6pm).',
+                'Phone-Free Study Environment: Place your phone in another room or a locked drawer during all study sessions. Purchase a cheap digital clock so you don\'t need your phone to check time.',
+                'Academic Recovery Plan: Meet with your academic advisor or counselor this week to assess academic damage and create a recovery plan. Explore options for grade appeals, incomplete grades, or additional support.',
+                'Replace Digital Habits: Fill social media time with in-person activities: campus clubs, sports teams, study groups, volunteer work, or creative hobbies. These provide the social connection social media simulates.',
+                'Professional Digital Wellness Counseling: Seek guidance from a counselor specializing in digital addiction or behavioral health. Many campuses offer free counseling services that address technology addiction.',
+                'Accountability Partner: Ask a trusted friend or family member to help monitor and support your digital reduction goals. Share your screen time reports with them weekly for accountability.',
+                'Reward Progress: Create a reward system for hitting daily screen time goals. After 1 week under target: a favorite meal. After 2 weeks: a special activity. After 1 month: a meaningful reward.'
             );
         } else if (score >= 5) {
+            // MODERATE RISK (5-6)
             recs.push(
-                'Limit daily usage: Set a goal of 2-3 hours maximum social media use per day using screen time tracking.',
-                'Disable notifications: Turn off all non-essential notifications during study hours and before bed.',
-                'Use productivity techniques: Apply the Pomodoro method (25 min focus, 5 min break) with phone kept away.',
-                'Schedule social media time: Choose specific times for checking social media rather than constant checking.',
-                'Track your usage: Use apps to monitor your daily usage and set weekly reduction goals.'
+                '🟡 MODERATE ADDICTION RISK - Score: ' + score.toFixed(1) + '/9 - Reduction Needed',
+                'Set Daily Usage Caps: Implement a maximum 2-3 hours total social media daily. Use app timers and check your weekly Screen Time or Digital Wellbeing report every Sunday to track progress.',
+                'Notification Audit: Turn off ALL non-essential notifications immediately. Keep only calls and messages from close contacts. Each notification interrupts 23 minutes of focused work on average.',
+                'Structured Study Blocks: Use the Pomodoro technique - 25 minutes focused work with phone face-down in another room, then 5 minutes break. Social media during break only after completing the block.',
+                'Designated Social Media Hours: Limit checking to 3 specific times daily (e.g., 8am, 12pm, 6pm) for maximum 20-30 minutes each. Avoid first thing in the morning and before bed.',
+                'Study Space Optimization: Create a dedicated, phone-free study space. Research shows even phone visibility (face-down on desk) reduces cognitive capacity by occupying background mental resources.',
+                'Track Academic Impact: Compare your grades/performance before and after implementing limits. Seeing concrete academic improvement provides powerful motivation to maintain reduced usage.',
+                'Offline Social Activities: Replace 30 minutes of daily scrolling with in-person activities - campus events, sports, clubs, or coffee with friends. Real connection is more fulfilling than digital.',
+                'App Replacement Strategy: For each social app you reduce, substitute a productive app - a language learning app, podcast, audiobook, or creative tool for the same time slot.'
             );
         } else {
+            // LOW RISK (2-4)
             recs.push(
-                'Maintain your healthy habits: Continue your balanced approach to social media and academics.',
-                'Stay aware: Keep monitoring your usage patterns to ensure they remain balanced.',
-                'Use Do Not Disturb: Continue using focus modes during critical study or work periods.',
-                'Be a role model: Share your strategies with peers who may struggle with social media balance.'
+                '✅ LOW ADDICTION RISK - Score: ' + score.toFixed(1) + '/9 - Healthy Digital Balance',
+                'Maintain Your Balance: Excellent job managing social media alongside academics! Continue your current approach of setting boundaries between digital engagement and study time.',
+                'Awareness Monitoring: Do a monthly check-in of your screen time reports. Catching upward trends early is much easier than reversing established addiction patterns.',
+                'Optimize Study Effectiveness: Since your digital habits are healthy, focus on optimizing study techniques - spaced repetition, active recall, and interleaved practice for maximum academic performance.',
+                'Strategic Social Media Use: Use social media as a purposeful tool - for academic networking, research, joining study groups, or following educational content rather than passive scrolling.',
+                'Digital Focus Tools: Explore productivity apps like Forest (gamifies phone-free focus), Freedom (website blocker), or Notion (organized note-taking) to further enhance your academic performance.',
+                'Share Your Success: Consider sharing your effective study and digital balance strategies with peers or through student wellness programs. Your approach could benefit many struggling students.',
+                'Future-Proofing: As coursework intensifies, proactively plan how to maintain your healthy balance. Having strategies ready before stress peaks prevents reactive overuse of social media as an escape.'
             );
         }
     }
