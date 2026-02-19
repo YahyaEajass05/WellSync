@@ -6,15 +6,61 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Heart, ArrowLeft, Loader2, Info, AlertCircle, Lightbulb, X } from 'lucide-react';
+import { Heart, ArrowLeft, Loader2, Info, AlertCircle, Lightbulb, X, Mail, Download } from 'lucide-react';
 import axios from '@/lib/api/axios-instance';
 import { toast } from 'sonner';
+import { predictionsApi } from '@/lib/api';
 
 export default function StressLevelPredictionPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [prediction, setPrediction] = useState<any>(null);
   const [showRecommendations, setShowRecommendations] = useState(false);
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);
+
+  const handleEmailReport = async () => {
+    if (!prediction?.id) return;
+    
+    setIsSendingEmail(true);
+    try {
+      await predictionsApi.emailReport(prediction.id);
+      toast.success('Report sent to your email!');
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to send email');
+    } finally {
+      setIsSendingEmail(false);
+    }
+  };
+
+  const handleDownloadPDF = async () => {
+    if (!prediction?.id) return;
+    
+    setIsDownloadingPDF(true);
+    try {
+      // Request PDF from backend
+      const response = await axios.get(`/predictions/${prediction.id}/pdf`, {
+        responseType: 'blob'
+      });
+      
+      // Create blob link to download
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `Stress_Level_Report_${new Date().toISOString().split('T')[0]}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+      
+      toast.success('PDF downloaded successfully!');
+    } catch (error: any) {
+      console.error('PDF download error:', error);
+      toast.error('Failed to download PDF. Please try email report instead.');
+    } finally {
+      setIsDownloadingPDF(false);
+    }
+  };
 
   const getRecommendations = (score: number) => {
     if (score >= 8) {
@@ -562,28 +608,65 @@ export default function StressLevelPredictionPage() {
               </div>
             </div>
 
-            <div className="flex gap-3 pt-4">
-              <Button
-                onClick={() => setShowRecommendations(true)}
-                variant="default"
-                className="flex-1"
-              >
-                <Lightbulb className="mr-2 h-4 w-4" />
-                View Recommendations
-              </Button>
-              <Button onClick={() => router.push('/predictions')} variant="outline" className="flex-1">
-                View History
-              </Button>
-              <Button
-                onClick={() => {
-                  setPrediction(null);
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
-                variant="outline"
-                className="flex-1"
-              >
-                New Assessment
-              </Button>
+            <div className="space-y-3 pt-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <Button
+                  onClick={() => setShowRecommendations(true)}
+                  variant="default"
+                >
+                  <Lightbulb className="mr-2 h-4 w-4" />
+                  View Recommendations
+                </Button>
+                <Button
+                  onClick={handleEmailReport}
+                  disabled={isSendingEmail}
+                  variant="default"
+                >
+                  {isSendingEmail ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <Mail className="mr-2 h-4 w-4" />
+                      Email Report
+                    </>
+                  )}
+                </Button>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <Button
+                  onClick={handleDownloadPDF}
+                  disabled={isDownloadingPDF}
+                  variant="outline"
+                >
+                  {isDownloadingPDF ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Downloading...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="mr-2 h-4 w-4" />
+                      Download PDF
+                    </>
+                  )}
+                </Button>
+                <Button onClick={() => router.push('/predictions')} variant="outline">
+                  View History
+                </Button>
+                <Button
+                  onClick={() => {
+                    setPrediction(null);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  variant="outline"
+                >
+                  New Assessment
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>

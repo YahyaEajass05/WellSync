@@ -475,6 +475,56 @@ exports.emailPredictionReport = asyncHandler(async (req, res) => {
 });
 
 /**
+ * @desc    Download prediction report as PDF
+ * @route   GET /api/predictions/:id/pdf
+ * @access  Private
+ */
+exports.downloadPredictionPDF = asyncHandler(async (req, res) => {
+    const prediction = await Prediction.findOne({
+        _id: req.params.id,
+        user: req.user.id
+    });
+
+    if (!prediction) {
+        return res.status(404).json({
+            success: false,
+            error: 'Prediction not found'
+        });
+    }
+
+    const { generatePredictionReportPDF } = require('../utils/pdfGenerator');
+    
+    try {
+        // Generate PDF
+        const pdfBuffer = await generatePredictionReportPDF(req.user, prediction);
+        
+        const predictionType = prediction.predictionType === 'mental_wellness' 
+            ? 'Mental_Wellness' 
+            : prediction.predictionType === 'academic_impact'
+            ? 'Academic_Impact'
+            : 'Stress_Level';
+        
+        const filename = `WellSync_${predictionType}_Report_${new Date().toISOString().split('T')[0]}.pdf`;
+        
+        // Set headers for PDF download
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+        res.setHeader('Content-Length', pdfBuffer.length);
+        
+        // Send PDF buffer
+        res.send(pdfBuffer);
+        
+        logger.info(`PDF downloaded for prediction ${prediction._id} by user ${req.user.email}`);
+    } catch (error) {
+        logger.error(`PDF generation error: ${error.message}`);
+        return res.status(500).json({
+            success: false,
+            error: 'Failed to generate PDF report'
+        });
+    }
+});
+
+/**
  * @desc    Get example input data
  * @route   GET /api/predictions/examples/:type
  * @access  Public
