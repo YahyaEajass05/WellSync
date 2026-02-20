@@ -14,7 +14,17 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('token');
+      // Try direct token first, then Zustand persisted auth-storage
+      let token = localStorage.getItem('token');
+      if (!token) {
+        try {
+          const authStorage = localStorage.getItem('auth-storage');
+          if (authStorage) {
+            const parsed = JSON.parse(authStorage);
+            token = parsed?.state?.token || null;
+          }
+        } catch {}
+      }
       if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
       }
