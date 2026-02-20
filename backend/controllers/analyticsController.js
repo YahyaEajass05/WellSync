@@ -72,39 +72,34 @@ exports.generateAnalytics = asyncHandler(async (req, res) => {
 
     // Calculate metrics
     const mentalWellnessPreds = predictions.filter(p => p.predictionType === 'mental_wellness');
+    const stressLevelPreds = predictions.filter(p => p.predictionType === 'stress_level');
     const academicImpactPreds = predictions.filter(p => p.predictionType === 'academic_impact');
+
+    const calcStats = (preds) => ({
+        count: preds.length,
+        average: preds.length > 0 ? preds.reduce((sum, p) => sum + p.result.prediction, 0) / preds.length : 0,
+        min: preds.length > 0 ? Math.min(...preds.map(p => p.result.prediction)) : null,
+        max: preds.length > 0 ? Math.max(...preds.map(p => p.result.prediction)) : null,
+        latest: preds.length > 0 ? preds[preds.length - 1].result.prediction : null,
+        trend: preds.length >= 2 ? (preds[preds.length - 1].result.prediction > preds[0].result.prediction ? 'improving' : 'declining') : 'stable'
+    });
 
     const metrics = {
         totalPredictions: predictions.length,
-        mentalWellness: {
-            count: mentalWellnessPreds.length,
-            average: mentalWellnessPreds.length > 0
-                ? mentalWellnessPreds.reduce((sum, p) => sum + p.result.prediction, 0) / mentalWellnessPreds.length
-                : 0,
-            min: mentalWellnessPreds.length > 0
-                ? Math.min(...mentalWellnessPreds.map(p => p.result.prediction))
-                : null,
-            max: mentalWellnessPreds.length > 0
-                ? Math.max(...mentalWellnessPreds.map(p => p.result.prediction))
-                : null
-        },
-        academicImpact: {
-            count: academicImpactPreds.length,
-            average: academicImpactPreds.length > 0
-                ? academicImpactPreds.reduce((sum, p) => sum + p.result.prediction, 0) / academicImpactPreds.length
-                : 0,
-            min: academicImpactPreds.length > 0
-                ? Math.min(...academicImpactPreds.map(p => p.result.prediction))
-                : null,
-            max: academicImpactPreds.length > 0
-                ? Math.max(...academicImpactPreds.map(p => p.result.prediction))
-                : null
-        },
+        mentalWellness: calcStats(mentalWellnessPreds),
+        stressLevel: calcStats(stressLevelPreds),
+        academicImpact: calcStats(academicImpactPreds),
         engagement: {
             activeDays: new Set(predictions.map(p => p.createdAt.toDateString())).size,
             favoritePredictions: predictions.filter(p => p.isFavorite).length,
-            emailsSent: 0 // Can be tracked separately
-        }
+            emailsSent: 0
+        },
+        recentPredictions: predictions.slice(-7).map(p => ({
+            type: p.predictionType,
+            score: p.result.prediction,
+            interpretation: p.result.interpretation,
+            date: p.createdAt
+        }))
     };
 
     // Save analytics
