@@ -496,7 +496,6 @@ export default function HomePage() {
               Get Started For Free <ArrowRight className="h-5 w-5" />
             </Button>
           </Link>
-          <p className="text-muted-foreground text-sm mt-4">No credit card required · Free forever</p>
         </div>
         <div className="absolute inset-0 -z-10 bg-gradient-to-br from-cyan-500/10 via-blue-500/10 to-purple-500/10 blur-3xl" />
       </section>
