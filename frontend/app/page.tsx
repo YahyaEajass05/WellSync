@@ -25,31 +25,31 @@ import { useEffect, useState, useRef } from 'react';
 
 /* ─── animated heading: word-by-word reveal ─── */
 function AnimatedHeading() {
-  const line1 = ['Your', 'Mental', 'Wellness,'];
-  const line2 = ['Supercharged', 'by', 'AI'];
+  const words = [
+    { text: 'Your',         gradient: false },
+    { text: 'Mental',       gradient: false },
+    { text: 'Wellness,',    gradient: false },
+    { text: 'Supercharged', gradient: true  },
+    { text: 'by',           gradient: true  },
+    { text: 'AI',           gradient: true  },
+  ];
 
   return (
     <h1 className="text-5xl md:text-7xl font-extrabold mb-6 leading-tight">
-      <span className="inline-flex flex-wrap justify-center gap-x-4 gap-y-1">
-        {line1.map((word, i) => (
+      <span className="inline-flex flex-wrap justify-center gap-x-4 gap-y-2">
+        {words.map((word, i) => (
           <span
-            key={word}
-            className="inline-block opacity-0 animate-word-reveal"
-            style={{ animationDelay: `${i * 150}ms` }}
+            key={i}
+            className="inline-block animate-word-reveal"
+            style={{ animationDelay: `${i * 180}ms` }}
           >
-            {word}
-          </span>
-        ))}
-      </span>
-      <br />
-      <span className="inline-flex flex-wrap justify-center gap-x-4 gap-y-1 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
-        {line2.map((word, i) => (
-          <span
-            key={word}
-            className="inline-block opacity-0 animate-word-reveal"
-            style={{ animationDelay: `${(line1.length + i) * 150}ms` }}
-          >
-            {word}
+            {word.gradient ? (
+              <span className="animate-gradient-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-[length:200%_auto] bg-clip-text text-transparent">
+                {word.text}
+              </span>
+            ) : (
+              word.text
+            )}
           </span>
         ))}
       </span>

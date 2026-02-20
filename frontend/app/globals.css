@@ -101,13 +101,26 @@
 
 /* ── Word-by-word reveal animation ── */
 @keyframes word-reveal {
-  0%   { opacity: 0; transform: translateY(30px) scale(0.85); filter: blur(8px); }
-  60%  { opacity: 1; transform: translateY(-4px) scale(1.03); filter: blur(0); }
-  100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+  0%   { opacity: 0; transform: translateY(40px) scale(0.8) rotateX(20deg); filter: blur(10px); }
+  60%  { opacity: 1; transform: translateY(-6px) scale(1.04) rotateX(0deg); filter: blur(0px); }
+  100% { opacity: 1; transform: translateY(0px) scale(1) rotateX(0deg); filter: blur(0px); }
 }
 
 .animate-word-reveal {
-  animation: word-reveal 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  opacity: 0;
+  animation: word-reveal 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* ── Live gradient shimmer for "Supercharged by AI" ── */
+@keyframes gradient-shimmer {
+  0%   { background-position: 0% center; }
+  50%  { background-position: 100% center; }
+  100% { background-position: 0% center; }
+}
+
+.animate-gradient-text {
+  background-size: 200% auto;
+  animation: gradient-shimmer 3s linear infinite;
 }
 
 /* Custom scrollbar */
