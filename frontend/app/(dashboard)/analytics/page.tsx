@@ -171,24 +171,28 @@ const StatCard = ({
 export default function AnalyticsPage() {
   const [period, setPeriod] = useState<'weekly' | 'monthly'>('weekly');
 
-  // Fetch analytics
+  // Fetch analytics - disable cache to always get fresh data
   const { data: analyticsData, isLoading: isLoadingAnalytics, refetch: refetchAnalytics } = useQuery({
     queryKey: ['analytics', period],
     queryFn: async () => {
       const res = await axios.post('/analytics/generate', { period });
       return res.data.data.analytics?.metrics as Analytics;
     },
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
+    staleTime: 0,
+    gcTime: 0,
   });
 
-  // Fetch insights
+  // Fetch insights - disable cache to always get fresh data
   const { data: insightsData, isLoading: isLoadingInsights, refetch: refetchInsights } = useQuery({
     queryKey: ['analytics', 'insights'],
     queryFn: async () => {
       const res = await axios.get('/analytics/insights');
       return res.data.data;
     },
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
+    staleTime: 0,
+    gcTime: 0,
   });
 
   // Generate mutation
@@ -377,11 +381,16 @@ export default function AnalyticsPage() {
             ) : insights.length === 0 ? (
               <div className="text-center py-8">
                 <Lightbulb className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
-                <p className="text-muted-foreground text-sm">No insights yet.</p>
-                <p className="text-muted-foreground text-xs mt-1">Make at least 3 predictions to unlock AI insights.</p>
-                <Link href="/predictions/mental-wellness">
-                  <Button size="sm" className="mt-4">Make a Prediction</Button>
-                </Link>
+                <p className="text-muted-foreground text-sm font-medium">No predictions found for your account.</p>
+                <p className="text-muted-foreground text-xs mt-1">Make your first prediction to unlock AI-powered insights.</p>
+                <div className="flex gap-2 justify-center mt-4">
+                  <Link href="/predictions/mental-wellness">
+                    <Button size="sm">Mental Wellness</Button>
+                  </Link>
+                  <Link href="/predictions/stress">
+                    <Button size="sm" variant="outline">Stress Level</Button>
+                  </Link>
+                </div>
               </div>
             ) : (
               <div className="space-y-3">
