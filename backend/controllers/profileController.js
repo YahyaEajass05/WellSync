@@ -18,9 +18,17 @@ const logger = require('../utils/logger');
  * @access  Private
  */
 exports.createOrUpdateMentalWellnessProfile = asyncHandler(async (req, res) => {
+    // Check profileCompleted manually since findOneAndUpdate skips pre-save hooks
+    const requiredFields = ['occupation', 'workMode', 'stressLevel', 'productivity', 'exerciseMinutesPerWeek', 'socialHoursPerWeek'];
+    const merged = { ...req.body };
+    const profileCompleted = requiredFields.every(field =>
+        merged[field] !== undefined && merged[field] !== null && merged[field] !== ''
+    );
+
     const profileData = {
         user: req.user.id,
-        ...req.body
+        ...merged,
+        profileCompleted
     };
 
     const profile = await MentalWellnessProfile.findOneAndUpdate(
@@ -75,9 +83,17 @@ exports.getMentalWellnessProfile = asyncHandler(async (req, res) => {
  * @access  Private
  */
 exports.createOrUpdateStudentProfile = asyncHandler(async (req, res) => {
+    // Check profileCompleted manually since findOneAndUpdate skips pre-save hooks
+    const requiredFields = ['academicLevel', 'country', 'relationshipStatus'];
+    const merged = { ...req.body };
+    const profileCompleted = requiredFields.every(field =>
+        merged[field] !== undefined && merged[field] !== null && merged[field] !== ''
+    );
+
     const profileData = {
         user: req.user.id,
-        ...req.body
+        ...merged,
+        profileCompleted
     };
 
     const profile = await StudentProfile.findOneAndUpdate(
