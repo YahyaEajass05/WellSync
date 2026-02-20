@@ -46,11 +46,17 @@ export default function BroadcastNotificationPage() {
   const onSubmit = (data: BroadcastFormData) => {
     broadcastMutation.mutate(data, {
       onSuccess: (response: any) => {
-        const result = response?.data?.data;
-        setLastResult(result);
+        // Handle both response.data.data and response.data structures
+        const result = response?.data?.data || response?.data || response;
+        const emailsWereSent = data.sendEmail;
+        setLastResult({
+          recipientCount: result?.recipientCount || result?.data?.recipientCount || 0,
+          emailsSent: emailsWereSent ? (result?.emailsSent ?? result?.data?.emailsSent ?? 0) : null,
+          emailsFailed: emailsWereSent ? (result?.emailsFailed ?? result?.data?.emailsFailed ?? 0) : 0,
+        });
         reset({ priority: 'medium', sendEmail: true });
         toast.success(
-          `Broadcast sent to ${result?.recipientCount || 0} users! ${data.sendEmail ? `📧 ${result?.emailsSent || 0} emails delivered.` : ''}`
+          `Broadcast sent! ${result?.recipientCount || 0} users notified.${emailsWereSent ? ` 📧 ${result?.emailsSent ?? 0} emails delivered.` : ''}`
         );
       },
       onError: (error: any) => {
@@ -188,18 +194,28 @@ export default function BroadcastNotificationPage() {
                   <CheckCircle className="h-5 w-5 text-green-600" />
                   <p className="font-medium text-green-900 dark:text-green-100">Last Broadcast Result</p>
                 </div>
-                <div className="grid grid-cols-2 gap-3 text-sm">
+                <div className={`grid gap-3 text-sm ${lastResult.emailsSent !== null ? 'grid-cols-2' : 'grid-cols-1'}`}>
                   <div className="bg-white dark:bg-green-900/20 rounded p-3 text-center">
                     <p className="text-2xl font-bold text-green-600">{lastResult.recipientCount}</p>
                     <p className="text-muted-foreground">Total Recipients</p>
                   </div>
-                  <div className="bg-white dark:bg-green-900/20 rounded p-3 text-center">
-                    <p className="text-2xl font-bold text-blue-600">{lastResult.emailsSent ?? 'N/A'}</p>
-                    <p className="text-muted-foreground">Emails Sent</p>
-                  </div>
+                  {lastResult.emailsSent !== null && (
+                    <div className="bg-white dark:bg-green-900/20 rounded p-3 text-center">
+                      <p className="text-2xl font-bold text-blue-600">{lastResult.emailsSent}</p>
+                      <p className="text-muted-foreground">Emails Sent</p>
+                    </div>
+                  )}
+                  {lastResult.emailsSent === null && (
+                    <div className="col-span-1 bg-white dark:bg-green-900/20 rounded p-3 text-center">
+                      <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">
+                        <Mail className="h-4 w-4" />
+                        Email notifications were disabled for this broadcast
+                      </p>
+                    </div>
+                  )}
                   {lastResult.emailsFailed > 0 && (
                     <div className="col-span-2 bg-red-50 dark:bg-red-900/20 rounded p-3 text-center">
-                      <p className="text-sm text-red-600">{lastResult.emailsFailed} email(s) failed to deliver</p>
+                      <p className="text-sm text-red-600">⚠️ {lastResult.emailsFailed} email(s) failed to deliver</p>
                     </div>
                   )}
                 </div>
