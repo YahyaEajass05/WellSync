@@ -879,6 +879,87 @@ const getEmailTemplate = (type, data) => {
             </html>
         `,
         
+        broadcastNotification: `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                ${baseStyle}
+                <style>
+                    .priority-low { border-left: 5px solid #28a745; }
+                    .priority-medium { border-left: 5px solid #17A2B8; }
+                    .priority-high { border-left: 5px solid #ffc107; }
+                    .priority-urgent { border-left: 5px solid #dc3545; }
+                    
+                    .priority-badge-low { background: #28a745; }
+                    .priority-badge-medium { background: #17A2B8; }
+                    .priority-badge-high { background: #ffc107; color: #333 !important; }
+                    .priority-badge-urgent { background: #dc3545; }
+                </style>
+            </head>
+            <body style="margin: 0; padding: 20px; background: #f4f7f9;">
+                <div class="container">
+                    <div class="header">
+                        ${wellSyncLogoSVG}
+                        <h1>📢 System Announcement</h1>
+                        <p class="subtitle">Important Message from WellSync Admin</p>
+                    </div>
+                    <div class="content">
+                        <h2>Hello ${data.firstName}! 👋</h2>
+                        <p>You have received an important announcement from the WellSync admin team.</p>
+                        
+                        <div class="info-card priority-${(data.priority || 'medium').toLowerCase()}" style="margin: 30px 0;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                                <h3 style="margin: 0; color: ${colors.secondary}; font-size: 20px;">📌 ${data.title}</h3>
+                                <span style="display: inline-block; padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; color: white; text-transform: uppercase; letter-spacing: 1px;"
+                                    class="priority-badge-${(data.priority || 'medium').toLowerCase()}">
+                                    ${(data.priority || 'medium').toUpperCase()} Priority
+                                </span>
+                            </div>
+                            <p style="margin: 0; color: #4a5568; font-size: 16px; line-height: 1.8; white-space: pre-line;">${data.message}</p>
+                        </div>
+                        
+                        <div class="highlight">
+                            <p style="margin: 0; color: ${colors.secondary}; font-weight: 600;">📅 Announcement Details:</p>
+                            <p style="margin: 10px 0 0 0; color: #4a5568;"><strong>Date:</strong> ${data.date}</p>
+                            <p style="margin: 6px 0 0 0; color: #4a5568;"><strong>From:</strong> WellSync Admin Team</p>
+                            <p style="margin: 6px 0 0 0; color: #4a5568;"><strong>Priority:</strong> ${(data.priority || 'medium').charAt(0).toUpperCase() + (data.priority || 'medium').slice(1)}</p>
+                        </div>
+                        
+                        ${data.priority === 'urgent' ? `
+                        <div class="alert-box" style="background: #ffe4e4; border-left: 5px solid #dc3545;">
+                            <p style="margin: 0; color: #721c24;"><strong>🚨 Urgent Notice:</strong> This message requires your immediate attention. Please read carefully and take any necessary action.</p>
+                        </div>
+                        ` : ''}
+                        
+                        <div style="text-align: center; margin: 35px 0;">
+                            <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/dashboard" class="button">
+                                Visit Your Dashboard →
+                            </a>
+                        </div>
+                        
+                        <p style="color: #666; font-size: 13px; text-align: center;">
+                            This is an official system-wide announcement sent to all WellSync users.
+                        </p>
+                        
+                        <div class="divider"></div>
+                        
+                        <p style="margin-top: 30px; color: ${colors.secondary}; font-weight: 600; font-size: 16px;">Best regards,<br>The WellSync Admin Team 💙</p>
+                    </div>
+                    <div class="footer">
+                        <p style="font-weight: 600; color: ${colors.secondary}; margin-bottom: 12px; font-size: 14px;">WellSync - Your AI-Powered Wellness Companion</p>
+                        <p>&copy; 2026 WellSync. All rights reserved.</p>
+                        <p style="margin-top: 12px;">
+                            You received this email because you are a registered WellSync user.<br>
+                            Questions? Contact us at <a href="mailto:wellsync.lk@gmail.com">wellsync.lk@gmail.com</a>
+                        </p>
+                    </div>
+                </div>
+            </body>
+            </html>
+        `,
+        
         accountActivation: `
             <!DOCTYPE html>
             <html>

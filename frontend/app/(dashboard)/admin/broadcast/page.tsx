@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Bell, ArrowLeft, Loader2, Send, Info, AlertCircle } from 'lucide-react';
+import { Bell, ArrowLeft, Loader2, Send, Info, AlertCircle, Mail, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -17,30 +17,41 @@ const broadcastSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters').max(100, 'Title too long'),
   message: z.string().min(10, 'Message must be at least 10 characters').max(500, 'Message too long'),
   priority: z.enum(['low', 'medium', 'high', 'urgent']),
+  sendEmail: z.boolean().default(true),
 });
 
 type BroadcastFormData = z.infer<typeof broadcastSchema>;
 
 export default function BroadcastNotificationPage() {
   const broadcastMutation = useBroadcastNotification();
+  const [lastResult, setLastResult] = useState<any>(null);
 
   const {
     register,
     handleSubmit,
     reset,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<BroadcastFormData>({
     resolver: zodResolver(broadcastSchema),
     defaultValues: {
       priority: 'medium',
+      sendEmail: true,
     },
   });
 
+  const sendEmail = watch('sendEmail');
+
   const onSubmit = (data: BroadcastFormData) => {
     broadcastMutation.mutate(data, {
-      onSuccess: () => {
-        reset();
-        toast.success('Notification broadcasted successfully!');
+      onSuccess: (response: any) => {
+        const result = response?.data?.data;
+        setLastResult(result);
+        reset({ priority: 'medium', sendEmail: true });
+        toast.success(
+          `Broadcast sent to ${result?.recipientCount || 0} users! ${data.sendEmail ? `📧 ${result?.emailsSent || 0} emails delivered.` : ''}`
+        );
       },
       onError: (error: any) => {
         toast.error(error?.response?.data?.error || 'Failed to send notification');
@@ -126,6 +137,30 @@ export default function BroadcastNotificationPage() {
                 )}
               </div>
 
+              {/* Send Email Toggle */}
+              <div className="flex items-center justify-between p-4 border rounded-lg bg-muted/30">
+                <div className="flex items-center gap-3">
+                  <Mail className="h-5 w-5 text-primary" />
+                  <div>
+                    <p className="font-medium text-sm">Send Email Notification</p>
+                    <p className="text-xs text-muted-foreground">Also send this as an email to all users</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setValue('sendEmail', !sendEmail)}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
+                    sendEmail ? 'bg-primary' : 'bg-muted-foreground/30'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      sendEmail ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+
               {/* Submit Button */}
               <Button
                 type="submit"
@@ -135,16 +170,41 @@ export default function BroadcastNotificationPage() {
                 {broadcastMutation.isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Sending...
+                    Sending to all users...
                   </>
                 ) : (
                   <>
                     <Send className="mr-2 h-4 w-4" />
-                    Send to All Users
+                    {sendEmail ? 'Send Notification + Email to All Users' : 'Send Notification to All Users'}
                   </>
                 )}
               </Button>
             </form>
+
+            {/* Last Broadcast Result */}
+            {lastResult && (
+              <div className="mt-4 p-4 border rounded-lg bg-green-50 dark:bg-green-900/10 border-green-200 dark:border-green-800">
+                <div className="flex items-center gap-2 mb-3">
+                  <CheckCircle className="h-5 w-5 text-green-600" />
+                  <p className="font-medium text-green-900 dark:text-green-100">Last Broadcast Result</p>
+                </div>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div className="bg-white dark:bg-green-900/20 rounded p-3 text-center">
+                    <p className="text-2xl font-bold text-green-600">{lastResult.recipientCount}</p>
+                    <p className="text-muted-foreground">Total Recipients</p>
+                  </div>
+                  <div className="bg-white dark:bg-green-900/20 rounded p-3 text-center">
+                    <p className="text-2xl font-bold text-blue-600">{lastResult.emailsSent ?? 'N/A'}</p>
+                    <p className="text-muted-foreground">Emails Sent</p>
+                  </div>
+                  {lastResult.emailsFailed > 0 && (
+                    <div className="col-span-2 bg-red-50 dark:bg-red-900/20 rounded p-3 text-center">
+                      <p className="text-sm text-red-600">{lastResult.emailsFailed} email(s) failed to deliver</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -168,7 +228,11 @@ export default function BroadcastNotificationPage() {
               </div>
               <div>
                 <p className="font-medium">Delivery</p>
-                <p className="text-muted-foreground">Instant delivery to all users</p>
+                <p className="text-muted-foreground">In-app notification + optional email</p>
+              </div>
+              <div>
+                <p className="font-medium">Email</p>
+                <p className="text-muted-foreground">Toggle email delivery on/off per broadcast</p>
               </div>
             </CardContent>
           </Card>

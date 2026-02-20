@@ -105,9 +105,9 @@ export const adminApi = {
     return response.data.data;
   },
 
-  // Broadcast notification to all users
-  broadcastNotification: async (data: { title: string; message: string; priority?: string }) => {
+  // Broadcast notification to all users (in-app + optional email)
+  broadcastNotification: async (data: { title: string; message: string; priority?: string; sendEmail?: boolean }) => {
     const response = await axiosInstance.post('/admin/broadcast', data);
-    return response.data;
+    return response;
   },
 };

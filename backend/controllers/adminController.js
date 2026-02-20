@@ -9,6 +9,7 @@ const Notification = require('../models/Notification');
 const Analytics = require('../models/Analytics');
 const { asyncHandler } = require('../middleware/errorHandler');
 const logger = require('../utils/logger');
+const emailService = require('../utils/emailService');
 
 /**
  * @desc    Get admin dashboard statistics
@@ -490,12 +491,12 @@ exports.getSystemStats = asyncHandler(async (req, res) => {
 });
 
 /**
- * @desc    Broadcast notification to all users
+ * @desc    Broadcast notification to all users (in-app + email)
  * @route   POST /api/admin/broadcast
  * @access  Private/Admin
  */
 exports.broadcastNotification = asyncHandler(async (req, res) => {
-    const { title, message, priority = 'medium' } = req.body;
+    const { title, message, priority = 'medium', sendEmail = true } = req.body;
 
     if (!title || !message) {
         return res.status(400).json({
@@ -504,10 +505,20 @@ exports.broadcastNotification = asyncHandler(async (req, res) => {
         });
     }
 
-    // Get all active users
-    const users = await User.find({ isActive: true }).select('_id');
+    // Get all active, verified users with email
+    const users = await User.find({ 
+        isActive: true,
+        isEmailVerified: true 
+    }).select('_id firstName lastName email');
 
-    // Create notifications for all users
+    if (users.length === 0) {
+        return res.status(400).json({
+            success: false,
+            error: 'No active verified users found'
+        });
+    }
+
+    // Create in-app notifications for all users
     const notifications = users.map(user => ({
         user: user._id,
         type: 'system_alert',
@@ -519,13 +530,38 @@ exports.broadcastNotification = asyncHandler(async (req, res) => {
 
     await Notification.insertMany(notifications);
 
-    logger.info(`Admin ${req.user.email} broadcasted notification to ${users.length} users`);
+    // Send broadcast emails concurrently (with error handling per user)
+    let emailsSent = 0;
+    let emailsFailed = 0;
+
+    if (sendEmail) {
+        const emailPromises = users.map(async (user) => {
+            try {
+                await emailService.sendBroadcastEmail(user, { title, message, priority });
+                emailsSent++;
+            } catch (error) {
+                emailsFailed++;
+                logger.error(`Failed to send broadcast email to ${user.email}: ${error.message}`);
+            }
+        });
+
+        // Send emails in batches of 10 to avoid rate limiting
+        const batchSize = 10;
+        for (let i = 0; i < emailPromises.length; i += batchSize) {
+            await Promise.allSettled(emailPromises.slice(i, i + batchSize));
+        }
+    }
+
+    logger.info(`Admin ${req.user.email} broadcasted notification to ${users.length} users. Emails sent: ${emailsSent}, Failed: ${emailsFailed}`);
 
     res.status(200).json({
         success: true,
         message: `Notification sent to ${users.length} users`,
         data: {
-            recipientCount: users.length
+            recipientCount: users.length,
+            notificationsSent: users.length,
+            emailsSent,
+            emailsFailed
         }
     });
 });

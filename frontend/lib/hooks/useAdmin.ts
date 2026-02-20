@@ -104,14 +104,9 @@ export function useSystemStats() {
 }
 
 export function useBroadcastNotification() {
-  const queryClient = useQueryClient();
-
   return useMutation({
-    mutationFn: (data: { title: string; message: string; priority?: string }) =>
+    mutationFn: (data: { title: string; message: string; priority?: string; sendEmail?: boolean }) =>
       adminApi.broadcastNotification(data),
-    onSuccess: (response) => {
-      toast.success(response.message || 'Notification broadcasted successfully');
-    },
     onError: (error: any) => {
       toast.error(error.response?.data?.error || 'Failed to broadcast notification');
     },

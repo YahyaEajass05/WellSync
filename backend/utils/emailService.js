@@ -301,4 +301,28 @@ const getRecommendationsList = (predictionData) => {
     return ['Continue monitoring your wellness and maintain healthy habits.'];
 };
 
+/**
+ * Send broadcast notification email to a single user
+ */
+exports.sendBroadcastEmail = async (user, broadcastData) => {
+    const html = getEmailTemplate('broadcastNotification', {
+        firstName: user.firstName,
+        title: broadcastData.title,
+        message: broadcastData.message,
+        priority: broadcastData.priority || 'medium',
+        date: new Date().toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        })
+    });
+
+    await sendEmail({
+        to: user.email,
+        subject: `📢 [WellSync] ${broadcastData.title}`,
+        html
+    });
+};
+
 module.exports.sendEmail = sendEmail;
