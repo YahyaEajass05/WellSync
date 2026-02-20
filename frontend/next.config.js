@@ -19,8 +19,8 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['lucide-react', 'recharts'],
   },
-  // Transpile Three.js packages
-  transpilePackages: ['three'],
+  // Transpile Three.js and React Three Fiber packages
+  transpilePackages: ['three', '@react-three/fiber', '@react-three/drei', '@react-three/postprocessing'],
   // Suppress hydration warnings from browser extensions
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production' ? {
