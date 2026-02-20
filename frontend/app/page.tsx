@@ -23,6 +23,40 @@ import {
 import { useTheme } from 'next-themes';
 import { useEffect, useState, useRef } from 'react';
 
+/* ─── animated heading: word-by-word reveal ─── */
+function AnimatedHeading() {
+  const line1 = ['Your', 'Mental', 'Wellness,'];
+  const line2 = ['Supercharged', 'by', 'AI'];
+
+  return (
+    <h1 className="text-5xl md:text-7xl font-extrabold mb-6 leading-tight">
+      <span className="inline-flex flex-wrap justify-center gap-x-4 gap-y-1">
+        {line1.map((word, i) => (
+          <span
+            key={word}
+            className="inline-block opacity-0 animate-word-reveal"
+            style={{ animationDelay: `${i * 150}ms` }}
+          >
+            {word}
+          </span>
+        ))}
+      </span>
+      <br />
+      <span className="inline-flex flex-wrap justify-center gap-x-4 gap-y-1 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
+        {line2.map((word, i) => (
+          <span
+            key={word}
+            className="inline-block opacity-0 animate-word-reveal"
+            style={{ animationDelay: `${(line1.length + i) * 150}ms` }}
+          >
+            {word}
+          </span>
+        ))}
+      </span>
+    </h1>
+  );
+}
+
 /* ─── tiny hook: count up animation ─── */
 function useCountUp(target: number, duration = 2000, start = false) {
   const [value, setValue] = useState(0);
@@ -281,12 +315,7 @@ export default function HomePage() {
           Powered by Advanced Machine Learning
         </div>
 
-        <h1 className="text-5xl md:text-7xl font-extrabold mb-6 leading-tight animate-fade-in-up">
-          Your Mental Wellness,{' '}
-          <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
-            Supercharged by AI
-          </span>
-        </h1>
+        <AnimatedHeading />
 
         <p className="text-xl text-muted-foreground mb-10 max-w-3xl mx-auto leading-relaxed animate-fade-in-up animation-delay-200">
           WellSync analyses your lifestyle, sleep, screen time, and daily habits to predict your mental wellness score, stress level, and overall wellbeing — in real time.
