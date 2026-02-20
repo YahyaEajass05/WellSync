@@ -91,6 +91,11 @@ const userSchema = new mongoose.Schema({
     isActive: {
         type: Boolean,
         default: true
+    },
+    isSystemAdmin: {
+        type: Boolean,
+        default: false,
+        immutable: true // Cannot be changed after creation
     }
 }, {
     timestamps: true,
@@ -102,6 +107,11 @@ const userSchema = new mongoose.Schema({
 userSchema.virtual('fullName').get(function() {
     return `${this.firstName} ${this.lastName}`;
 });
+
+// Check if user is system admin (protected account)
+userSchema.methods.isSystemAdminAccount = function() {
+    return this.isSystemAdmin || this.email === 'admin@wellsync.lk';
+};
 
 // Hash password before saving
 userSchema.pre('save', async function(next) {

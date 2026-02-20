@@ -95,6 +95,9 @@ export default function UserDetailsPage() {
   }
 
   const user = data.user;
+  
+  // Check if user is system admin (protected account)
+  const isSystemAdmin = user.isSystemAdmin || user.email === 'admin@wellsync.lk';
 
   return (
     <div className="space-y-6">
@@ -109,14 +112,22 @@ export default function UserDetailsPage() {
           </Link>
           <div>
             <h1 className="text-3xl font-bold tracking-tight">User Details</h1>
-            <p className="text-muted-foreground">{user.email}</p>
+            <p className="text-muted-foreground">
+              {user.email}
+              {isSystemAdmin && (
+                <span className="ml-2 text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded">
+                  System Admin
+                </span>
+              )}
+            </p>
           </div>
         </div>
         <div className="flex gap-2">
           <Button
             variant="outline"
             onClick={handleToggleRole}
-            disabled={updateRoleMutation.isPending}
+            disabled={updateRoleMutation.isPending || isSystemAdmin}
+            title={isSystemAdmin ? 'Cannot modify system administrator' : ''}
           >
             <Shield className="h-4 w-4 mr-2" />
             {user.role === 'admin' ? 'Demote to User' : 'Promote to Admin'}
@@ -124,7 +135,8 @@ export default function UserDetailsPage() {
           <Button
             variant="outline"
             onClick={handleToggleStatus}
-            disabled={updateStatusMutation.isPending}
+            disabled={updateStatusMutation.isPending || isSystemAdmin}
+            title={isSystemAdmin ? 'Cannot deactivate system administrator' : ''}
           >
             {user.isActive ? (
               <>
@@ -141,7 +153,8 @@ export default function UserDetailsPage() {
           <Button
             variant="destructive"
             onClick={handleDelete}
-            disabled={deleteUserMutation.isPending}
+            disabled={deleteUserMutation.isPending || isSystemAdmin}
+            title={isSystemAdmin ? 'Cannot delete system administrator' : ''}
           >
             <Trash2 className="h-4 w-4 mr-2" />
             Delete User

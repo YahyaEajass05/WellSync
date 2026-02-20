@@ -66,16 +66,66 @@ exports.getAdminDashboard = asyncHandler(async (req, res) => {
         { $sort: { "_id.date": 1 } }
     ]);
 
-    // Get average scores
+    // Calculate average scores
     const avgMentalWellness = await Prediction.aggregate([
         { $match: { predictionType: 'mental_wellness' } },
-        { $group: { _id: null, avgScore: { $avg: "$result.prediction" } } }
+        { $group: { _id: null, avg: { $avg: '$result.prediction' } } }
     ]);
 
     const avgAcademicImpact = await Prediction.aggregate([
         { $match: { predictionType: 'academic_impact' } },
-        { $group: { _id: null, avgScore: { $avg: "$result.prediction" } } }
+        { $group: { _id: null, avg: { $avg: '$result.prediction' } } }
     ]);
+
+    // Get wellness trend data for charts (last 30 days)
+    const wellnessTrend = await Prediction.aggregate([
+        {
+            $match: {
+                predictionType: 'mental_wellness',
+                createdAt: { $gte: thirtyDaysAgo }
+            }
+        },
+        {
+            $group: {
+                _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+                avgScore: { $avg: '$result.prediction' },
+                count: { $sum: 1 }
+            }
+        },
+        { $sort: { _id: 1 } }
+    ]);
+
+    // Get stress level distribution
+    const stressDistribution = await Prediction.aggregate([
+        {
+            $match: { predictionType: 'stress_level' }
+        },
+        {
+            $group: {
+                _id: '$result.stressCategory',
+                count: { $sum: 1 }
+            }
+        }
+    ]);
+
+    // Get hourly activity pattern
+    const hourlyActivity = await Prediction.aggregate([
+        {
+            $project: {
+                hour: { $hour: '$createdAt' }
+            }
+        },
+        {
+            $group: {
+                _id: '$hour',
+                predictions: { $sum: 1 }
+            }
+        },
+        { $sort: { _id: 1 } }
+    ]);
+
+    // Get stress level predictions count
+    const stressLevelPredictions = await Prediction.countDocuments({ predictionType: 'stress_level' });
 
     res.status(200).json({
         success: true,
@@ -86,19 +136,39 @@ exports.getAdminDashboard = asyncHandler(async (req, res) => {
                 active: activeUsers,
                 admins: adminUsers,
                 newLastWeek: newUsers,
-                verificationRate: totalUsers > 0 ? ((verifiedUsers / totalUsers) * 100).toFixed(2) : 0
+                verificationRate: totalUsers > 0 ? ((verifiedUsers / totalUsers) * 100).toFixed(1) + '%' : '0%'
             },
             predictions: {
                 total: totalPredictions,
                 mentalWellness: mentalWellnessPredictions,
+                stressLevel: stressLevelPredictions,
                 academicImpact: academicImpactPredictions,
                 recentLastWeek: recentPredictions,
-                avgMentalWellnessScore: avgMentalWellness[0]?.avgScore?.toFixed(2) || 0,
-                avgAcademicImpactScore: avgAcademicImpact[0]?.avgScore?.toFixed(2) || 0
+                avgMentalWellnessScore: avgMentalWellness[0]?.avg?.toFixed(1) || 'N/A',
+                avgAcademicImpactScore: avgAcademicImpact[0]?.avg?.toFixed(1) || 'N/A'
             },
             trends: {
                 userGrowth,
                 predictions: predictionTrends
+            },
+            charts: {
+                wellnessTrend: wellnessTrend.map(item => ({
+                    date: item._id,
+                    avgScore: item.avgScore ? parseFloat(item.avgScore.toFixed(1)) : 0,
+                    count: item.count || 0
+                })),
+                stressDistribution: stressDistribution.map(item => ({
+                    level: item._id || 'Unknown',
+                    count: item.count || 0
+                })),
+                hourlyActivity: Array.from({ length: 24 }, (_, hour) => {
+                    const activity = hourlyActivity.find(a => a._id === hour);
+                    return {
+                        hour,
+                        users: 0, // Could be calculated separately if needed
+                        predictions: activity?.predictions || 0
+                    };
+                })
             }
         }
     });
@@ -213,11 +283,7 @@ exports.updateUserRole = asyncHandler(async (req, res) => {
         });
     }
 
-    const user = await User.findByIdAndUpdate(
-        req.params.id,
-        { role },
-        { new: true, runValidators: true }
-    ).select('-password');
+    const user = await User.findById(req.params.id);
 
     if (!user) {
         return res.status(404).json({
@@ -225,6 +291,20 @@ exports.updateUserRole = asyncHandler(async (req, res) => {
             error: 'User not found'
         });
     }
+
+    // Prevent modifying system admin
+    if (user.isSystemAdminAccount()) {
+        return res.status(403).json({
+            success: false,
+            error: 'Cannot modify system administrator account'
+        });
+    }
+
+    user.role = role;
+    await user.save();
+
+    // Remove password from response
+    user.password = undefined;
 
     logger.info(`Role updated for user ${user.email} to ${role} by admin ${req.user.email}`);
 
@@ -250,11 +330,7 @@ exports.updateUserStatus = asyncHandler(async (req, res) => {
         });
     }
 
-    const user = await User.findByIdAndUpdate(
-        req.params.id,
-        { isActive },
-        { new: true, runValidators: true }
-    ).select('-password');
+    const user = await User.findById(req.params.id);
 
     if (!user) {
         return res.status(404).json({
@@ -262,6 +338,20 @@ exports.updateUserStatus = asyncHandler(async (req, res) => {
             error: 'User not found'
         });
     }
+
+    // Prevent deactivating system admin
+    if (user.isSystemAdminAccount()) {
+        return res.status(403).json({
+            success: false,
+            error: 'Cannot deactivate system administrator account'
+        });
+    }
+
+    user.isActive = isActive;
+    await user.save();
+
+    // Remove password from response
+    user.password = undefined;
 
     logger.info(`User ${user.email} ${isActive ? 'activated' : 'deactivated'} by admin ${req.user.email}`);
 
@@ -292,6 +382,14 @@ exports.deleteUser = asyncHandler(async (req, res) => {
         return res.status(400).json({
             success: false,
             error: 'You cannot delete your own account'
+        });
+    }
+
+    // Prevent deleting system admin
+    if (user.isSystemAdminAccount()) {
+        return res.status(403).json({
+            success: false,
+            error: 'Cannot delete system administrator account'
         });
     }
 
