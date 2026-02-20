@@ -43,10 +43,10 @@ exports.getAnalytics = asyncHandler(async (req, res) => {
 exports.generateAnalytics = asyncHandler(async (req, res) => {
     const { period = 'weekly' } = req.body;
 
-    // Calculate period date
+    // Calculate period start date
     const now = new Date();
     let periodDate;
-    
+
     switch(period) {
         case 'daily':
             periodDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -62,58 +62,75 @@ exports.generateAnalytics = asyncHandler(async (req, res) => {
         case 'yearly':
             periodDate = new Date(now.getFullYear(), 0, 1);
             break;
+        default:
+            periodDate = new Date(now.getFullYear(), now.getMonth(), 1);
     }
 
-    // Get predictions for period
+    // Query predictions directly - most reliable approach
     const predictions = await Prediction.find({
         user: req.user.id,
         createdAt: { $gte: periodDate }
-    });
+    }).sort({ createdAt: 1 }).lean();
 
-    // Calculate metrics
+    // Split by type
     const mentalWellnessPreds = predictions.filter(p => p.predictionType === 'mental_wellness');
-    const stressLevelPreds = predictions.filter(p => p.predictionType === 'stress_level');
+    const stressLevelPreds    = predictions.filter(p => p.predictionType === 'stress_level');
     const academicImpactPreds = predictions.filter(p => p.predictionType === 'academic_impact');
 
-    const calcStats = (preds) => ({
-        count: preds.length,
-        average: preds.length > 0 ? preds.reduce((sum, p) => sum + p.result.prediction, 0) / preds.length : 0,
-        min: preds.length > 0 ? Math.min(...preds.map(p => p.result.prediction)) : null,
-        max: preds.length > 0 ? Math.max(...preds.map(p => p.result.prediction)) : null,
-        latest: preds.length > 0 ? preds[preds.length - 1].result.prediction : null,
-        trend: preds.length >= 2 ? (preds[preds.length - 1].result.prediction > preds[0].result.prediction ? 'improving' : 'declining') : 'stable'
-    });
+    // Helper to calculate stats for a group
+    const calcStats = (preds) => {
+        if (preds.length === 0) return { count: 0, average: 0, min: null, max: null, latest: null, trend: 'stable' };
+        const scores = preds.map(p => p.result.prediction);
+        const sum = scores.reduce((a, b) => a + b, 0);
+        return {
+            count: preds.length,
+            average: sum / preds.length,
+            min: Math.min(...scores),
+            max: Math.max(...scores),
+            latest: scores[scores.length - 1],
+            trend: preds.length >= 2
+                ? (scores[scores.length - 1] > scores[0] ? 'improving' : scores[scores.length - 1] < scores[0] ? 'declining' : 'stable')
+                : 'stable'
+        };
+    };
 
+    // Build metrics directly from predictions
     const metrics = {
         totalPredictions: predictions.length,
         mentalWellness: calcStats(mentalWellnessPreds),
-        stressLevel: calcStats(stressLevelPreds),
+        stressLevel:    calcStats(stressLevelPreds),
         academicImpact: calcStats(academicImpactPreds),
         engagement: {
-            activeDays: new Set(predictions.map(p => p.createdAt.toDateString())).size,
+            activeDays: new Set(predictions.map(p => new Date(p.createdAt).toDateString())).size,
             favoritePredictions: predictions.filter(p => p.isFavorite).length,
             emailsSent: 0
         },
-        recentPredictions: predictions.slice(-7).map(p => ({
+        recentPredictions: [...predictions].reverse().slice(0, 7).map(p => ({
             type: p.predictionType,
             score: p.result.prediction,
-            interpretation: p.result.interpretation,
+            interpretation: p.result.interpretation || '',
             date: p.createdAt
         }))
     };
 
-    // Save analytics
-    const analytics = await Analytics.updateAnalytics(
-        req.user.id,
-        period,
-        periodDate,
-        metrics
-    );
+    // Save to Analytics model (for history)
+    try {
+        await Analytics.updateAnalytics(req.user.id, period, periodDate, metrics);
+    } catch (err) {
+        logger.warn('Failed to save analytics to DB, returning live data:', err.message);
+    }
 
+    // Always return live computed metrics (not the saved model)
     res.status(200).json({
         success: true,
         message: 'Analytics generated successfully',
-        data: { analytics }
+        data: {
+            analytics: {
+                period,
+                periodDate,
+                metrics
+            }
+        }
     });
 });
 
