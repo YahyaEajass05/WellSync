@@ -158,7 +158,7 @@ export default function HomePage() {
     {
       icon: Brain,
       title: 'Mental Wellness AI',
-      description: 'Get a personalised wellness score (0–100) powered by ensemble ML models trained on thousands of student profiles.',
+      description: 'Get a personalised wellness score (0–100) powered by ensemble ML models trained on real-world lifestyle data.',
       gradient: 'from-cyan-500 to-blue-600',
       delay: '0ms',
     },
@@ -171,8 +171,8 @@ export default function HomePage() {
     },
     {
       icon: BookOpen,
-      title: 'Academic Impact',
-      description: 'Discover how screen time, sleep, and social media usage are impacting your academic performance.',
+      title: 'Lifestyle Impact Analysis',
+      description: 'Discover how screen time, sleep quality, and daily habits are affecting your overall wellbeing and productivity.',
       gradient: 'from-emerald-500 to-green-600',
       delay: '200ms',
     },
@@ -202,21 +202,21 @@ export default function HomePage() {
   const testimonials = [
     {
       name: 'Aisha Perera',
-      role: 'Medical Student, Colombo',
-      text: 'WellSync helped me identify that my late-night screen time was tanking my focus. My GPA improved after following the recommendations.',
+      role: 'Marketing Professional, Colombo',
+      text: 'WellSync helped me identify that my late-night screen time was affecting my focus at work. My productivity improved after following the recommendations.',
       rating: 5,
       avatar: 'AP',
     },
     {
       name: 'Rahul Sharma',
-      role: 'Engineering Student, Kandy',
+      role: 'Software Engineer, Kandy',
       text: 'The stress level analysis was eye-opening. I didn\'t realise I was in the "Very High" category until WellSync flagged it.',
       rating: 5,
       avatar: 'RS',
     },
     {
       name: 'Priya Fernando',
-      role: 'Business Student, Galle',
+      role: 'Freelancer, Galle',
       text: 'Weekly wellness reports sent to my email keep me accountable. The PDF breakdowns are incredibly detailed and easy to understand.',
       rating: 5,
       avatar: 'PF',
@@ -289,7 +289,7 @@ export default function HomePage() {
         </h1>
 
         <p className="text-xl text-muted-foreground mb-10 max-w-3xl mx-auto leading-relaxed animate-fade-in-up animation-delay-200">
-          WellSync analyses your lifestyle, sleep, screen time, and social media habits to predict your mental wellness score, stress level, and academic impact — in real time.
+          WellSync analyses your lifestyle, sleep, screen time, and daily habits to predict your mental wellness score, stress level, and overall wellbeing — in real time.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16 animate-fade-in-up animation-delay-400">
@@ -319,7 +319,7 @@ export default function HomePage() {
               {[
                 { label: 'Wellness Score', value: '87/100', color: 'text-emerald-400', icon: Heart },
                 { label: 'Stress Level', value: 'Low', color: 'text-cyan-400', icon: Activity },
-                { label: 'Academic Risk', value: 'Minimal', color: 'text-violet-400', icon: BookOpen },
+                { label: 'Lifestyle Risk', value: 'Minimal', color: 'text-violet-400', icon: BookOpen },
               ].map(({ label, value, color, icon: Icon }) => (
                 <div key={label} className="rounded-xl border border-white/10 bg-white/5 p-4 text-center">
                   <Icon className={`h-6 w-6 ${color} mx-auto mb-2`} />
@@ -355,13 +355,13 @@ export default function HomePage() {
             <Zap className="h-3.5 w-3.5" /> Everything You Need
           </div>
           <h2 className="text-4xl md:text-5xl font-extrabold mb-4">
-            Built for Student{' '}
+            Built for Your{' '}
             <span className="bg-gradient-to-r from-violet-400 to-purple-600 bg-clip-text text-transparent">
               Wellbeing
             </span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Six powerful features working together to give you a complete picture of your mental health and academic journey.
+            Six powerful features working together to give you a complete picture of your mental health and overall wellbeing.
           </p>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -388,8 +388,8 @@ export default function HomePage() {
               </h2>
               <div className="flex flex-col gap-8">
                 <StepCard number="1" title="Create Your Free Account" description="Sign up in under 60 seconds. Verify your email and you're ready to go." />
-                <StepCard number="2" title="Enter Your Lifestyle Data" description="Answer a few quick questions about your sleep, screen time, study habits, and social media usage." />
-                <StepCard number="3" title="Get AI Predictions" description="Our ensemble ML models analyse your data and deliver instant wellness, stress, and academic reports." />
+                <StepCard number="2" title="Enter Your Lifestyle Data" description="Answer a few quick questions about your sleep, screen time, daily habits, and social media usage." />
+                <StepCard number="3" title="Get AI Predictions" description="Our ensemble ML models analyse your data and deliver instant wellness, stress, and lifestyle impact reports." />
                 <StepCard number="4" title="Track & Improve" description="Receive weekly email summaries, follow recommendations, and watch your wellness score rise over time." />
               </div>
             </div>
@@ -405,7 +405,7 @@ export default function HomePage() {
                   {[
                     { key: 'wellness_score', value: '87.3', color: 'text-emerald-400' },
                     { key: 'stress_level', value: '"Low"', color: 'text-cyan-400' },
-                    { key: 'academic_risk', value: '"Minimal"', color: 'text-violet-400' },
+                    { key: 'lifestyle_risk', value: '"Minimal"', color: 'text-violet-400' },
                     { key: 'confidence', value: '0.94', color: 'text-yellow-400' },
                     { key: 'recommendations', value: '[3 items]', color: 'text-orange-400' },
                   ].map(({ key, value, color }) => (
@@ -430,15 +430,15 @@ export default function HomePage() {
       <section id="testimonials" className="container mx-auto px-6 py-28">
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-yellow-500/30 bg-yellow-500/10 text-yellow-400 text-sm font-medium mb-4">
-            <Users className="h-3.5 w-3.5" /> Student Stories
+            <Users className="h-3.5 w-3.5" /> Real Stories
           </div>
           <h2 className="text-4xl md:text-5xl font-extrabold mb-4">
             Loved by{' '}
             <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
-              Students
+              Our Users
             </span>
           </h2>
-          <p className="text-muted-foreground text-lg">See what real students are saying about WellSync.</p>
+          <p className="text-muted-foreground text-lg">See what real people are saying about WellSync.</p>
         </div>
         <div className="grid md:grid-cols-3 gap-6">
           {testimonials.map((t) => (
@@ -457,7 +457,7 @@ export default function HomePage() {
             </span>
           </h2>
           <p className="text-muted-foreground text-xl mb-10 max-w-2xl mx-auto">
-            Join thousands of students who use WellSync to stay on top of their mental health and academic performance.
+            Join thousands of people who use WellSync to stay on top of their mental health and overall wellbeing.
           </p>
           <Link href="/register">
             <Button
@@ -480,7 +480,7 @@ export default function HomePage() {
             <span className="font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">WellSync</span>
           </div>
           <p className="text-sm text-muted-foreground text-center">
-            © {new Date().getFullYear()} WellSync · Built at ICBT Campus · MIT License
+            © {new Date().getFullYear()} WellSync · Developed by Yahya Eajass
           </p>
           <div className="flex items-center gap-4 text-sm text-muted-foreground">
             <Link href="/login" className="hover:text-foreground transition-colors">Login</Link>
