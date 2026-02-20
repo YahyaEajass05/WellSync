@@ -95,15 +95,18 @@ exports.getDashboard = asyncHandler(async (req, res) => {
     const totalPredictions = await Prediction.countDocuments({ user: req.user.id });
 
     // Get latest prediction for each type
-    const latestMentalWellness = await Prediction.findOne({
-        user: req.user.id,
-        predictionType: 'mental_wellness'
-    }).sort({ createdAt: -1 });
+    const [latestMentalWellness, latestStressLevel, latestAcademicImpact] = await Promise.all([
+        Prediction.findOne({ user: req.user.id, predictionType: 'mental_wellness' }).sort({ createdAt: -1 }),
+        Prediction.findOne({ user: req.user.id, predictionType: 'stress_level' }).sort({ createdAt: -1 }),
+        Prediction.findOne({ user: req.user.id, predictionType: 'academic_impact' }).sort({ createdAt: -1 }),
+    ]);
 
-    const latestAcademicImpact = await Prediction.findOne({
-        user: req.user.id,
-        predictionType: 'academic_impact'
-    }).sort({ createdAt: -1 });
+    const formatLatest = (pred) => pred && pred.result ? {
+        score: pred.result.prediction,
+        interpretation: pred.result.interpretation,
+        stressCategory: pred.result.stressCategory || null,
+        date: pred.createdAt
+    } : null;
 
     res.status(200).json({
         success: true,
@@ -118,24 +121,19 @@ exports.getDashboard = asyncHandler(async (req, res) => {
             stats: {
                 totalPredictions,
                 mentalWellness: Array.isArray(stats) ? (stats.find(s => s._id === 'mental_wellness') || { count: 0, averagePrediction: 0 }) : { count: 0, averagePrediction: 0 },
+                stressLevel: Array.isArray(stats) ? (stats.find(s => s._id === 'stress_level') || { count: 0, averagePrediction: 0 }) : { count: 0, averagePrediction: 0 },
                 academicImpact: Array.isArray(stats) ? (stats.find(s => s._id === 'academic_impact') || { count: 0, averagePrediction: 0 }) : { count: 0, averagePrediction: 0 }
             },
             latestPredictions: {
-                mentalWellness: latestMentalWellness && latestMentalWellness.result ? {
-                    score: latestMentalWellness.result.prediction,
-                    interpretation: latestMentalWellness.result.interpretation,
-                    date: latestMentalWellness.createdAt
-                } : null,
-                academicImpact: latestAcademicImpact && latestAcademicImpact.result ? {
-                    score: latestAcademicImpact.result.prediction,
-                    interpretation: latestAcademicImpact.result.interpretation,
-                    date: latestAcademicImpact.createdAt
-                } : null
+                mentalWellness: formatLatest(latestMentalWellness),
+                stressLevel: formatLatest(latestStressLevel),
+                academicImpact: formatLatest(latestAcademicImpact)
             },
             recentActivity: recentPredictions.map(p => ({
                 id: p._id,
                 type: p.predictionType,
                 score: p.result && p.result.prediction ? p.result.prediction : 'N/A',
+                interpretation: p.result && p.result.interpretation ? p.result.interpretation : '',
                 date: p.createdAt
             }))
         }
