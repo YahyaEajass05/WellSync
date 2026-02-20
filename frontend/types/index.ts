@@ -175,6 +175,118 @@ export interface DashboardData {
   }>;
 }
 
+// Profile Types
+export interface MentalWellnessProfile {
+  _id: string;
+  user: string;
+  occupation: string;
+  workMode: 'Remote' | 'Hybrid' | 'Office' | 'Self-employed' | 'Student';
+  stressLevel: number;
+  productivity: number;
+  exerciseMinutesPerWeek: number;
+  socialHoursPerWeek: number;
+  hasChronicConditions: boolean;
+  chronicConditions: string[];
+  isSeeingTherapist: boolean;
+  medicationUsage: 'None' | 'Occasional' | 'Regular' | 'Prefer not to say';
+  profileCompleted: boolean;
+  stressCategory?: string;
+  productivityCategory?: string;
+  exerciseCategory?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface StudentProfile {
+  _id: string;
+  user: string;
+  studentId?: string;
+  academicLevel: 'High School' | 'Bachelor' | 'Master' | 'PhD' | 'Other';
+  country: string;
+  institution?: string;
+  major?: string;
+  yearOfStudy?: number;
+  enrollmentYear?: number;
+  expectedGraduationYear?: number;
+  gpa?: number;
+  relationshipStatus: 'Single' | 'In a relationship' | 'Married' | 'Prefer not to say';
+  livingArrangement: 'On-campus' | 'Off-campus alone' | 'Off-campus with roommates' | 'With family' | 'Other';
+  partTimeJob: boolean;
+  hoursWorkedPerWeek: number;
+  financialStress: 'None' | 'Low' | 'Moderate' | 'High' | 'Very High';
+  studyHoursPerWeek: number;
+  attendanceRate?: number;
+  extracurricularActivities: string[];
+  academicGoals: string[];
+  profileCompleted: boolean;
+  academicStanding?: string;
+  workStudyBalance?: string;
+  yearsInProgram?: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ScreenTimeLog {
+  _id: string;
+  date: string;
+  screenTimeHours: number;
+  workScreenHours: number;
+  leisureScreenHours: number;
+  eyeStrain: boolean;
+  headache: boolean;
+  mood?: string;
+  notes?: string;
+  screenTimeCategory?: string;
+  createdAt: string;
+}
+
+export interface SleepRecord {
+  _id: string;
+  date: string;
+  sleepHours: number;
+  sleepQuality: number;
+  bedtime?: string;
+  wakeTime?: string;
+  sleepInterruptions: number;
+  screenBeforeSleep: boolean;
+  caffeine: boolean;
+  mood?: string;
+  notes?: string;
+  sleepCategory?: string;
+  qualityCategory?: string;
+  createdAt: string;
+}
+
+export interface ProfileOverview {
+  user: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+  };
+  profiles: {
+    mentalWellness: { exists: boolean; completed?: boolean; readinessScore?: number; stressCategory?: string };
+    student: { exists: boolean; completed?: boolean; academicStanding?: string; riskScore?: number };
+  };
+  recentActivity: {
+    screenTime: ScreenTimeLog | null;
+    sleep: SleepRecord | null;
+  };
+  weeklyAverages: {
+    screenTime: {
+      averageScreenTime: number;
+      averageWorkScreen: number;
+      averageLeisureScreen: number;
+      daysLogged: number;
+    } | null;
+    sleep: {
+      averageSleepHours: number;
+      averageSleepQuality: number;
+      daysRecorded: number;
+    } | null;
+  };
+}
+
 // Notification Types
 export interface Notification {
   _id: string;
