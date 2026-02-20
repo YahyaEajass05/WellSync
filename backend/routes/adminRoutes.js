@@ -59,4 +59,13 @@ router.post('/broadcast',
     adminController.broadcastNotification
 );
 
+// Notifications History (Admin)
+router.get('/notifications', adminController.getNotificationsHistory);
+router.delete('/notifications/bulk', adminController.bulkDeleteNotifications);
+router.delete('/notifications/:id', 
+    param('id').isMongoId().withMessage('Invalid notification ID'),
+    validate,
+    adminController.deleteNotificationAdmin
+);
+
 module.exports = router;

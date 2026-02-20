@@ -7,54 +7,75 @@ import {
   LayoutDashboard,
   Brain,
   BarChart3,
-  Heart,
   Settings,
   User,
   Sun,
   Moon,
+  Shield,
+  Bell,
 } from 'lucide-react';
 import { useUIStore } from '@/lib/store/uiStore';
+import { useAuthStore } from '@/lib/store/authStore';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
-
-const menuItems = [
-  {
-    title: 'Dashboard',
-    href: '/dashboard',
-    icon: LayoutDashboard,
-  },
-  {
-    title: 'Predictions',
-    href: '/predictions',
-    icon: Brain,
-    children: [
-      { title: 'Mental Wellness', href: '/predictions/mental-wellness' },
-      { title: 'Academic Impact', href: '/predictions/academic' },
-      { title: 'Stress Level', href: '/predictions/stress' },
-    ],
-  },
-  {
-    title: 'Analytics',
-    href: '/analytics',
-    icon: BarChart3,
-  },
-  {
-    title: 'Profile',
-    href: '/profile',
-    icon: User,
-  },
-  {
-    title: 'Settings',
-    href: '/settings',
-    icon: Settings,
-  },
-];
 
 export function Sidebar() {
   const pathname = usePathname();
   const { sidebarOpen } = useUIStore();
+  const { user } = useAuthStore();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+
+  // Build menu items dynamically based on user role
+  const menuItems = [
+    {
+      title: 'Dashboard',
+      href: '/dashboard',
+      icon: LayoutDashboard,
+    },
+    {
+      title: 'Predictions',
+      href: '/predictions',
+      icon: Brain,
+      children: [
+        { title: 'Mental Wellness', href: '/predictions/mental-wellness' },
+        { title: 'Academic Impact', href: '/predictions/academic' },
+        { title: 'Stress Level', href: '/predictions/stress' },
+      ],
+    },
+    {
+      title: 'Analytics',
+      href: '/analytics',
+      icon: BarChart3,
+    },
+    {
+      title: 'Profile',
+      href: '/profile',
+      icon: User,
+    },
+    {
+      title: 'Settings',
+      href: '/settings',
+      icon: Settings,
+    },
+    ...(user?.role === 'admin'
+      ? [
+          {
+            title: 'Admin Panel',
+            href: '/admin',
+            icon: Shield,
+            children: [
+              { title: 'Dashboard',       href: '/admin'                  },
+              { title: 'Users',           href: '/admin/users'            },
+              { title: 'Predictions',     href: '/admin/predictions'      },
+              { title: 'Notifications',   href: '/admin/notifications'    },
+              { title: 'Broadcast',       href: '/admin/broadcast'        },
+              { title: 'Stats',           href: '/admin/stats'            },
+            ],
+          },
+        ]
+      : []),
+  ];
 
   useEffect(() => {
     setMounted(true);

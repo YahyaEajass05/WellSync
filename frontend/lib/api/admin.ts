@@ -110,4 +110,31 @@ export const adminApi = {
     const response = await axiosInstance.post('/admin/broadcast', data);
     return response;
   },
+
+  // Get all notifications history (admin)
+  getNotificationsHistory: async (params?: {
+    page?: number;
+    limit?: number;
+    type?: string;
+    priority?: string;
+    isRead?: string;
+    search?: string;
+    startDate?: string;
+    endDate?: string;
+  }) => {
+    const response = await axiosInstance.get('/admin/notifications', { params });
+    return response;
+  },
+
+  // Delete a single notification (admin)
+  deleteNotificationAdmin: async (id: string) => {
+    const response = await axiosInstance.delete(`/admin/notifications/${id}`);
+    return response;
+  },
+
+  // Bulk delete notifications by IDs (admin)
+  bulkDeleteNotifications: async (ids: string[]) => {
+    const response = await axiosInstance.delete('/admin/notifications/bulk', { data: { ids } });
+    return response;
+  },
 };

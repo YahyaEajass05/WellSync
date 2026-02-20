@@ -566,4 +566,130 @@ exports.broadcastNotification = asyncHandler(async (req, res) => {
     });
 });
 
+/**
+ * @desc    Get all notifications history (admin view)
+ * @route   GET /api/admin/notifications
+ * @access  Private/Admin
+ */
+exports.getNotificationsHistory = asyncHandler(async (req, res) => {
+    const { 
+        page = 1, 
+        limit = 20, 
+        type, 
+        priority, 
+        isRead,
+        search,
+        startDate,
+        endDate
+    } = req.query;
+
+    const query = {};
+
+    if (type) query.type = type;
+    if (priority) query.priority = priority;
+    if (isRead !== undefined) query.isRead = isRead === 'true';
+    if (startDate || endDate) {
+        query.createdAt = {};
+        if (startDate) query.createdAt.$gte = new Date(startDate);
+        if (endDate) query.createdAt.$lte = new Date(endDate);
+    }
+    if (search) {
+        query.$or = [
+            { title: { $regex: search, $options: 'i' } },
+            { message: { $regex: search, $options: 'i' } }
+        ];
+    }
+
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    const [notifications, total, stats] = await Promise.all([
+        Notification.find(query)
+            .populate('user', 'firstName lastName email role')
+            .sort({ createdAt: -1 })
+            .limit(parseInt(limit))
+            .skip(skip)
+            .lean(),
+        Notification.countDocuments(query),
+        Notification.aggregate([
+            { $group: {
+                _id: null,
+                total: { $sum: 1 },
+                unread: { $sum: { $cond: [{ $eq: ['$isRead', false] }, 1, 0] } },
+                urgent: { $sum: { $cond: [{ $eq: ['$priority', 'urgent'] }, 1, 0] } },
+                systemAlerts: { $sum: { $cond: [{ $eq: ['$type', 'system_alert'] }, 1, 0] } },
+                broadcasts: { $sum: { $cond: [{ $eq: ['$type', 'broadcast'] }, 1, 0] } }
+            }}
+        ])
+    ]);
+
+    res.status(200).json({
+        success: true,
+        data: {
+            notifications,
+            stats: stats[0] || { total: 0, unread: 0, urgent: 0, systemAlerts: 0, broadcasts: 0 },
+            pagination: {
+                total,
+                page: parseInt(page),
+                pages: Math.ceil(total / parseInt(limit)),
+                limit: parseInt(limit)
+            }
+        }
+    });
+});
+
+/**
+ * @desc    Delete a notification (admin)
+ * @route   DELETE /api/admin/notifications/:id
+ * @access  Private/Admin
+ */
+exports.deleteNotificationAdmin = asyncHandler(async (req, res) => {
+    const notification = await Notification.findByIdAndDelete(req.params.id);
+
+    if (!notification) {
+        return res.status(404).json({ success: false, error: 'Notification not found' });
+    }
+
+    logger.info(`Notification ${req.params.id} deleted by admin ${req.user.email}`);
+
+    res.status(200).json({ success: true, message: 'Notification deleted successfully' });
+});
+
+/**
+ * @desc    Delete all notifications of a type (admin)
+ * @route   DELETE /api/admin/notifications/bulk
+ * @access  Private/Admin
+ */
+exports.bulkDeleteNotifications = asyncHandler(async (req, res) => {
+    const { ids, type, priority, isRead } = req.body;
+
+    const query = {};
+
+    // If specific IDs provided, delete those
+    if (ids && Array.isArray(ids) && ids.length > 0) {
+        query._id = { $in: ids };
+    } else {
+        // Otherwise filter by type/priority/isRead
+        if (type) query.type = type;
+        if (priority) query.priority = priority;
+        if (isRead !== undefined) query.isRead = isRead;
+    }
+
+    if (Object.keys(query).length === 0) {
+        return res.status(400).json({
+            success: false,
+            error: 'Provide notification IDs or at least one filter (type, priority, isRead)'
+        });
+    }
+
+    const result = await Notification.deleteMany(query);
+
+    logger.info(`Bulk deleted ${result.deletedCount} notifications by admin ${req.user.email}`);
+
+    res.status(200).json({
+        success: true,
+        message: `${result.deletedCount} notifications deleted successfully`,
+        data: { deletedCount: result.deletedCount }
+    });
+});
+
 module.exports = exports;
