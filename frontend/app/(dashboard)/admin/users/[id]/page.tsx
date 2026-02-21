@@ -174,7 +174,11 @@ export default function UserDetailsPage() {
               <User className="h-5 w-5 text-muted-foreground" />
               <div>
                 <p className="text-sm font-medium">Name</p>
-                <p className="text-sm text-muted-foreground">{user.name || 'N/A'}</p>
+                <p className="text-sm text-muted-foreground">
+                  {user.firstName && user.lastName
+                    ? `${user.firstName} ${user.lastName}`
+                    : user.firstName || user.lastName || 'N/A'}
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -335,7 +339,7 @@ export default function UserDetailsPage() {
         onClose={() => setDeleteConfirmation(false)}
         onConfirm={confirmDelete}
         title="Delete User"
-        description={`Are you sure you want to delete ${data.user.name || data.user.email}? This action cannot be undone and will permanently remove all user data including predictions and notifications.`}
+        description={`Are you sure you want to delete ${data.user.firstName && data.user.lastName ? `${data.user.firstName} ${data.user.lastName}` : data.user.email}? This action cannot be undone and will permanently remove all user data including predictions and notifications.`}
         confirmText="Delete User"
         cancelText="Cancel"
         variant="danger"
