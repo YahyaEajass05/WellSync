@@ -33,9 +33,8 @@ type LoginFormData = z.infer<typeof loginSchema>;
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { login, isLoginLoading } = useAuth();
+  const { login, isLoginLoading, loginError, isLoginError } = useAuth();
   const [showVerifiedMessage, setShowVerifiedMessage] = useState(false);
-  const [apiError, setApiError] = useState<string | null>(null);
 
   const {
     register,
@@ -63,13 +62,7 @@ export default function LoginPage() {
   }, [searchParams, router]);
 
   const onSubmit = (data: LoginFormData) => {
-    setApiError(null);
-    login(data, {
-      onError: (error: any) => {
-        const message = error?.response?.data?.message || 'Invalid email or password. Please try again.';
-        setApiError(message);
-      },
-    });
+    login(data);
   };
 
   return (
@@ -107,10 +100,12 @@ export default function LoginPage() {
           )}
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            {apiError && (
+            {isLoginError && (
               <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg flex items-start gap-2">
                 <AlertCircle className="h-5 w-5 text-red-500 mt-0.5 shrink-0" />
-                <p className="text-sm text-red-700 dark:text-red-300">{apiError}</p>
+                <p className="text-sm text-red-700 dark:text-red-300">
+                  {loginError?.response?.data?.message || 'Invalid email or password. Please try again.'}
+                </p>
               </div>
             )}
             <div className="space-y-2">
