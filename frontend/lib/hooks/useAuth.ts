@@ -18,8 +18,10 @@ export function useAuth() {
       setUser(data.user);
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
-      // Set cookie so middleware can read auth state on the server edge
-      document.cookie = `token=${data.token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
+      // Set cookies so middleware can read auth state on the server edge
+      const maxAge = 7 * 24 * 60 * 60;
+      document.cookie = `token=${data.token}; path=/; max-age=${maxAge}; SameSite=Lax`;
+      document.cookie = `user_role=${data.user.role}; path=/; max-age=${maxAge}; SameSite=Lax`;
       toast.success(`Welcome back${data.user.role === 'admin' ? ', Admin' : ''}!`);
       router.push(data.user.role === 'admin' ? '/admin' : '/dashboard');
     },
@@ -36,8 +38,10 @@ export function useAuth() {
       setUser(data.user);
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
-      // Set cookie so middleware can read auth state on the server edge
-      document.cookie = `token=${data.token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
+      // Set cookies so middleware can read auth state on the server edge
+      const maxAge = 7 * 24 * 60 * 60;
+      document.cookie = `token=${data.token}; path=/; max-age=${maxAge}; SameSite=Lax`;
+      document.cookie = `user_role=${data.user.role || 'user'}; path=/; max-age=${maxAge}; SameSite=Lax`;
       toast.success('Account created successfully! Please verify your email.');
       router.push('/verify-email');
     },
@@ -54,8 +58,9 @@ export function useAuth() {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       localStorage.removeItem('auth-storage');
-      // Clear auth cookie so middleware stops treating user as authenticated
+      // Clear auth cookies so middleware stops treating user as authenticated
       document.cookie = 'token=; path=/; max-age=0; SameSite=Lax';
+      document.cookie = 'user_role=; path=/; max-age=0; SameSite=Lax';
       queryClient.clear();
       toast.success('Logged out successfully');
       router.push('/login');
@@ -67,6 +72,7 @@ export function useAuth() {
       localStorage.removeItem('user');
       localStorage.removeItem('auth-storage');
       document.cookie = 'token=; path=/; max-age=0; SameSite=Lax';
+      document.cookie = 'user_role=; path=/; max-age=0; SameSite=Lax';
       queryClient.clear();
       router.push('/login');
     },
