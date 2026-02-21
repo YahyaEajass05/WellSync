@@ -2,15 +2,23 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Home, ArrowLeft, Search } from 'lucide-react';
+import { useAuthStore } from '@/lib/store/authStore';
 
 export default function NotFound() {
   const [mounted, setMounted] = useState(false);
+  const { isAuthenticated } = useAuthStore();
+  const router = useRouter();
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const handleHomeClick = () => {
+    router.push(isAuthenticated ? '/dashboard' : '/login');
+  };
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center relative overflow-hidden px-4">
@@ -114,12 +122,10 @@ export default function NotFound() {
 
         {/* ── Action Buttons ── */}
         <div className="flex flex-col sm:flex-row gap-3 justify-center animate-slide-up" style={{ animationDelay: '0.5s' }}>
-          <Link href="/dashboard">
-            <Button size="lg" className="gap-2 w-full sm:w-auto">
-              <Home className="h-5 w-5" />
-              Go to Dashboard
-            </Button>
-          </Link>
+          <Button size="lg" className="gap-2 w-full sm:w-auto" onClick={handleHomeClick}>
+            <Home className="h-5 w-5" />
+            {isAuthenticated ? 'Go to Dashboard' : 'Go to Login'}
+          </Button>
           <Button
             size="lg"
             variant="outline"
@@ -132,23 +138,25 @@ export default function NotFound() {
         </div>
 
         {/* ── Quick Links ── */}
-        <div className="mt-10 animate-slide-up" style={{ animationDelay: '0.7s' }}>
-          <p className="text-sm text-muted-foreground mb-3">Quick Links</p>
-          <div className="flex flex-wrap gap-2 justify-center">
-            {[
-              { href: '/predictions/mental-wellness', label: '🧠 Mental Wellness' },
-              { href: '/predictions/stress', label: '💗 Stress Level' },
-              { href: '/predictions/academic', label: '📊 Academic Impact' },
-              { href: '/analytics', label: '📈 Analytics' },
-            ].map((link) => (
-              <Link key={link.href} href={link.href}>
-                <span className="text-xs px-3 py-1.5 rounded-full border border-border hover:border-primary hover:text-primary transition-colors cursor-pointer">
-                  {link.label}
-                </span>
-              </Link>
-            ))}
+        {isAuthenticated && (
+          <div className="mt-10 animate-slide-up" style={{ animationDelay: '0.7s' }}>
+            <p className="text-sm text-muted-foreground mb-3">Quick Links</p>
+            <div className="flex flex-wrap gap-2 justify-center">
+              {[
+                { href: '/predictions/mental-wellness', label: 'Mental Wellness' },
+                { href: '/predictions/stress', label: 'Stress Level' },
+                { href: '/predictions/academic', label: 'Academic Impact' },
+                { href: '/analytics', label: 'Analytics' },
+              ].map((link) => (
+                <Link key={link.href} href={link.href}>
+                  <span className="text-xs px-3 py-1.5 rounded-full border border-border hover:border-primary hover:text-primary transition-colors cursor-pointer">
+                    {link.label}
+                  </span>
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* ── WellSync Branding ── */}
         <div className="mt-12 animate-fade-in" style={{ animationDelay: '1s' }}>
