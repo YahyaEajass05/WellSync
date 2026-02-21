@@ -113,7 +113,7 @@ exports.academicImpactValidation = [
     body('sleep_hours_per_night')
         .isFloat({ min: 0, max: 24 }).withMessage('Sleep hours must be between 0 and 24'),
     body('mental_health_score')
-        .isInt({ min: 0, max: 10 }).withMessage('Mental health score must be between 0 and 10'),
+        .isInt({ min: 0, max: 100 }).withMessage('Mental health score must be between 0 and 100'),
     body('conflicts_over_social_media')
         .isInt({ min: 0, max: 5 }).withMessage('Conflicts must be between 0 and 5'),
     body('affects_academic_performance')
