@@ -258,7 +258,7 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+    <div className="min-h-screen bg-background text-foreground overflow-x-hidden" suppressHydrationWarning>
 
       {/* ── Animated gradient background ── */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
@@ -508,7 +508,7 @@ export default function HomePage() {
             <span className="font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">WellSync</span>
           </div>
           <p className="text-sm text-muted-foreground text-center">
-            © {new Date().getFullYear()} WellSync · Developed by Yahya Eajass
+            © {mounted ? new Date().getFullYear() : '2026'} WellSync · Developed by Yahya Eajass
           </p>
           <div className="flex items-center gap-4 text-sm text-muted-foreground">
             <Link href="/login" className="hover:text-foreground transition-colors">Login</Link>
