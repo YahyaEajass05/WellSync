@@ -62,15 +62,15 @@ class AcademicImpactInput(BaseModel):
     most_used_platform: str = Field(..., description="Most used social media platform")
     avg_daily_usage_hours: float = Field(..., ge=0, le=24, description="Average daily social media usage")
     sleep_hours_per_night: float = Field(..., ge=0, le=24, description="Average sleep hours")
-    mental_health_score: int = Field(..., ge=0, le=10, description="Mental health score (0-10, 10 is best)")
+    mental_health_score: int = Field(..., ge=0, le=100, description="Mental health score (0-100, 100 is best)")
     conflicts_over_social_media: int = Field(..., ge=0, le=5, description="Conflicts frequency (0-5)")
     affects_academic_performance: str = Field(..., description="Does it affect academics? (Yes/No)")
     relationship_status: str = Field(..., description="Relationship status")
     
     @validator('mental_health_score')
     def validate_mental_health(cls, v):
-        if v < 0 or v > 10:
-            raise ValueError("Mental health score must be between 0 and 10")
+        if v < 0 or v > 100:
+            raise ValueError("Mental health score must be between 0 and 100")
         return v
     
     class Config:
@@ -83,7 +83,7 @@ class AcademicImpactInput(BaseModel):
                 "most_used_platform": "Instagram",
                 "avg_daily_usage_hours": 4.5,
                 "sleep_hours_per_night": 6.5,
-                "mental_health_score": 6,
+                "mental_health_score": 60,
                 "conflicts_over_social_media": 2,
                 "affects_academic_performance": "Yes",
                 "relationship_status": "Single"

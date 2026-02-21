@@ -201,7 +201,7 @@ async def predict_academic_impact(input_data: AcademicImpactInput):
     - most_used_platform: Most used social media platform
     - avg_daily_usage_hours: Average daily usage (0-24)
     - sleep_hours_per_night: Sleep hours per night
-    - mental_health_score: Mental health score (0-10)
+    - mental_health_score: Mental health score (0-100)
     - conflicts_over_social_media: Conflicts frequency (0-5)
     - affects_academic_performance: Affects academics (Yes/No)
     - relationship_status: Relationship status
@@ -265,7 +265,7 @@ async def get_academic_impact_example():
             "most_used_platform": "Instagram",
             "avg_daily_usage_hours": 4.5,
             "sleep_hours_per_night": 6.5,
-            "mental_health_score": 6,
+            "mental_health_score": 60,
             "conflicts_over_social_media": 2,
             "affects_academic_performance": "Yes",
             "relationship_status": "Single"
