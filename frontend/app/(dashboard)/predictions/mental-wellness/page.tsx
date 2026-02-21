@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -11,22 +12,25 @@ import { useAuthStore } from '@/lib/store/authStore';
 import axios from '@/lib/api/axios-instance';
 import { toast } from 'sonner';
 import { predictionsApi } from '@/lib/api';
+import type { Prediction } from '@/types';
 
 export default function MentalWellnessPredictionPage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { user } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
-  const [prediction, setPrediction] = useState<any>(null);
+  const [prediction, setPrediction] = useState<Prediction | null>(null);
   const [showRecommendations, setShowRecommendations] = useState(false);
   const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);
 
   const handleEmailReport = async () => {
-    if (!prediction?.id) return;
+    const predId = prediction?._id ?? (prediction as any)?.id;
+    if (!predId) return;
     
     setIsSendingEmail(true);
     try {
-      await predictionsApi.emailReport(prediction.id);
+      await predictionsApi.emailReport(predId);
       toast.success('Report sent to your email!');
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Failed to send email');
@@ -36,12 +40,13 @@ export default function MentalWellnessPredictionPage() {
   };
 
   const handleDownloadPDF = async () => {
-    if (!prediction?.id) return;
+    const predId = prediction?._id ?? (prediction as any)?.id;
+    if (!predId) return;
     
     setIsDownloadingPDF(true);
     try {
       // Request PDF from backend
-      const response = await axios.get(`/predictions/${prediction.id}/pdf`, {
+      const response = await axios.get(`/predictions/${predId}/pdf`, {
         responseType: 'blob'
       });
       
@@ -184,13 +189,12 @@ export default function MentalWellnessPredictionPage() {
         return;
       }
 
-      console.log('Sending payload:', payload);
-
       const response = await axios.post('/predictions/mental-wellness', payload);
-      
-      console.log('Prediction response:', response.data);
-      
       setPrediction(response.data.data.prediction);
+      // Invalidate React Query caches so predictions list & dashboard update
+      queryClient.invalidateQueries({ queryKey: ['predictions'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      queryClient.invalidateQueries({ queryKey: ['analytics'] });
       toast.success('Prediction completed successfully!');
       
       // Scroll to results
@@ -198,9 +202,6 @@ export default function MentalWellnessPredictionPage() {
         document.getElementById('results')?.scrollIntoView({ behavior: 'smooth' });
       }, 100);
     } catch (error: any) {
-      console.error('Prediction error:', error);
-      console.error('Error response:', error.response?.data);
-      
       if (error.response?.data?.errors) {
         // Show validation errors
         const errors = error.response.data.errors;
@@ -345,6 +346,29 @@ export default function MentalWellnessPredictionPage() {
                     <option value="Healthcare Worker">Healthcare Worker</option>
                     <option value="Business Professional">Business Professional</option>
                     <option value="Creative Professional">Creative Professional</option>
+                    <option value="Doctor">Doctor</option>
+                    <option value="Nurse">Nurse</option>
+                    <option value="Pharmacist">Pharmacist</option>
+                    <option value="Psychologist">Psychologist</option>
+                    <option value="Lawyer">Lawyer</option>
+                    <option value="Accountant">Accountant</option>
+                    <option value="Data Scientist">Data Scientist</option>
+                    <option value="Product Manager">Product Manager</option>
+                    <option value="Designer">Designer</option>
+                    <option value="Marketing Professional">Marketing Professional</option>
+                    <option value="Sales Representative">Sales Representative</option>
+                    <option value="Human Resources">Human Resources</option>
+                    <option value="Researcher">Researcher</option>
+                    <option value="Lecturer / Professor">Lecturer / Professor</option>
+                    <option value="Engineer">Engineer</option>
+                    <option value="Architect">Architect</option>
+                    <option value="Entrepreneur">Entrepreneur</option>
+                    <option value="Freelancer">Freelancer</option>
+                    <option value="Social Worker">Social Worker</option>
+                    <option value="Police / Military">Police / Military</option>
+                    <option value="Retail / Service Worker">Retail / Service Worker</option>
+                    <option value="Skilled Tradesperson">Skilled Tradesperson</option>
+                    <option value="Unemployed">Unemployed</option>
                     <option value="Other">Other</option>
                   </select>
                 </div>
