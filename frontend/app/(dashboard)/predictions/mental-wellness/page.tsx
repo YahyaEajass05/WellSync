@@ -106,6 +106,8 @@ export default function MentalWellnessPredictionPage() {
     }
   };
 
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+
   const [formData, setFormData] = useState({
     age: '',
     gender: 'Male',
@@ -150,6 +152,7 @@ export default function MentalWellnessPredictionPage() {
         social_hours_per_week: example.social_hours_per_week.toString()
       });
       toast.success('Example data loaded!');
+      setFormErrors({});
     } catch (error) {
       toast.error('Failed to load example data');
     }
@@ -159,11 +162,39 @@ export default function MentalWellnessPredictionPage() {
     e.preventDefault();
     setIsLoading(true);
     setPrediction(null);
+    
+    // Client-side validation
+    const errors: Record<string, string> = {};
+    const age = parseInt(formData.age);
+    if (!formData.age || isNaN(age)) {
+      errors.age = 'Age is required.';
+    } else if (age < 18 || age > 100) {
+      errors.age = 'Age must be between 18 and 100.';
+    }
+    const sleepQuality = parseInt(formData.sleep_quality_1_5);
+    if (!formData.sleep_quality_1_5 || isNaN(sleepQuality) || sleepQuality < 1 || sleepQuality > 5) {
+      errors.sleep_quality_1_5 = 'Sleep quality must be between 1 and 5.';
+    }
+    const stressLevel = parseInt(formData.stress_level_0_10);
+    if (!formData.stress_level_0_10 || isNaN(stressLevel) || stressLevel < 0 || stressLevel > 10) {
+      errors.stress_level_0_10 = 'Stress level must be between 0 and 10.';
+    }
+    const productivity = parseInt(formData.productivity_0_100);
+    if (!formData.productivity_0_100 || isNaN(productivity) || productivity < 0 || productivity > 100) {
+      errors.productivity_0_100 = 'Productivity must be between 0 and 100.';
+    }
+    
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      setIsLoading(false);
+      return;
+    }
+    setFormErrors({});
 
     try {
       // Convert form data to numbers
       const payload = {
-        age: parseInt(formData.age),
+        age,
         gender: formData.gender,
         occupation: formData.occupation,
         work_mode: formData.work_mode,
@@ -171,9 +202,9 @@ export default function MentalWellnessPredictionPage() {
         work_screen_hours: parseFloat(formData.work_screen_hours),
         leisure_screen_hours: parseFloat(formData.leisure_screen_hours),
         sleep_hours: parseFloat(formData.sleep_hours),
-        sleep_quality_1_5: parseInt(formData.sleep_quality_1_5),
-        stress_level_0_10: parseInt(formData.stress_level_0_10),
-        productivity_0_100: parseInt(formData.productivity_0_100),
+        sleep_quality_1_5: sleepQuality,
+        stress_level_0_10: stressLevel,
+        productivity_0_100: productivity,
         exercise_minutes_per_week: parseInt(formData.exercise_minutes_per_week),
         social_hours_per_week: parseFloat(formData.social_hours_per_week)
       };
@@ -191,25 +222,21 @@ export default function MentalWellnessPredictionPage() {
 
       const response = await axios.post('/predictions/mental-wellness', payload);
       setPrediction(response.data.data.prediction);
-      // Invalidate React Query caches so predictions list & dashboard update
       queryClient.invalidateQueries({ queryKey: ['predictions'] });
       queryClient.invalidateQueries({ queryKey: ['dashboard'] });
       queryClient.invalidateQueries({ queryKey: ['analytics'] });
       toast.success('Prediction completed successfully!');
       
-      // Scroll to results
       setTimeout(() => {
         document.getElementById('results')?.scrollIntoView({ behavior: 'smooth' });
       }, 100);
     } catch (error: any) {
       if (error.response?.data?.errors) {
-        // Show validation errors
         const errors = error.response.data.errors;
         errors.forEach((err: any) => {
           toast.error(`${err.field}: ${err.message}`);
         });
       } else if (error.response?.data?.detail) {
-        // FastAPI validation error
         toast.error(error.response.data.detail);
       } else {
         toast.error(error.response?.data?.message || 'Failed to get prediction');
@@ -312,6 +339,9 @@ export default function MentalWellnessPredictionPage() {
                     onChange={handleInputChange}
                     placeholder="e.g., 25"
                   />
+                  {formErrors.age && (
+                    <p className="text-sm text-red-500 mt-1">{formErrors.age}</p>
+                  )}
                 </div>
 
                 <div>
@@ -478,6 +508,9 @@ export default function MentalWellnessPredictionPage() {
                     onChange={handleInputChange}
                     placeholder="1=Poor, 5=Excellent"
                   />
+                  {formErrors.sleep_quality_1_5 && (
+                    <p className="text-sm text-red-500 mt-1">{formErrors.sleep_quality_1_5}</p>
+                  )}
                 </div>
 
                 <div>
@@ -493,6 +526,9 @@ export default function MentalWellnessPredictionPage() {
                     onChange={handleInputChange}
                     placeholder="0=No stress, 10=Extreme stress"
                   />
+                  {formErrors.stress_level_0_10 && (
+                    <p className="text-sm text-red-500 mt-1">{formErrors.stress_level_0_10}</p>
+                  )}
                 </div>
 
                 <div>
@@ -508,6 +544,9 @@ export default function MentalWellnessPredictionPage() {
                     onChange={handleInputChange}
                     placeholder="0=Not productive, 100=Very productive"
                   />
+                  {formErrors.productivity_0_100 && (
+                    <p className="text-sm text-red-500 mt-1">{formErrors.productivity_0_100}</p>
+                  )}
                 </div>
               </div>
             </div>

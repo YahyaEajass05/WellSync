@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -10,21 +11,24 @@ import { BarChart3, ArrowLeft, Loader2, Info, Lightbulb, X, Mail, Download } fro
 import axios from '@/lib/api/axios-instance';
 import { toast } from 'sonner';
 import { predictionsApi } from '@/lib/api';
+import type { Prediction } from '@/types';
 
 export default function AcademicImpactPredictionPage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [isLoading, setIsLoading] = useState(false);
-  const [prediction, setPrediction] = useState<any>(null);
+  const [prediction, setPrediction] = useState<Prediction | null>(null);
   const [showRecommendations, setShowRecommendations] = useState(false);
   const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);
 
   const handleEmailReport = async () => {
-    if (!prediction?.id) return;
+    const predId = prediction?._id ?? (prediction as any)?.id;
+    if (!predId) return;
     
     setIsSendingEmail(true);
     try {
-      await predictionsApi.emailReport(prediction.id);
+      await predictionsApi.emailReport(predId);
       toast.success('Report sent to your email!');
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Failed to send email');
@@ -34,12 +38,13 @@ export default function AcademicImpactPredictionPage() {
   };
 
   const handleDownloadPDF = async () => {
-    if (!prediction?.id) return;
+    const predId = prediction?._id ?? (prediction as any)?.id;
+    if (!predId) return;
     
     setIsDownloadingPDF(true);
     try {
       // Request PDF from backend
-      const response = await axios.get(`/predictions/${prediction.id}/pdf`, {
+      const response = await axios.get(`/predictions/${predId}/pdf`, {
         responseType: 'blob'
       });
       
@@ -92,6 +97,8 @@ export default function AcademicImpactPredictionPage() {
     }
   };
 
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+
   const [formData, setFormData] = useState({
     age: '',
     gender: 'Male',
@@ -132,6 +139,7 @@ export default function AcademicImpactPredictionPage() {
         relationship_status: example.relationship_status
       });
       toast.success('Example data loaded!');
+      setFormErrors({});
     } catch (error) {
       toast.error('Failed to load example data');
     }
@@ -142,17 +150,41 @@ export default function AcademicImpactPredictionPage() {
     setIsLoading(true);
     setPrediction(null);
 
+    // Client-side validation
+    const errors: Record<string, string> = {};
+    const age = parseInt(formData.age);
+    if (!formData.age || isNaN(age)) {
+      errors.age = 'Age is required.';
+    } else if (age < 17 || age > 30) {
+      errors.age = 'Age must be between 17 and 30 for academic impact assessment.';
+    }
+    const mentalHealthScore = parseInt(formData.mental_health_score);
+    if (!formData.mental_health_score || isNaN(mentalHealthScore) || mentalHealthScore < 0 || mentalHealthScore > 100) {
+      errors.mental_health_score = 'Mental health score must be between 0 and 100.';
+    }
+    const conflicts = parseInt(formData.conflicts_over_social_media);
+    if (!formData.conflicts_over_social_media || isNaN(conflicts) || conflicts < 0 || conflicts > 5) {
+      errors.conflicts_over_social_media = 'Conflicts must be between 0 and 5.';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      setIsLoading(false);
+      return;
+    }
+    setFormErrors({});
+
     try {
       const payload = {
-        age: parseInt(formData.age),
+        age,
         gender: formData.gender,
         academic_level: formData.academic_level,
         country: formData.country,
         most_used_platform: formData.most_used_platform,
         avg_daily_usage_hours: parseFloat(formData.avg_daily_usage_hours),
         sleep_hours_per_night: parseFloat(formData.sleep_hours_per_night),
-        mental_health_score: parseInt(formData.mental_health_score),
-        conflicts_over_social_media: parseInt(formData.conflicts_over_social_media),
+        mental_health_score: mentalHealthScore,
+        conflicts_over_social_media: conflicts,
         affects_academic_performance: formData.affects_academic_performance,
         relationship_status: formData.relationship_status
       };
@@ -160,15 +192,15 @@ export default function AcademicImpactPredictionPage() {
       const response = await axios.post('/predictions/academic-impact', payload);
       
       setPrediction(response.data.data.prediction);
+      queryClient.invalidateQueries({ queryKey: ['predictions'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      queryClient.invalidateQueries({ queryKey: ['analytics'] });
       toast.success('Prediction completed successfully!');
       
       setTimeout(() => {
         document.getElementById('results')?.scrollIntoView({ behavior: 'smooth' });
       }, 100);
     } catch (error: any) {
-      console.error('Prediction error:', error);
-      console.error('Error response:', error.response?.data);
-      
       if (error.response?.data?.errors) {
         const errors = error.response.data.errors;
         errors.forEach((err: any) => {
@@ -264,6 +296,9 @@ export default function AcademicImpactPredictionPage() {
                     onChange={handleInputChange}
                     placeholder="e.g., 21"
                   />
+                  {formErrors.age && (
+                    <p className="text-sm text-red-500 mt-1">{formErrors.age}</p>
+                  )}
                 </div>
 
                 <div>
@@ -451,6 +486,9 @@ export default function AcademicImpactPredictionPage() {
                     onChange={handleInputChange}
                     placeholder="0=Never, 5=Always"
                   />
+                  {formErrors.conflicts_over_social_media && (
+                    <p className="text-sm text-red-500 mt-1">{formErrors.conflicts_over_social_media}</p>
+                  )}
                 </div>
 
                 <div>
@@ -491,18 +529,24 @@ export default function AcademicImpactPredictionPage() {
                 </div>
 
                 <div>
-                  <Label htmlFor="mental_health_score">Mental Health Score (0-10) *</Label>
+                  <Label htmlFor="mental_health_score">Mental Health Score (0–100) *</Label>
                   <Input
                     id="mental_health_score"
                     name="mental_health_score"
                     type="number"
                     min="0"
-                    max="10"
+                    max="100"
                     required
                     value={formData.mental_health_score}
                     onChange={handleInputChange}
-                    placeholder="0=Poor, 10=Excellent"
+                    placeholder="0 = Poor, 100 = Excellent"
                   />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Rate your overall mental health from 0 (very poor) to 100 (excellent)
+                  </p>
+                  {formErrors.mental_health_score && (
+                    <p className="text-sm text-red-500 mt-1">{formErrors.mental_health_score}</p>
+                  )}
                 </div>
               </div>
             </div>

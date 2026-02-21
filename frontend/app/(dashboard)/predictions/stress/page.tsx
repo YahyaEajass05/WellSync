@@ -107,6 +107,8 @@ export default function StressLevelPredictionPage() {
     }
   };
 
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+
   const [formData, setFormData] = useState({
     age: '',
     gender: 'Male',
@@ -151,6 +153,7 @@ export default function StressLevelPredictionPage() {
         mental_wellness_index_0_100: example.mental_wellness_index_0_100.toString()
       });
       toast.success('Example data loaded!');
+      setFormErrors({});
     } catch (error) {
       toast.error('Failed to load example data');
     }
@@ -160,10 +163,38 @@ export default function StressLevelPredictionPage() {
     e.preventDefault();
     setIsLoading(true);
     setPrediction(null);
+    
+    // Client-side validation
+    const errors: Record<string, string> = {};
+    const age = parseInt(formData.age);
+    if (!formData.age || isNaN(age)) {
+      errors.age = 'Age is required.';
+    } else if (age < 18 || age > 100) {
+      errors.age = 'Age must be between 18 and 100.';
+    }
+    const sleepQuality = parseInt(formData.sleep_quality_1_5);
+    if (!formData.sleep_quality_1_5 || isNaN(sleepQuality) || sleepQuality < 1 || sleepQuality > 5) {
+      errors.sleep_quality_1_5 = 'Sleep quality must be between 1 and 5.';
+    }
+    const productivity = parseInt(formData.productivity_0_100);
+    if (!formData.productivity_0_100 || isNaN(productivity) || productivity < 0 || productivity > 100) {
+      errors.productivity_0_100 = 'Productivity must be between 0 and 100.';
+    }
+    const wellnessIndex = parseFloat(formData.mental_wellness_index_0_100);
+    if (!formData.mental_wellness_index_0_100 || isNaN(wellnessIndex) || wellnessIndex < 0 || wellnessIndex > 100) {
+      errors.mental_wellness_index_0_100 = 'Mental wellness index must be between 0 and 100.';
+    }
+    
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      setIsLoading(false);
+      return;
+    }
+    setFormErrors({});
 
     try {
       const payload = {
-        age: parseInt(formData.age),
+        age,
         gender: formData.gender,
         occupation: formData.occupation,
         work_mode: formData.work_mode,
@@ -171,19 +202,15 @@ export default function StressLevelPredictionPage() {
         work_screen_hours: parseFloat(formData.work_screen_hours),
         leisure_screen_hours: parseFloat(formData.leisure_screen_hours),
         sleep_hours: parseFloat(formData.sleep_hours),
-        sleep_quality_1_5: parseInt(formData.sleep_quality_1_5),
-        productivity_0_100: parseInt(formData.productivity_0_100),
+        sleep_quality_1_5: sleepQuality,
+        productivity_0_100: productivity,
         exercise_minutes_per_week: parseInt(formData.exercise_minutes_per_week),
         social_hours_per_week: parseFloat(formData.social_hours_per_week),
-        mental_wellness_index_0_100: parseFloat(formData.mental_wellness_index_0_100)
+        mental_wellness_index_0_100: wellnessIndex
       };
 
       // Validate screen time breakdown
-      const totalScreen = payload.screen_time_hours;
-      const workScreen = payload.work_screen_hours;
-      const leisureScreen = payload.leisure_screen_hours;
-      
-      if (workScreen + leisureScreen > totalScreen) {
+      if (payload.work_screen_hours + payload.leisure_screen_hours > payload.screen_time_hours) {
         toast.error('Work + Leisure screen time cannot exceed Total screen time');
         setIsLoading(false);
         return;
@@ -191,7 +218,6 @@ export default function StressLevelPredictionPage() {
 
       const response = await axios.post('/predictions/stress-level', payload);
       setPrediction(response.data.data.prediction);
-      // Invalidate React Query caches so predictions list & dashboard update
       queryClient.invalidateQueries({ queryKey: ['predictions'] });
       queryClient.invalidateQueries({ queryKey: ['dashboard'] });
       queryClient.invalidateQueries({ queryKey: ['analytics'] });
@@ -298,6 +324,9 @@ export default function StressLevelPredictionPage() {
                     onChange={handleInputChange}
                     placeholder="e.g., 25"
                   />
+                  {formErrors.age && (
+                    <p className="text-sm text-red-500 mt-1">{formErrors.age}</p>
+                  )}
                 </div>
 
                 <div>
@@ -464,6 +493,9 @@ export default function StressLevelPredictionPage() {
                     onChange={handleInputChange}
                     placeholder="1=Poor, 5=Excellent"
                   />
+                  {formErrors.sleep_quality_1_5 && (
+                    <p className="text-sm text-red-500 mt-1">{formErrors.sleep_quality_1_5}</p>
+                  )}
                 </div>
 
                 <div>
@@ -479,6 +511,9 @@ export default function StressLevelPredictionPage() {
                     onChange={handleInputChange}
                     placeholder="0=Not productive, 100=Very productive"
                   />
+                  {formErrors.productivity_0_100 && (
+                    <p className="text-sm text-red-500 mt-1">{formErrors.productivity_0_100}</p>
+                  )}
                 </div>
 
                 <div>
@@ -495,6 +530,9 @@ export default function StressLevelPredictionPage() {
                     onChange={handleInputChange}
                     placeholder="e.g., 75.0"
                   />
+                  {formErrors.mental_wellness_index_0_100 && (
+                    <p className="text-sm text-red-500 mt-1">{formErrors.mental_wellness_index_0_100}</p>
+                  )}
                 </div>
               </div>
             </div>
