@@ -48,8 +48,10 @@ exports.updateProfile = asyncHandler(async (req, res) => {
     Object.keys(req.body).forEach(key => {
         if (allowedUpdates.includes(key)) {
             if (key === 'profile' || key === 'preferences') {
-                // Merge nested objects
-                updates[key] = { ...req.user[key], ...req.body[key] };
+                // Use dot notation to merge nested fields without overwriting sibling fields
+                Object.keys(req.body[key]).forEach(subKey => {
+                    updates[`${key}.${subKey}`] = req.body[key][subKey];
+                });
             } else {
                 updates[key] = req.body[key];
             }
@@ -58,7 +60,7 @@ exports.updateProfile = asyncHandler(async (req, res) => {
 
     const user = await User.findByIdAndUpdate(
         req.user.id,
-        updates,
+        { $set: updates },
         { new: true, runValidators: true }
     );
 

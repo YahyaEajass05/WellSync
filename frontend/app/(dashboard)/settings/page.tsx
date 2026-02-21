@@ -5,7 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { settingsApi } from '@/lib/api/settings';
 import { useAuthStore } from '@/lib/store/authStore';
-import { useUIStore } from '@/lib/store/uiStore';
+import { useTheme } from 'next-themes';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -399,7 +399,7 @@ function PasswordTab() {
 // ── Preferences Tab ───────────────────────────────────────────────────────────
 function PreferencesTab() {
   const queryClient = useQueryClient();
-  const { setTheme: setUITheme } = useUIStore();
+  const { setTheme: setNextTheme } = useTheme();
   const { data: user, isLoading } = useQuery({ queryKey: ['settings-user'], queryFn: settingsApi.getProfile });
   const [theme, setTheme] = useState<'light' | 'dark' | 'auto'>('auto');
   const [status, setStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
@@ -410,9 +410,10 @@ function PreferencesTab() {
 
   const { mutate, isPending } = useMutation({
     mutationFn: (t: 'light' | 'dark' | 'auto') => settingsApi.updatePreferences({ theme: t }),
-    onSuccess: (updated) => {
+    onSuccess: (_updated, t) => {
       queryClient.invalidateQueries({ queryKey: ['settings-user'] });
-      setUITheme(theme === 'auto' ? 'system' : theme);
+      // Apply theme immediately via next-themes (auto → system)
+      setNextTheme(t === 'auto' ? 'system' : t);
       setStatus({ type: 'success', message: 'Theme preference saved!' });
       setTimeout(() => setStatus(null), 3000);
     },
