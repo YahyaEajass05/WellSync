@@ -7,6 +7,7 @@
 !QUICK_START_GUIDE.md
 !backend/USER_DOCUMENTATION.md
 !ai/AI_USER_DOCUMENTATION.md
+!report/TEST_PLAN.md
 
 # Environment Variables
 .env

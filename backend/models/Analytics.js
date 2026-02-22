@@ -34,11 +34,20 @@ const analyticsSchema = new mongoose.Schema({
             max: { type: Number },
             trend: { type: String, enum: ['improving', 'declining', 'stable', 'insufficient_data'], default: 'insufficient_data' }
         },
+        stressLevel: {
+            count: { type: Number, default: 0 },
+            average: { type: Number, default: 0 },
+            min: { type: Number },
+            max: { type: Number },
+            latest: { type: Number },
+            trend: { type: String, enum: ['improving', 'declining', 'stable', 'insufficient_data'], default: 'insufficient_data' }
+        },
         academicImpact: {
             count: { type: Number, default: 0 },
             average: { type: Number, default: 0 },
             min: { type: Number },
             max: { type: Number },
+            latest: { type: Number },
             trend: { type: String, enum: ['improving', 'declining', 'stable', 'insufficient_data'], default: 'insufficient_data' }
         },
         engagement: {

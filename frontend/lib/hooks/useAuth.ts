@@ -18,11 +18,15 @@ export function useAuth() {
       setUser(data.user);
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
-      toast.success('Welcome back!');
-      router.push('/dashboard');
+      // Set cookies so middleware can read auth state on the server edge
+      const maxAge = 7 * 24 * 60 * 60;
+      document.cookie = `token=${data.token}; path=/; max-age=${maxAge}; SameSite=Lax`;
+      document.cookie = `user_role=${data.user.role}; path=/; max-age=${maxAge}; SameSite=Lax`;
+      toast.success(`Welcome back${data.user.role === 'admin' ? ', Admin' : ''}!`);
+      router.push(data.user.role === 'admin' ? '/admin' : '/dashboard');
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Login failed');
+      toast.error(error.response?.data?.message || 'Login failed', { duration: 5000 });
     },
   });
 
@@ -34,6 +38,10 @@ export function useAuth() {
       setUser(data.user);
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
+      // Set cookies so middleware can read auth state on the server edge
+      const maxAge = 7 * 24 * 60 * 60;
+      document.cookie = `token=${data.token}; path=/; max-age=${maxAge}; SameSite=Lax`;
+      document.cookie = `user_role=${data.user.role || 'user'}; path=/; max-age=${maxAge}; SameSite=Lax`;
       toast.success('Account created successfully! Please verify your email.');
       router.push('/verify-email');
     },
@@ -49,8 +57,23 @@ export function useAuth() {
       clearAuth();
       localStorage.removeItem('token');
       localStorage.removeItem('user');
+      localStorage.removeItem('auth-storage');
+      // Clear auth cookies so middleware stops treating user as authenticated
+      document.cookie = 'token=; path=/; max-age=0; SameSite=Lax';
+      document.cookie = 'user_role=; path=/; max-age=0; SameSite=Lax';
       queryClient.clear();
       toast.success('Logged out successfully');
+      router.push('/login');
+    },
+    onError: () => {
+      // Even if server logout fails, clear local state
+      clearAuth();
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      localStorage.removeItem('auth-storage');
+      document.cookie = 'token=; path=/; max-age=0; SameSite=Lax';
+      document.cookie = 'user_role=; path=/; max-age=0; SameSite=Lax';
+      queryClient.clear();
       router.push('/login');
     },
   });
@@ -63,13 +86,71 @@ export function useAuth() {
     retry: false,
   });
 
+  // Forgot password mutation
+  const forgotPasswordMutation = useMutation({
+    mutationFn: (email: string) => authApi.forgotPassword(email),
+    onSuccess: () => {
+      toast.success('Password reset email sent! Check your inbox.');
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || 'Failed to send reset email');
+    },
+  });
+
+  // Reset password mutation
+  const resetPasswordMutation = useMutation({
+    mutationFn: ({ code, password, email }: { code: string; password: string; email: string }) =>
+      authApi.resetPassword(code, password, email),
+    onSuccess: () => {
+      toast.success('Password reset successfully!');
+      router.push('/login?reset=true');
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || 'Failed to reset password');
+    },
+  });
+
+  // Verify email mutation
+  const verifyEmailMutation = useMutation({
+    mutationFn: ({ code, email }: { code: string; email?: string }) =>
+      authApi.verifyEmail(code, email),
+    onSuccess: () => {
+      toast.success('Email verified successfully!');
+      router.push('/login?verified=true');
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || 'Verification failed. Please try again.');
+    },
+  });
+
+  // Resend verification mutation
+  const resendVerificationMutation = useMutation({
+    mutationFn: () => authApi.resendVerification(),
+    onSuccess: () => {
+      toast.success('Verification email resent! Check your inbox.');
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || 'Failed to resend verification email');
+    },
+  });
+
   return {
     login: loginMutation.mutate,
     register: registerMutation.mutate,
     logout: logoutMutation.mutate,
+    forgotPassword: forgotPasswordMutation.mutate,
+    resetPassword: resetPasswordMutation.mutate,
+    verifyEmail: verifyEmailMutation.mutate,
+    resendVerification: resendVerificationMutation.mutate,
     user,
     isLoading,
     isLoginLoading: loginMutation.isPending,
     isRegisterLoading: registerMutation.isPending,
+    isForgotPasswordLoading: forgotPasswordMutation.isPending,
+    isResetPasswordLoading: resetPasswordMutation.isPending,
+    isVerifyEmailLoading: verifyEmailMutation.isPending,
+    isResendLoading: resendVerificationMutation.isPending,
+    loginError: loginMutation.error as any,
+    isLoginError: loginMutation.isError,
   };
 }

@@ -9,6 +9,7 @@ const Notification = require('../models/Notification');
 const Analytics = require('../models/Analytics');
 const { asyncHandler } = require('../middleware/errorHandler');
 const logger = require('../utils/logger');
+const emailService = require('../utils/emailService');
 
 /**
  * @desc    Get admin dashboard statistics
@@ -66,16 +67,66 @@ exports.getAdminDashboard = asyncHandler(async (req, res) => {
         { $sort: { "_id.date": 1 } }
     ]);
 
-    // Get average scores
+    // Calculate average scores
     const avgMentalWellness = await Prediction.aggregate([
         { $match: { predictionType: 'mental_wellness' } },
-        { $group: { _id: null, avgScore: { $avg: "$result.prediction" } } }
+        { $group: { _id: null, avg: { $avg: '$result.prediction' } } }
     ]);
 
     const avgAcademicImpact = await Prediction.aggregate([
         { $match: { predictionType: 'academic_impact' } },
-        { $group: { _id: null, avgScore: { $avg: "$result.prediction" } } }
+        { $group: { _id: null, avg: { $avg: '$result.prediction' } } }
     ]);
+
+    // Get wellness trend data for charts (last 30 days)
+    const wellnessTrend = await Prediction.aggregate([
+        {
+            $match: {
+                predictionType: 'mental_wellness',
+                createdAt: { $gte: thirtyDaysAgo }
+            }
+        },
+        {
+            $group: {
+                _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+                avgScore: { $avg: '$result.prediction' },
+                count: { $sum: 1 }
+            }
+        },
+        { $sort: { _id: 1 } }
+    ]);
+
+    // Get stress level distribution
+    const stressDistribution = await Prediction.aggregate([
+        {
+            $match: { predictionType: 'stress_level' }
+        },
+        {
+            $group: {
+                _id: '$result.stressCategory',
+                count: { $sum: 1 }
+            }
+        }
+    ]);
+
+    // Get hourly activity pattern
+    const hourlyActivity = await Prediction.aggregate([
+        {
+            $project: {
+                hour: { $hour: '$createdAt' }
+            }
+        },
+        {
+            $group: {
+                _id: '$hour',
+                predictions: { $sum: 1 }
+            }
+        },
+        { $sort: { _id: 1 } }
+    ]);
+
+    // Get stress level predictions count
+    const stressLevelPredictions = await Prediction.countDocuments({ predictionType: 'stress_level' });
 
     res.status(200).json({
         success: true,
@@ -86,19 +137,39 @@ exports.getAdminDashboard = asyncHandler(async (req, res) => {
                 active: activeUsers,
                 admins: adminUsers,
                 newLastWeek: newUsers,
-                verificationRate: totalUsers > 0 ? ((verifiedUsers / totalUsers) * 100).toFixed(2) : 0
+                verificationRate: totalUsers > 0 ? ((verifiedUsers / totalUsers) * 100).toFixed(1) + '%' : '0%'
             },
             predictions: {
                 total: totalPredictions,
                 mentalWellness: mentalWellnessPredictions,
+                stressLevel: stressLevelPredictions,
                 academicImpact: academicImpactPredictions,
                 recentLastWeek: recentPredictions,
-                avgMentalWellnessScore: avgMentalWellness[0]?.avgScore?.toFixed(2) || 0,
-                avgAcademicImpactScore: avgAcademicImpact[0]?.avgScore?.toFixed(2) || 0
+                avgMentalWellnessScore: avgMentalWellness[0]?.avg?.toFixed(1) || 'N/A',
+                avgAcademicImpactScore: avgAcademicImpact[0]?.avg?.toFixed(1) || 'N/A'
             },
             trends: {
                 userGrowth,
                 predictions: predictionTrends
+            },
+            charts: {
+                wellnessTrend: wellnessTrend.map(item => ({
+                    date: item._id,
+                    avgScore: item.avgScore ? parseFloat(item.avgScore.toFixed(1)) : 0,
+                    count: item.count || 0
+                })),
+                stressDistribution: stressDistribution.map(item => ({
+                    level: item._id || 'Unknown',
+                    count: item.count || 0
+                })),
+                hourlyActivity: Array.from({ length: 24 }, (_, hour) => {
+                    const activity = hourlyActivity.find(a => a._id === hour);
+                    return {
+                        hour,
+                        users: 0, // Could be calculated separately if needed
+                        predictions: activity?.predictions || 0
+                    };
+                })
             }
         }
     });
@@ -213,11 +284,7 @@ exports.updateUserRole = asyncHandler(async (req, res) => {
         });
     }
 
-    const user = await User.findByIdAndUpdate(
-        req.params.id,
-        { role },
-        { new: true, runValidators: true }
-    ).select('-password');
+    const user = await User.findById(req.params.id);
 
     if (!user) {
         return res.status(404).json({
@@ -225,6 +292,20 @@ exports.updateUserRole = asyncHandler(async (req, res) => {
             error: 'User not found'
         });
     }
+
+    // Prevent modifying system admin
+    if (user.isSystemAdminAccount()) {
+        return res.status(403).json({
+            success: false,
+            error: 'Cannot modify system administrator account'
+        });
+    }
+
+    user.role = role;
+    await user.save();
+
+    // Remove password from response
+    user.password = undefined;
 
     logger.info(`Role updated for user ${user.email} to ${role} by admin ${req.user.email}`);
 
@@ -250,11 +331,7 @@ exports.updateUserStatus = asyncHandler(async (req, res) => {
         });
     }
 
-    const user = await User.findByIdAndUpdate(
-        req.params.id,
-        { isActive },
-        { new: true, runValidators: true }
-    ).select('-password');
+    const user = await User.findById(req.params.id);
 
     if (!user) {
         return res.status(404).json({
@@ -262,6 +339,20 @@ exports.updateUserStatus = asyncHandler(async (req, res) => {
             error: 'User not found'
         });
     }
+
+    // Prevent deactivating system admin
+    if (user.isSystemAdminAccount()) {
+        return res.status(403).json({
+            success: false,
+            error: 'Cannot deactivate system administrator account'
+        });
+    }
+
+    user.isActive = isActive;
+    await user.save();
+
+    // Remove password from response
+    user.password = undefined;
 
     logger.info(`User ${user.email} ${isActive ? 'activated' : 'deactivated'} by admin ${req.user.email}`);
 
@@ -292,6 +383,14 @@ exports.deleteUser = asyncHandler(async (req, res) => {
         return res.status(400).json({
             success: false,
             error: 'You cannot delete your own account'
+        });
+    }
+
+    // Prevent deleting system admin
+    if (user.isSystemAdminAccount()) {
+        return res.status(403).json({
+            success: false,
+            error: 'Cannot delete system administrator account'
         });
     }
 
@@ -392,12 +491,12 @@ exports.getSystemStats = asyncHandler(async (req, res) => {
 });
 
 /**
- * @desc    Broadcast notification to all users
+ * @desc    Broadcast notification to all users (in-app + email)
  * @route   POST /api/admin/broadcast
  * @access  Private/Admin
  */
 exports.broadcastNotification = asyncHandler(async (req, res) => {
-    const { title, message, priority = 'medium' } = req.body;
+    const { title, message, priority = 'medium', sendEmail = true } = req.body;
 
     if (!title || !message) {
         return res.status(400).json({
@@ -406,10 +505,20 @@ exports.broadcastNotification = asyncHandler(async (req, res) => {
         });
     }
 
-    // Get all active users
-    const users = await User.find({ isActive: true }).select('_id');
+    // Get all active, verified users with email
+    const users = await User.find({ 
+        isActive: true,
+        isEmailVerified: true 
+    }).select('_id firstName lastName email');
 
-    // Create notifications for all users
+    if (users.length === 0) {
+        return res.status(400).json({
+            success: false,
+            error: 'No active verified users found'
+        });
+    }
+
+    // Create in-app notifications for all users
     const notifications = users.map(user => ({
         user: user._id,
         type: 'system_alert',
@@ -421,14 +530,165 @@ exports.broadcastNotification = asyncHandler(async (req, res) => {
 
     await Notification.insertMany(notifications);
 
-    logger.info(`Admin ${req.user.email} broadcasted notification to ${users.length} users`);
+    // Send broadcast emails concurrently (with error handling per user)
+    let emailsSent = 0;
+    let emailsFailed = 0;
+
+    if (sendEmail) {
+        const emailPromises = users.map(async (user) => {
+            try {
+                await emailService.sendBroadcastEmail(user, { title, message, priority });
+                emailsSent++;
+            } catch (error) {
+                emailsFailed++;
+                logger.error(`Failed to send broadcast email to ${user.email}: ${error.message}`);
+            }
+        });
+
+        // Send emails in batches of 10 to avoid rate limiting
+        const batchSize = 10;
+        for (let i = 0; i < emailPromises.length; i += batchSize) {
+            await Promise.allSettled(emailPromises.slice(i, i + batchSize));
+        }
+    }
+
+    logger.info(`Admin ${req.user.email} broadcasted notification to ${users.length} users. Emails sent: ${emailsSent}, Failed: ${emailsFailed}`);
 
     res.status(200).json({
         success: true,
         message: `Notification sent to ${users.length} users`,
         data: {
-            recipientCount: users.length
+            recipientCount: users.length,
+            notificationsSent: users.length,
+            emailsSent,
+            emailsFailed
         }
+    });
+});
+
+/**
+ * @desc    Get all notifications history (admin view)
+ * @route   GET /api/admin/notifications
+ * @access  Private/Admin
+ */
+exports.getNotificationsHistory = asyncHandler(async (req, res) => {
+    const { 
+        page = 1, 
+        limit = 20, 
+        type, 
+        priority, 
+        isRead,
+        search,
+        startDate,
+        endDate
+    } = req.query;
+
+    const query = {};
+
+    if (type) query.type = type;
+    if (priority) query.priority = priority;
+    if (isRead !== undefined) query.isRead = isRead === 'true';
+    if (startDate || endDate) {
+        query.createdAt = {};
+        if (startDate) query.createdAt.$gte = new Date(startDate);
+        if (endDate) query.createdAt.$lte = new Date(endDate);
+    }
+    if (search) {
+        query.$or = [
+            { title: { $regex: search, $options: 'i' } },
+            { message: { $regex: search, $options: 'i' } }
+        ];
+    }
+
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    const [notifications, total, stats] = await Promise.all([
+        Notification.find(query)
+            .populate('user', 'firstName lastName email role')
+            .sort({ createdAt: -1 })
+            .limit(parseInt(limit))
+            .skip(skip)
+            .lean(),
+        Notification.countDocuments(query),
+        Notification.aggregate([
+            { $group: {
+                _id: null,
+                total: { $sum: 1 },
+                unread: { $sum: { $cond: [{ $eq: ['$isRead', false] }, 1, 0] } },
+                urgent: { $sum: { $cond: [{ $eq: ['$priority', 'urgent'] }, 1, 0] } },
+                systemAlerts: { $sum: { $cond: [{ $eq: ['$type', 'system_alert'] }, 1, 0] } },
+                broadcasts: { $sum: { $cond: [{ $eq: ['$type', 'broadcast'] }, 1, 0] } }
+            }}
+        ])
+    ]);
+
+    res.status(200).json({
+        success: true,
+        data: {
+            notifications,
+            stats: stats[0] || { total: 0, unread: 0, urgent: 0, systemAlerts: 0, broadcasts: 0 },
+            pagination: {
+                total,
+                page: parseInt(page),
+                pages: Math.ceil(total / parseInt(limit)),
+                limit: parseInt(limit)
+            }
+        }
+    });
+});
+
+/**
+ * @desc    Delete a notification (admin)
+ * @route   DELETE /api/admin/notifications/:id
+ * @access  Private/Admin
+ */
+exports.deleteNotificationAdmin = asyncHandler(async (req, res) => {
+    const notification = await Notification.findByIdAndDelete(req.params.id);
+
+    if (!notification) {
+        return res.status(404).json({ success: false, error: 'Notification not found' });
+    }
+
+    logger.info(`Notification ${req.params.id} deleted by admin ${req.user.email}`);
+
+    res.status(200).json({ success: true, message: 'Notification deleted successfully' });
+});
+
+/**
+ * @desc    Delete all notifications of a type (admin)
+ * @route   DELETE /api/admin/notifications/bulk
+ * @access  Private/Admin
+ */
+exports.bulkDeleteNotifications = asyncHandler(async (req, res) => {
+    const { ids, type, priority, isRead } = req.body;
+
+    const query = {};
+
+    // If specific IDs provided, delete those
+    if (ids && Array.isArray(ids) && ids.length > 0) {
+        query._id = { $in: ids };
+    } else {
+        // Otherwise filter by type/priority/isRead
+        if (type) query.type = type;
+        if (priority) query.priority = priority;
+        if (isRead !== undefined) query.isRead = isRead;
+    }
+
+    if (Object.keys(query).length === 0) {
+        return res.status(400).json({
+            success: false,
+            error: 'Provide notification IDs or at least one filter (type, priority, isRead)'
+        });
+    }
+
+    const result = await Notification.deleteMany(query);
+
+    logger.info(`Bulk deleted ${result.deletedCount} notifications by admin ${req.user.email}`);
+
+    res.status(200).json({
+        success: true,
+        message: `${result.deletedCount} notifications deleted successfully`,
+        data: { deletedCount: result.deletedCount }
     });
 });
 

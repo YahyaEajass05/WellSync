@@ -17,10 +17,12 @@ router.use(protect);
 router.route('/mental-wellness')
     .get(profileController.getMentalWellnessProfile)
     .post([
-        body('occupation').notEmpty().withMessage('Occupation is required'),
+        body('occupation').trim().notEmpty().withMessage('Occupation is required'),
         body('workMode').isIn(['Remote', 'Hybrid', 'Office', 'Self-employed', 'Student']).withMessage('Invalid work mode'),
-        body('stressLevel').isInt({ min: 0, max: 10 }).withMessage('Stress level must be between 0 and 10'),
-        body('productivity').isInt({ min: 0, max: 100 }).withMessage('Productivity must be between 0 and 100'),
+        body('stressLevel').isFloat({ min: 0, max: 10 }).withMessage('Stress level must be between 0 and 10'),
+        body('productivity').isFloat({ min: 0, max: 100 }).withMessage('Productivity must be between 0 and 100'),
+        body('exerciseMinutesPerWeek').optional().isFloat({ min: 0 }).withMessage('Exercise minutes must be positive'),
+        body('socialHoursPerWeek').optional().isFloat({ min: 0 }).withMessage('Social hours must be positive'),
         validate
     ], profileController.createOrUpdateMentalWellnessProfile);
 

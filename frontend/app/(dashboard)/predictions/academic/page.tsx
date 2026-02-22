@@ -2,18 +2,102 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { BarChart3, ArrowLeft, Loader2, Info } from 'lucide-react';
+import { BarChart3, ArrowLeft, Loader2, Info, Lightbulb, X, Mail, Download } from 'lucide-react';
 import axios from '@/lib/api/axios-instance';
 import { toast } from 'sonner';
+import { predictionsApi } from '@/lib/api';
+import type { Prediction } from '@/types';
 
 export default function AcademicImpactPredictionPage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [isLoading, setIsLoading] = useState(false);
-  const [prediction, setPrediction] = useState<any>(null);
+  const [prediction, setPrediction] = useState<Prediction | null>(null);
+  const [showRecommendations, setShowRecommendations] = useState(false);
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);
+
+  const handleEmailReport = async () => {
+    const predId = prediction?._id ?? (prediction as any)?.id;
+    if (!predId) return;
+    
+    setIsSendingEmail(true);
+    try {
+      await predictionsApi.emailReport(predId);
+      toast.success('Report sent to your email!');
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to send email');
+    } finally {
+      setIsSendingEmail(false);
+    }
+  };
+
+  const handleDownloadPDF = async () => {
+    const predId = prediction?._id ?? (prediction as any)?.id;
+    if (!predId) return;
+    
+    setIsDownloadingPDF(true);
+    try {
+      // Request PDF from backend
+      const response = await axios.get(`/predictions/${predId}/pdf`, {
+        responseType: 'blob'
+      });
+      
+      // Create blob link to download
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `Academic_Impact_Report_${new Date().toISOString().split('T')[0]}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+      
+      toast.success('PDF downloaded successfully!');
+    } catch (error: any) {
+      console.error('PDF download error:', error);
+      toast.error('Failed to download PDF. Please try email report instead.');
+    } finally {
+      setIsDownloadingPDF(false);
+    }
+  };
+
+  const getRecommendations = (score: number) => {
+    if (score >= 7) {
+      return [
+        'Set strict time limits: Use built-in app timers to limit social media to maximum 1-2 hours per day',
+        'Install app blockers: Use tools like Freedom, Cold Turkey, or Forest during study hours to prevent access',
+        'Create phone-free study zones: Physically remove your phone from your study area, keeping it in another room',
+        'Schedule specific social media times: Allow yourself designated 15-minute social media breaks, but only after completing study goals',
+        'Seek academic support: Meet with academic advisors or tutors to develop better study strategies',
+        'Consider professional help: Talk to a counselor about developing healthier digital habits and addressing potential addiction',
+        'Delete or disable the most addictive apps: Remove apps that consume most of your time for at least 30 days',
+        'Find offline alternatives: Replace scrolling time with in-person social activities, reading, or hobbies'
+      ];
+    } else if (score >= 5) {
+      return [
+        'Limit daily usage: Set a goal of 2-3 hours maximum social media use per day using screen time tracking',
+        'Disable notifications: Turn off all non-essential notifications during study hours and before bed',
+        'Use productivity techniques: Apply the Pomodoro method (25 min focus, 5 min break) with phone kept away',
+        'Schedule social media time: Choose specific times for checking social media rather than constant checking',
+        'Track your usage: Use apps to monitor your daily usage and set weekly reduction goals'
+      ];
+    } else {
+      return [
+        'Maintain your healthy habits: Continue your balanced approach to social media and academics',
+        'Stay aware: Keep monitoring your usage patterns to ensure they remain balanced',
+        'Use Do Not Disturb: Continue using focus modes during critical study or work periods',
+        'Be a role model: Share your strategies with peers who may struggle with social media balance'
+      ];
+    }
+  };
+
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   const [formData, setFormData] = useState({
     age: '',
@@ -55,6 +139,7 @@ export default function AcademicImpactPredictionPage() {
         relationship_status: example.relationship_status
       });
       toast.success('Example data loaded!');
+      setFormErrors({});
     } catch (error) {
       toast.error('Failed to load example data');
     }
@@ -65,17 +150,41 @@ export default function AcademicImpactPredictionPage() {
     setIsLoading(true);
     setPrediction(null);
 
+    // Client-side validation
+    const errors: Record<string, string> = {};
+    const age = parseInt(formData.age);
+    if (!formData.age || isNaN(age)) {
+      errors.age = 'Age is required.';
+    } else if (age < 17 || age > 30) {
+      errors.age = 'Age must be between 17 and 30 for academic impact assessment.';
+    }
+    const mentalHealthScore = parseInt(formData.mental_health_score);
+    if (!formData.mental_health_score || isNaN(mentalHealthScore) || mentalHealthScore < 0 || mentalHealthScore > 100) {
+      errors.mental_health_score = 'Mental health score must be between 0 and 100.';
+    }
+    const conflicts = parseInt(formData.conflicts_over_social_media);
+    if (!formData.conflicts_over_social_media || isNaN(conflicts) || conflicts < 0 || conflicts > 5) {
+      errors.conflicts_over_social_media = 'Conflicts must be between 0 and 5.';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      setIsLoading(false);
+      return;
+    }
+    setFormErrors({});
+
     try {
       const payload = {
-        age: parseInt(formData.age),
+        age,
         gender: formData.gender,
         academic_level: formData.academic_level,
         country: formData.country,
         most_used_platform: formData.most_used_platform,
         avg_daily_usage_hours: parseFloat(formData.avg_daily_usage_hours),
         sleep_hours_per_night: parseFloat(formData.sleep_hours_per_night),
-        mental_health_score: parseInt(formData.mental_health_score),
-        conflicts_over_social_media: parseInt(formData.conflicts_over_social_media),
+        mental_health_score: mentalHealthScore,
+        conflicts_over_social_media: conflicts,
         affects_academic_performance: formData.affects_academic_performance,
         relationship_status: formData.relationship_status
       };
@@ -83,15 +192,15 @@ export default function AcademicImpactPredictionPage() {
       const response = await axios.post('/predictions/academic-impact', payload);
       
       setPrediction(response.data.data.prediction);
+      queryClient.invalidateQueries({ queryKey: ['predictions'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      queryClient.invalidateQueries({ queryKey: ['analytics'] });
       toast.success('Prediction completed successfully!');
       
       setTimeout(() => {
         document.getElementById('results')?.scrollIntoView({ behavior: 'smooth' });
       }, 100);
     } catch (error: any) {
-      console.error('Prediction error:', error);
-      console.error('Error response:', error.response?.data);
-      
       if (error.response?.data?.errors) {
         const errors = error.response.data.errors;
         errors.forEach((err: any) => {
@@ -187,6 +296,9 @@ export default function AcademicImpactPredictionPage() {
                     onChange={handleInputChange}
                     placeholder="e.g., 21"
                   />
+                  {formErrors.age && (
+                    <p className="text-sm text-red-500 mt-1">{formErrors.age}</p>
+                  )}
                 </div>
 
                 <div>
@@ -374,6 +486,9 @@ export default function AcademicImpactPredictionPage() {
                     onChange={handleInputChange}
                     placeholder="0=Never, 5=Always"
                   />
+                  {formErrors.conflicts_over_social_media && (
+                    <p className="text-sm text-red-500 mt-1">{formErrors.conflicts_over_social_media}</p>
+                  )}
                 </div>
 
                 <div>
@@ -414,18 +529,24 @@ export default function AcademicImpactPredictionPage() {
                 </div>
 
                 <div>
-                  <Label htmlFor="mental_health_score">Mental Health Score (0-10) *</Label>
+                  <Label htmlFor="mental_health_score">Mental Health Score (0–100) *</Label>
                   <Input
                     id="mental_health_score"
                     name="mental_health_score"
                     type="number"
                     min="0"
-                    max="10"
+                    max="100"
                     required
                     value={formData.mental_health_score}
                     onChange={handleInputChange}
-                    placeholder="0=Poor, 10=Excellent"
+                    placeholder="0 = Poor, 100 = Excellent"
                   />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Rate your overall mental health from 0 (very poor) to 100 (excellent)
+                  </p>
+                  {formErrors.mental_health_score && (
+                    <p className="text-sm text-red-500 mt-1">{formErrors.mental_health_score}</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -496,22 +617,114 @@ export default function AcademicImpactPredictionPage() {
               </div>
             </div>
 
-            <div className="flex gap-3 pt-4">
-              <Button onClick={() => router.push('/predictions')} variant="outline" className="flex-1">
-                View History
-              </Button>
-              <Button
-                onClick={() => {
-                  setPrediction(null);
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
-                className="flex-1"
-              >
-                New Prediction
-              </Button>
+            <div className="space-y-3 pt-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <Button
+                  onClick={() => setShowRecommendations(true)}
+                  variant="default"
+                >
+                  <Lightbulb className="mr-2 h-4 w-4" />
+                  View Recommendations
+                </Button>
+                <Button
+                  onClick={handleEmailReport}
+                  disabled={isSendingEmail}
+                  variant="default"
+                >
+                  {isSendingEmail ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <Mail className="mr-2 h-4 w-4" />
+                      Email Report
+                    </>
+                  )}
+                </Button>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <Button
+                  onClick={handleDownloadPDF}
+                  disabled={isDownloadingPDF}
+                  variant="outline"
+                >
+                  {isDownloadingPDF ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Downloading...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="mr-2 h-4 w-4" />
+                      Download PDF
+                    </>
+                  )}
+                </Button>
+                <Button onClick={() => router.push('/predictions')} variant="outline">
+                  View History
+                </Button>
+                <Button
+                  onClick={() => {
+                    setPrediction(null);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  variant="outline"
+                >
+                  New Prediction
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {/* Recommendations Modal */}
+      {showRecommendations && prediction && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-background rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-background border-b p-6 flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold flex items-center gap-2">
+                  <Lightbulb className="h-6 w-6 text-yellow-500" />
+                  Personalized Recommendations
+                </h2>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Based on your addiction score of {prediction.score.toFixed(1)}
+                </p>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowRecommendations(false)}
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+
+            <div className="p-6 space-y-4">
+              {getRecommendations(prediction.score).map((rec, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-start gap-4 p-4 rounded-lg border bg-card hover:bg-accent/5 transition-colors"
+                >
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
+                    {idx + 1}
+                  </div>
+                  <p className="flex-1 pt-1">{rec}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="sticky bottom-0 bg-background border-t p-4 flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setShowRecommendations(false)}>
+                Close
+              </Button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

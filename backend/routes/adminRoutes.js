@@ -51,11 +51,21 @@ router.get('/predictions', adminController.getAllPredictions);
 
 // Broadcast Notification
 router.post('/broadcast',
-    body('title').notEmpty().withMessage('Title is required'),
-    body('message').notEmpty().withMessage('Message is required'),
+    body('title').notEmpty().withMessage('Title is required').isLength({ max: 100 }).withMessage('Title too long'),
+    body('message').notEmpty().withMessage('Message is required').isLength({ max: 500 }).withMessage('Message too long'),
     body('priority').optional().isIn(['low', 'medium', 'high', 'urgent']).withMessage('Invalid priority'),
+    body('sendEmail').optional().isBoolean().withMessage('sendEmail must be a boolean'),
     validate,
     adminController.broadcastNotification
+);
+
+// Notifications History (Admin)
+router.get('/notifications', adminController.getNotificationsHistory);
+router.delete('/notifications/bulk', adminController.bulkDeleteNotifications);
+router.delete('/notifications/:id', 
+    param('id').isMongoId().withMessage('Invalid notification ID'),
+    validate,
+    adminController.deleteNotificationAdmin
 );
 
 module.exports = router;

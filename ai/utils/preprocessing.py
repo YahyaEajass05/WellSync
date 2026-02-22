@@ -126,11 +126,11 @@ def preprocess_academic_input(input_data: Dict[str, Any], preprocessors: Dict) -
     df['sleep_deficit'] = (8 - df['sleep_hours_per_night']).clip(lower=0)
     df['severe_sleep_deficit'] = (df['sleep_hours_per_night'] < 6).astype(int)
     
-    # 3. Mental health risk
+    # 3. Mental health risk (scaled to 0-100)
     mh_score = df['mental_health_score'].iloc[0]
-    if mh_score <= 3:
+    if mh_score <= 30:
         df['mental_health_risk'] = 2  # High risk
-    elif mh_score <= 6:
+    elif mh_score <= 60:
         df['mental_health_risk'] = 1  # Medium risk
     else:
         df['mental_health_risk'] = 0  # Low risk
@@ -138,8 +138,8 @@ def preprocess_academic_input(input_data: Dict[str, Any], preprocessors: Dict) -
     # 4. Usage-sleep interaction
     df['usage_sleep_ratio'] = df['avg_daily_usage_hours'] / (df['sleep_hours_per_night'] + 1e-6)
     
-    # 5. Mental-sleep score
-    df['mental_sleep_score'] = df['mental_health_score'] * df['sleep_hours_per_night'] / 10
+    # 5. Mental-sleep score (normalize mental_health_score by 100)
+    df['mental_sleep_score'] = df['mental_health_score'] * df['sleep_hours_per_night'] / 100
     
     # 6. Conflict intensity
     df['high_conflict'] = (df['conflicts_over_social_media'] >= 4).astype(int)
@@ -156,11 +156,11 @@ def preprocess_academic_input(input_data: Dict[str, Any], preprocessors: Dict) -
     # 8. Academic performance binary
     df['poor_academic_performance'] = (df['affects_academic_performance'].str.lower() == 'yes').astype(int)
     
-    # 9. Combined risk score
+    # 9. Combined risk score (normalize mental_health_score by 100)
     df['combined_risk_score'] = (
         (df['avg_daily_usage_hours'] / 10) * 0.3 +
         (df['sleep_deficit'] / 8) * 0.25 +
-        ((10 - df['mental_health_score']) / 10) * 0.25 +
+        ((100 - df['mental_health_score']) / 100) * 0.25 +
         (df['conflicts_over_social_media'] / 5) * 0.2
     ) * 10
     

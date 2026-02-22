@@ -5,11 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e5f2139c-e03f-4693-8066-6bfb2bbda600" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/frontend/app/(dashboard)/predictions/academic/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/QUICK_START_GUIDE.md" beforeDir="false" afterPath="$PROJECT_DIR$/QUICK_START_GUIDE.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/test-email-reports.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/test-email.js" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,7 +43,7 @@
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Development&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;D:/Python Projects/WellSync/logo&quot;,
@@ -171,6 +167,7 @@
       <workItem from="1770229922183" duration="4574000" />
       <workItem from="1770266078984" duration="25000" />
       <workItem from="1771344538168" duration="4881000" />
+      <workItem from="1771547658885" duration="3026000" />
     </task>
     <servers />
   </component>

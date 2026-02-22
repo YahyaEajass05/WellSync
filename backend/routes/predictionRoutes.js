@@ -34,4 +34,7 @@ router.delete('/:id', predictionIdValidation, validate, predictionController.del
 // Email prediction report
 router.post('/:id/email', predictionIdValidation, validate, emailLimiter, predictionController.emailPredictionReport);
 
+// Download PDF report
+router.get('/:id/pdf', predictionIdValidation, validate, predictionController.downloadPredictionPDF);
+
 module.exports = router;

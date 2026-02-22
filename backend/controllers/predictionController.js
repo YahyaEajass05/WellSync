@@ -475,6 +475,68 @@ exports.emailPredictionReport = asyncHandler(async (req, res) => {
 });
 
 /**
+ * @desc    Download prediction report as PDF
+ * @route   GET /api/predictions/:id/pdf
+ * @access  Private
+ */
+exports.downloadPredictionPDF = asyncHandler(async (req, res) => {
+    const User = require('../models/User');
+    const { generatePredictionReportPDF } = require('../utils/pdfGenerator');
+
+    // Fetch full user object with firstName and lastName
+    const user = await User.findById(req.user.id).select('firstName lastName email');
+
+    if (!user) {
+        return res.status(404).json({
+            success: false,
+            error: 'User not found'
+        });
+    }
+
+    const prediction = await Prediction.findOne({
+        _id: req.params.id,
+        user: req.user.id
+    });
+
+    if (!prediction) {
+        return res.status(404).json({
+            success: false,
+            error: 'Prediction not found'
+        });
+    }
+
+    try {
+        // Generate PDF with full user object
+        const pdfBuffer = await generatePredictionReportPDF(user, prediction);
+        
+        const predictionType = prediction.predictionType === 'mental_wellness' 
+            ? 'Mental_Wellness' 
+            : prediction.predictionType === 'academic_impact'
+            ? 'Academic_Impact'
+            : 'Stress_Level';
+        
+        const filename = `WellSync_${predictionType}_Report_${new Date().toISOString().split('T')[0]}.pdf`;
+        
+        // Set headers for PDF download
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+        res.setHeader('Content-Length', pdfBuffer.length);
+        
+        // Send PDF buffer
+        res.send(pdfBuffer);
+        
+        logger.info(`PDF downloaded for prediction ${prediction._id} by user ${user.email}`);
+    } catch (error) {
+        logger.error(`PDF generation error: ${error.message}`, { stack: error.stack });
+        return res.status(500).json({
+            success: false,
+            error: 'Failed to generate PDF report',
+            details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+});
+
+/**
  * @desc    Get example input data
  * @route   GET /api/predictions/examples/:type
  * @access  Public

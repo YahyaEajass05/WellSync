@@ -17,7 +17,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Brain, Loader2, CheckCircle2 } from 'lucide-react';
+import { Brain, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { AuthBackground } from '@/components/three/AuthBackground';
 import { BackToHomeButton } from '@/components/layout/BackToHomeButton';
@@ -33,7 +33,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { login, isLoginLoading } = useAuth();
+  const { login, isLoginLoading, loginError, isLoginError } = useAuth();
   const [showVerifiedMessage, setShowVerifiedMessage] = useState(false);
 
   const {
@@ -52,7 +52,6 @@ export default function LoginPage() {
     if (verified === 'true') {
       setShowVerifiedMessage(true);
       toast.success('Email verified successfully! You can now log in.');
-      // Remove the query parameter
       router.replace('/login');
     }
     
@@ -101,6 +100,14 @@ export default function LoginPage() {
           )}
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            {isLoginError && (
+              <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg flex items-start gap-2">
+                <AlertCircle className="h-5 w-5 text-red-500 mt-0.5 shrink-0" />
+                <p className="text-sm text-red-700 dark:text-red-300">
+                  {loginError?.response?.data?.message || 'Invalid email or password. Please try again.'}
+                </p>
+              </div>
+            )}
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input

@@ -140,7 +140,7 @@ class TestPredictionEndpoints:
             "most_used_platform": "Instagram",
             "avg_daily_usage_hours": 4.5,
             "sleep_hours_per_night": 6.5,
-            "mental_health_score": 6,
+            "mental_health_score": 60,
             "conflicts_over_social_media": 2,
             "affects_academic_performance": "Yes",
             "relationship_status": "Single"
@@ -161,7 +161,7 @@ class TestPredictionEndpoints:
             "most_used_platform": "Instagram",
             "avg_daily_usage_hours": 4.5,
             "sleep_hours_per_night": 6.5,
-            "mental_health_score": 6,
+            "mental_health_score": 60,
             "conflicts_over_social_media": 2,
             "affects_academic_performance": "Yes",
             "relationship_status": "Single"

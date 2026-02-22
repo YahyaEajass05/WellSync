@@ -2,20 +2,111 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Brain, ArrowLeft, Loader2, Info } from 'lucide-react';
+import { Brain, ArrowLeft, Loader2, Info, Lightbulb, X, Mail, Download } from 'lucide-react';
 import { useAuthStore } from '@/lib/store/authStore';
 import axios from '@/lib/api/axios-instance';
 import { toast } from 'sonner';
+import { predictionsApi } from '@/lib/api';
+import type { Prediction } from '@/types';
 
 export default function MentalWellnessPredictionPage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { user } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
-  const [prediction, setPrediction] = useState<any>(null);
+  const [prediction, setPrediction] = useState<Prediction | null>(null);
+  const [showRecommendations, setShowRecommendations] = useState(false);
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);
+
+  const handleEmailReport = async () => {
+    const predId = prediction?._id ?? (prediction as any)?.id;
+    if (!predId) return;
+    
+    setIsSendingEmail(true);
+    try {
+      await predictionsApi.emailReport(predId);
+      toast.success('Report sent to your email!');
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to send email');
+    } finally {
+      setIsSendingEmail(false);
+    }
+  };
+
+  const handleDownloadPDF = async () => {
+    const predId = prediction?._id ?? (prediction as any)?.id;
+    if (!predId) return;
+    
+    setIsDownloadingPDF(true);
+    try {
+      // Request PDF from backend
+      const response = await axios.get(`/predictions/${predId}/pdf`, {
+        responseType: 'blob'
+      });
+      
+      // Create blob link to download
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `Mental_Wellness_Report_${new Date().toISOString().split('T')[0]}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+      
+      toast.success('PDF downloaded successfully!');
+    } catch (error: any) {
+      console.error('PDF download error:', error);
+      toast.error('Failed to download PDF. Please try email report instead.');
+    } finally {
+      setIsDownloadingPDF(false);
+    }
+  };
+
+  const getRecommendations = (score: number) => {
+    if (score >= 80) {
+      return [
+        'Continue your excellent sleep schedule: Maintain 7-9 hours of quality sleep each night with consistent bedtimes.',
+        'Enhance your exercise routine: Aim for 150+ minutes of moderate aerobic activity per week, plus strength training twice weekly.',
+        'Optimize screen time: Keep recreational screen use under 3 hours daily, with no screens 1 hour before bedtime.',
+        'Strengthen social connections: Schedule regular quality time with friends and family, at least 10-15 hours weekly.',
+        'Practice daily mindfulness: Dedicate 10-15 minutes to meditation, deep breathing, or journaling to maintain mental clarity.'
+      ];
+    } else if (score >= 70) {
+      return [
+        'Aim for 7-9 hours of quality sleep each night',
+        'Increase exercise to 150+ minutes per week',
+        'Reduce non-work screen time',
+        'Practice stress management techniques',
+        'Maintain work-life balance'
+      ];
+    } else if (score >= 60) {
+      return [
+        'Prioritize sleep - aim for consistent 7-9 hours',
+        'Start with 30 minutes of exercise 3x per week',
+        'Limit screen time, especially before bed',
+        'Take regular breaks from work/study',
+        'Consider mindfulness or meditation'
+      ];
+    } else {
+      return [
+        'Seek professional mental health support',
+        'Establish a consistent sleep routine',
+        'Reduce screen time significantly',
+        'Start gentle physical activity (walking, yoga)',
+        'Connect with friends and family',
+        'Consider stress counseling or therapy'
+      ];
+    }
+  };
+
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   const [formData, setFormData] = useState({
     age: '',
@@ -61,6 +152,7 @@ export default function MentalWellnessPredictionPage() {
         social_hours_per_week: example.social_hours_per_week.toString()
       });
       toast.success('Example data loaded!');
+      setFormErrors({});
     } catch (error) {
       toast.error('Failed to load example data');
     }
@@ -70,11 +162,39 @@ export default function MentalWellnessPredictionPage() {
     e.preventDefault();
     setIsLoading(true);
     setPrediction(null);
+    
+    // Client-side validation
+    const errors: Record<string, string> = {};
+    const age = parseInt(formData.age);
+    if (!formData.age || isNaN(age)) {
+      errors.age = 'Age is required.';
+    } else if (age < 18 || age > 100) {
+      errors.age = 'Age must be between 18 and 100.';
+    }
+    const sleepQuality = parseInt(formData.sleep_quality_1_5);
+    if (!formData.sleep_quality_1_5 || isNaN(sleepQuality) || sleepQuality < 1 || sleepQuality > 5) {
+      errors.sleep_quality_1_5 = 'Sleep quality must be between 1 and 5.';
+    }
+    const stressLevel = parseInt(formData.stress_level_0_10);
+    if (!formData.stress_level_0_10 || isNaN(stressLevel) || stressLevel < 0 || stressLevel > 10) {
+      errors.stress_level_0_10 = 'Stress level must be between 0 and 10.';
+    }
+    const productivity = parseInt(formData.productivity_0_100);
+    if (!formData.productivity_0_100 || isNaN(productivity) || productivity < 0 || productivity > 100) {
+      errors.productivity_0_100 = 'Productivity must be between 0 and 100.';
+    }
+    
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      setIsLoading(false);
+      return;
+    }
+    setFormErrors({});
 
     try {
       // Convert form data to numbers
       const payload = {
-        age: parseInt(formData.age),
+        age,
         gender: formData.gender,
         occupation: formData.occupation,
         work_mode: formData.work_mode,
@@ -82,9 +202,9 @@ export default function MentalWellnessPredictionPage() {
         work_screen_hours: parseFloat(formData.work_screen_hours),
         leisure_screen_hours: parseFloat(formData.leisure_screen_hours),
         sleep_hours: parseFloat(formData.sleep_hours),
-        sleep_quality_1_5: parseInt(formData.sleep_quality_1_5),
-        stress_level_0_10: parseInt(formData.stress_level_0_10),
-        productivity_0_100: parseInt(formData.productivity_0_100),
+        sleep_quality_1_5: sleepQuality,
+        stress_level_0_10: stressLevel,
+        productivity_0_100: productivity,
         exercise_minutes_per_week: parseInt(formData.exercise_minutes_per_week),
         social_hours_per_week: parseFloat(formData.social_hours_per_week)
       };
@@ -100,31 +220,23 @@ export default function MentalWellnessPredictionPage() {
         return;
       }
 
-      console.log('Sending payload:', payload);
-
       const response = await axios.post('/predictions/mental-wellness', payload);
-      
-      console.log('Prediction response:', response.data);
-      
       setPrediction(response.data.data.prediction);
+      queryClient.invalidateQueries({ queryKey: ['predictions'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      queryClient.invalidateQueries({ queryKey: ['analytics'] });
       toast.success('Prediction completed successfully!');
       
-      // Scroll to results
       setTimeout(() => {
         document.getElementById('results')?.scrollIntoView({ behavior: 'smooth' });
       }, 100);
     } catch (error: any) {
-      console.error('Prediction error:', error);
-      console.error('Error response:', error.response?.data);
-      
       if (error.response?.data?.errors) {
-        // Show validation errors
         const errors = error.response.data.errors;
         errors.forEach((err: any) => {
           toast.error(`${err.field}: ${err.message}`);
         });
       } else if (error.response?.data?.detail) {
-        // FastAPI validation error
         toast.error(error.response.data.detail);
       } else {
         toast.error(error.response?.data?.message || 'Failed to get prediction');
@@ -227,6 +339,9 @@ export default function MentalWellnessPredictionPage() {
                     onChange={handleInputChange}
                     placeholder="e.g., 25"
                   />
+                  {formErrors.age && (
+                    <p className="text-sm text-red-500 mt-1">{formErrors.age}</p>
+                  )}
                 </div>
 
                 <div>
@@ -261,6 +376,29 @@ export default function MentalWellnessPredictionPage() {
                     <option value="Healthcare Worker">Healthcare Worker</option>
                     <option value="Business Professional">Business Professional</option>
                     <option value="Creative Professional">Creative Professional</option>
+                    <option value="Doctor">Doctor</option>
+                    <option value="Nurse">Nurse</option>
+                    <option value="Pharmacist">Pharmacist</option>
+                    <option value="Psychologist">Psychologist</option>
+                    <option value="Lawyer">Lawyer</option>
+                    <option value="Accountant">Accountant</option>
+                    <option value="Data Scientist">Data Scientist</option>
+                    <option value="Product Manager">Product Manager</option>
+                    <option value="Designer">Designer</option>
+                    <option value="Marketing Professional">Marketing Professional</option>
+                    <option value="Sales Representative">Sales Representative</option>
+                    <option value="Human Resources">Human Resources</option>
+                    <option value="Researcher">Researcher</option>
+                    <option value="Lecturer / Professor">Lecturer / Professor</option>
+                    <option value="Engineer">Engineer</option>
+                    <option value="Architect">Architect</option>
+                    <option value="Entrepreneur">Entrepreneur</option>
+                    <option value="Freelancer">Freelancer</option>
+                    <option value="Social Worker">Social Worker</option>
+                    <option value="Police / Military">Police / Military</option>
+                    <option value="Retail / Service Worker">Retail / Service Worker</option>
+                    <option value="Skilled Tradesperson">Skilled Tradesperson</option>
+                    <option value="Unemployed">Unemployed</option>
                     <option value="Other">Other</option>
                   </select>
                 </div>
@@ -370,6 +508,9 @@ export default function MentalWellnessPredictionPage() {
                     onChange={handleInputChange}
                     placeholder="1=Poor, 5=Excellent"
                   />
+                  {formErrors.sleep_quality_1_5 && (
+                    <p className="text-sm text-red-500 mt-1">{formErrors.sleep_quality_1_5}</p>
+                  )}
                 </div>
 
                 <div>
@@ -385,6 +526,9 @@ export default function MentalWellnessPredictionPage() {
                     onChange={handleInputChange}
                     placeholder="0=No stress, 10=Extreme stress"
                   />
+                  {formErrors.stress_level_0_10 && (
+                    <p className="text-sm text-red-500 mt-1">{formErrors.stress_level_0_10}</p>
+                  )}
                 </div>
 
                 <div>
@@ -400,6 +544,9 @@ export default function MentalWellnessPredictionPage() {
                     onChange={handleInputChange}
                     placeholder="0=Not productive, 100=Very productive"
                   />
+                  {formErrors.productivity_0_100 && (
+                    <p className="text-sm text-red-500 mt-1">{formErrors.productivity_0_100}</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -523,26 +670,120 @@ export default function MentalWellnessPredictionPage() {
             </div>
 
             {/* Actions */}
-            <div className="flex gap-3 pt-4">
-              <Button
-                onClick={() => router.push('/predictions')}
-                variant="outline"
-                className="flex-1"
-              >
-                View History
-              </Button>
-              <Button
-                onClick={() => {
-                  setPrediction(null);
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
-                className="flex-1"
-              >
-                New Prediction
-              </Button>
+            <div className="space-y-3 pt-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <Button
+                  onClick={() => setShowRecommendations(true)}
+                  variant="default"
+                >
+                  <Lightbulb className="mr-2 h-4 w-4" />
+                  View Recommendations
+                </Button>
+                <Button
+                  onClick={handleEmailReport}
+                  disabled={isSendingEmail}
+                  variant="default"
+                >
+                  {isSendingEmail ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <Mail className="mr-2 h-4 w-4" />
+                      Email Report
+                    </>
+                  )}
+                </Button>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <Button
+                  onClick={handleDownloadPDF}
+                  disabled={isDownloadingPDF}
+                  variant="outline"
+                >
+                  {isDownloadingPDF ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Downloading...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="mr-2 h-4 w-4" />
+                      Download PDF
+                    </>
+                  )}
+                </Button>
+                <Button
+                  onClick={() => router.push('/predictions')}
+                  variant="outline"
+                >
+                  View History
+                </Button>
+                <Button
+                  onClick={() => {
+                    setPrediction(null);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  variant="outline"
+                >
+                  New Prediction
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {/* Recommendations Modal */}
+      {showRecommendations && prediction && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-background rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="sticky top-0 bg-background border-b p-6 flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold flex items-center gap-2">
+                  <Lightbulb className="h-6 w-6 text-yellow-500" />
+                  Personalized Recommendations
+                </h2>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Based on your mental wellness score of {prediction.score.toFixed(1)}
+                </p>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowRecommendations(false)}
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6 space-y-4">
+              {getRecommendations(prediction.score).map((rec, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-start gap-4 p-4 rounded-lg border bg-card hover:bg-accent/5 transition-colors"
+                >
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
+                    {idx + 1}
+                  </div>
+                  <p className="flex-1 pt-1">{rec}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="sticky bottom-0 bg-background border-t p-4 flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setShowRecommendations(false)}>
+                Close
+              </Button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
