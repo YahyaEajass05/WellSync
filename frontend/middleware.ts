@@ -23,8 +23,19 @@ const guestOnlyRoutes = [
   '/reset-password',
 ];
 
+// Routes accessible to everyone regardless of auth state
+// (verify-email must always be reachable — user has no token after registration
+// in the correct flow, but may have a stale token from a previous session)
+const publicRoutes = ['/verify-email'];
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // Always allow public routes (e.g. verify-email) — skip all auth checks
+  const isPublicRoute = publicRoutes.some((route) =>
+    pathname.startsWith(route)
+  );
+  if (isPublicRoute) return NextResponse.next();
 
   // Read token and role cookies set by useAuth hook on login/register
   const token = request.cookies.get('token')?.value;
