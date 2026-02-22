@@ -577,11 +577,12 @@ function DangerTab() {
     setDeleteError(null);
     try {
       await settingsApi.deleteAccount(deletePassword);
-      // ✅ Success — clear auth then hard-redirect (bypasses Next.js router
-      // so the dashboard layout auth-guard never sees an unauthenticated state
-      // and flashes the dashboard before /login loads).
+      // ✅ Success — clear auth then hard-redirect with ?deleted=true so the
+      // login page shows a success banner. We use window.location.replace
+      // (not router.push) to fully bypass Next.js router and the dashboard
+      // layout auth-guard, preventing any dashboard flash before /login loads.
       logout();
-      window.location.replace('/login');
+      window.location.replace('/login?deleted=true');
     } catch (err: any) {
       // ❌ Error — show message inline, stay on page
       const message =
