@@ -1,11 +1,11 @@
-<div align="center">
+﻿<div align="center">
 
-# 🧠 WellSync
+# ðŸ§  WellSync
 
 ### AI-Powered Mental Wellness & Academic Performance Prediction System
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.1.6-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-≥16.0.0-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-â‰¥16.0.0-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
 [![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-8.0-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://mongodb.com/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
@@ -13,20 +13,21 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![Express.js](https://img.shields.io/badge/Express.js-4.18-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com/)
 [![scikit-learn](https://img.shields.io/badge/scikit--learn-1.3+-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
-[![Jest](https://img.shields.io/badge/Jest-220_Tests_Passing-C21325?style=for-the-badge&logo=jest&logoColor=white)](https://jestjs.io/)
+[![Tests](https://img.shields.io/badge/Tests-532_Passing-brightgreen?style=for-the-badge&logo=jest&logoColor=white)](https://jestjs.io/)
+[![pytest](https://img.shields.io/badge/pytest-117_Passing-0A9EDC?style=for-the-badge&logo=pytest&logoColor=white)](https://pytest.org/)
 [![GitHub](https://img.shields.io/badge/GitHub-WellSync-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/YahyaEajass05/WellSync)
 [![Build](https://img.shields.io/badge/Build-Passing-brightgreen?style=for-the-badge&logo=github-actions&logoColor=white)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen?style=for-the-badge&logo=github)](https://github.com/YahyaEajass05/WellSync/pulls)
 
 **WellSync** is a full-stack AI-powered digital health platform designed for students and educational institutions. It uses machine learning to predict mental wellness scores, stress levels, and academic impact based on lifestyle factors including screen time, sleep quality, physical activity, and social media usage patterns.
 
-[Features](#-features) • [Architecture](#-architecture) • [Quick Start](#-quick-start) • [API Reference](#-api-reference) • [AI Models](#-ai-models) • [Screenshots](#-project-structure)
+[Features](#-features) â€¢ [Architecture](#-architecture) â€¢ [Quick Start](#-quick-start) â€¢ [API Reference](#-api-reference) â€¢ [AI Models](#-ai-models) â€¢ [Screenshots](#-project-structure)
 
 </div>
 
 ---
 
-## 📋 Table of Contents
+## ðŸ“‹ Table of Contents
 
 - [Project Overview](#-project-overview)
 - [Features](#-features)
@@ -49,101 +50,101 @@
 
 ---
 
-## 🌟 Project Overview
+## ðŸŒŸ Project Overview
 
 WellSync is built as a three-tier application addressing the growing need for student mental health monitoring in educational institutions. The platform collects lifestyle data through intuitive forms, processes it through trained machine learning models, and delivers actionable insights, predictions, and weekly wellness summaries.
 
 ### Key Highlights
 
-- **3 AI Prediction Models** — Mental Wellness (R² = 0.943), Stress Level (R² = 0.837), Academic Impact (R² = 0.990)
-- **< 200ms Inference** — FastAPI-powered prediction service
-- **220 Backend Tests Passing** — 8 Jest test suites covering auth, users, predictions, admin, analytics, notifications, middleware & integration
-- **7 Email Templates** — Beautiful HTML emails for all lifecycle events
-- **Automated Weekly Reports** — node-cron powered weekly wellness summaries
-- **Role-Based Access** — User and Admin roles with full admin dashboard
-- **Dark/Light Mode** — Full theme support via next-themes
-- **3D Animated UI** — React Three Fiber background on auth pages
-- **Export Functionality** — JSON and CSV export of all user data
-- **Production Branch** — Hardened for deployment with restricted CORS, TypeScript enforcement, and secure error handling
+- **3 AI Prediction Models** â€” Mental Wellness (RÂ² = 0.943), Stress Level (RÂ² = 0.837), Academic Impact (RÂ² = 0.990)
+- **< 200ms Inference** â€” FastAPI-powered prediction service
+- **532 Tests Passing** — Backend (220 Jest), AI Service (117 pytest), Frontend (195 Jest + RTL) across 32 test suites
+- **7 Email Templates** â€” Beautiful HTML emails for all lifecycle events
+- **Automated Weekly Reports** â€” node-cron powered weekly wellness summaries
+- **Role-Based Access** â€” User and Admin roles with full admin dashboard
+- **Dark/Light Mode** â€” Full theme support via next-themes
+- **3D Animated UI** â€” React Three Fiber background on auth pages
+- **Export Functionality** â€” JSON and CSV export of all user data
+- **Production Branch** â€” Hardened for deployment with restricted CORS, TypeScript enforcement, and secure error handling
 
 ---
 
-## ✨ Features
+## âœ¨ Features
 
 ### For Students / Users
 | Feature | Description |
 |---|---|
-| 🧠 Mental Wellness Prediction | AI score (0–100) from lifestyle factors |
-| 😰 Stress Level Detection | 4-category classification (Low / Moderate / High / Very High) |
-| 📚 Academic Impact Analysis | Social media addiction & academic risk score (2–9) |
-| 📊 Personal Analytics | Trend charts, period comparisons, AI-generated insights |
-| 📅 Weekly Email Reports | Automated weekly wellness summary with recommendations |
-| 📁 Data Export | Download predictions as CSV or full data as JSON |
-| 🔔 In-App Notifications | Real-time notifications for all platform events |
-| 👤 Profile Management | Mental wellness profile, student profile, screen time & sleep logs |
-| ⚙️ Settings | Theme, notification preferences, password change, account management |
+| ðŸ§  Mental Wellness Prediction | AI score (0â€“100) from lifestyle factors |
+| ðŸ˜° Stress Level Detection | 4-category classification (Low / Moderate / High / Very High) |
+| ðŸ“š Academic Impact Analysis | Social media addiction & academic risk score (2â€“9) |
+| ðŸ“Š Personal Analytics | Trend charts, period comparisons, AI-generated insights |
+| ðŸ“… Weekly Email Reports | Automated weekly wellness summary with recommendations |
+| ðŸ“ Data Export | Download predictions as CSV or full data as JSON |
+| ðŸ”” In-App Notifications | Real-time notifications for all platform events |
+| ðŸ‘¤ Profile Management | Mental wellness profile, student profile, screen time & sleep logs |
+| âš™ï¸ Settings | Theme, notification preferences, password change, account management |
 
 ### For Administrators
 | Feature | Description |
 |---|---|
-| 🏠 Admin Dashboard | System-wide stats, charts, and real-time metrics |
-| 👥 User Management | View, promote, deactivate, or delete any user |
-| 📢 Broadcast Notifications | Send in-app + email notifications to all users |
-| 🔍 Prediction Viewer | Browse all predictions across all users |
-| 📈 System Statistics | Detailed platform usage and prediction analytics |
-| 🗂️ Notification History | Full CRUD management of all platform notifications |
+| ðŸ  Admin Dashboard | System-wide stats, charts, and real-time metrics |
+| ðŸ‘¥ User Management | View, promote, deactivate, or delete any user |
+| ðŸ“¢ Broadcast Notifications | Send in-app + email notifications to all users |
+| ðŸ” Prediction Viewer | Browse all predictions across all users |
+| ðŸ“ˆ System Statistics | Detailed platform usage and prediction analytics |
+| ðŸ—‚ï¸ Notification History | Full CRUD management of all platform notifications |
 
 ---
 
-## 🏗️ Architecture
+## ðŸ—ï¸ Architecture
 
 WellSync follows a **three-tier architecture**:
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                    CLIENT LAYER                          │
-│           Next.js 16 (React 18, TypeScript)             │
-│                  Port: 3000                              │
-│   ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐  │
-│   │  Auth    │ │Dashboard │ │Analytics │ │  Admin   │  │
-│   │  Pages   │ │  Pages   │ │  Pages   │ │  Pages   │  │
-│   └──────────┘ └──────────┘ └──────────┘ └──────────┘  │
-└─────────────────────────┬───────────────────────────────┘
-                          │ REST API (Axios)
-                          ▼
-┌─────────────────────────────────────────────────────────┐
-│                   APPLICATION LAYER                      │
-│              Node.js + Express.js API                    │
-│                    Port: 5000                            │
-│  ┌─────────┐ ┌──────────┐ ┌────────┐ ┌──────────────┐  │
-│  │  Auth   │ │Prediction│ │  User  │ │    Admin     │  │
-│  │ Routes  │ │  Routes  │ │ Routes │ │    Routes    │  │
-│  └─────────┘ └──────────┘ └────────┘ └──────────────┘  │
-│  ┌─────────────────────────────────────────────────┐    │
-│  │  Middleware: Auth | Rate Limit | Validator |    │    │
-│  │             Cache | Error Handler | Logger      │    │
-│  └─────────────────────────────────────────────────┘    │
-└──────────────┬──────────────────────┬───────────────────┘
-               │                      │ HTTP
-               ▼                      ▼
-┌──────────────────┐    ┌─────────────────────────────────┐
-│    DATA LAYER    │    │          AI SERVICE LAYER        │
-│     MongoDB      │    │      FastAPI + scikit-learn      │
-│  (Mongoose ODM)  │    │           Port: 8000             │
-│                  │    │  ┌──────────┐ ┌──────────────┐  │
-│  Users           │    │  │ Mental   │ │   Stress     │  │
-│  Predictions     │    │  │Wellness  │ │   Level      │  │
-│  Notifications   │    │  │ Model    │ │   Model      │  │
-│  Analytics       │    │  └──────────┘ └──────────────┘  │
-│  Profiles        │    │  ┌──────────────────────────┐   │
-│  ScreenTimeLogs  │    │  │   Academic Impact Model  │   │
-│  SleepRecords    │    │  └──────────────────────────┘   │
-└──────────────────┘    └─────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                    CLIENT LAYER                          â”‚
+â”‚           Next.js 16 (React 18, TypeScript)             â”‚
+â”‚                  Port: 3000                              â”‚
+â”‚   â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”‚
+â”‚   â”‚  Auth    â”‚ â”‚Dashboard â”‚ â”‚Analytics â”‚ â”‚  Admin   â”‚  â”‚
+â”‚   â”‚  Pages   â”‚ â”‚  Pages   â”‚ â”‚  Pages   â”‚ â”‚  Pages   â”‚  â”‚
+â”‚   â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+                          â”‚ REST API (Axios)
+                          â–¼
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                   APPLICATION LAYER                      â”‚
+â”‚              Node.js + Express.js API                    â”‚
+â”‚                    Port: 5000                            â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â” â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â” â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”‚
+â”‚  â”‚  Auth   â”‚ â”‚Predictionâ”‚ â”‚  User  â”‚ â”‚    Admin     â”‚  â”‚
+â”‚  â”‚ Routes  â”‚ â”‚  Routes  â”‚ â”‚ Routes â”‚ â”‚    Routes    â”‚  â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â””â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”    â”‚
+â”‚  â”‚  Middleware: Auth | Rate Limit | Validator |    â”‚    â”‚
+â”‚  â”‚             Cache | Error Handler | Logger      â”‚    â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜    â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+               â”‚                      â”‚ HTTP
+               â–¼                      â–¼
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”    â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚    DATA LAYER    â”‚    â”‚          AI SERVICE LAYER        â”‚
+â”‚     MongoDB      â”‚    â”‚      FastAPI + scikit-learn      â”‚
+â”‚  (Mongoose ODM)  â”‚    â”‚           Port: 8000             â”‚
+â”‚                  â”‚    â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”‚
+â”‚  Users           â”‚    â”‚  â”‚ Mental   â”‚ â”‚   Stress     â”‚  â”‚
+â”‚  Predictions     â”‚    â”‚  â”‚Wellness  â”‚ â”‚   Level      â”‚  â”‚
+â”‚  Notifications   â”‚    â”‚  â”‚ Model    â”‚ â”‚   Model      â”‚  â”‚
+â”‚  Analytics       â”‚    â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â”‚
+â”‚  Profiles        â”‚    â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”   â”‚
+â”‚  ScreenTimeLogs  â”‚    â”‚  â”‚   Academic Impact Model  â”‚   â”‚
+â”‚  SleepRecords    â”‚    â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜   â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜    â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 ---
 
-## 🛠️ Tech Stack
+## ðŸ› ï¸ Tech Stack
 
 ### Frontend
 | Technology | Version | Purpose |
@@ -168,7 +169,7 @@ WellSync follows a **three-tier architecture**:
 ### Backend
 | Technology | Version | Purpose |
 |---|---|---|
-| Node.js | ≥16.0.0 | Runtime environment |
+| Node.js | â‰¥16.0.0 | Runtime environment |
 | Express.js | 4.18.x | Web framework |
 | MongoDB | 4.4+ | Database |
 | Mongoose | 8.0.x | ODM for MongoDB |
@@ -201,164 +202,164 @@ WellSync follows a **three-tier architecture**:
 
 ---
 
-## 📁 Project Structure
+## ðŸ“ Project Structure
 
 ```
 WellSync/
-├── 📂 ai/                          # Python ML service
-│   ├── 📂 api/
-│   │   └── main.py                 # FastAPI application (port 8000)
-│   ├── 📂 data/
-│   │   ├── ScreenTime_MentalWellness.csv     # 400 rows × 15 cols
-│   │   └── Students_Social_Media_Addiction.csv # 705 rows × 13 cols
-│   ├── 📂 models/
-│   │   ├── mental_health/          # Trained wellness & stress models
-│   │   │   ├── best_model.pkl
-│   │   │   ├── stress_model.pkl
-│   │   │   ├── reports/            # Training & evaluation reports
-│   │   │   └── visualizations/     # Prediction & residual plots
-│   │   └── academic/               # Trained academic impact model
-│   │       ├── best_model.pkl
-│   │       ├── reports/
-│   │       └── visualizations/
-│   ├── 📂 src/
-│   │   ├── mental_health/
-│   │   │   ├── preprocess.py       # Feature engineering (wellness)
-│   │   │   ├── preprocess_stress.py # Feature engineering (stress)
-│   │   │   ├── train.py            # Wellness model training pipeline
-│   │   │   ├── train_stress.py     # Stress model training pipeline
-│   │   │   ├── evaluate.py         # Model evaluation
-│   │   │   └── evaluate_stress.py
-│   │   └── academic/
-│   │       ├── preprocess.py       # Academic feature engineering
-│   │       ├── train.py            # Academic model training
-│   │       └── evaluate.py
-│   ├── 📂 utils/
-│   │   ├── model_loader.py         # Model loading & predictor classes
-│   │   ├── preprocessing.py        # Production inference preprocessing
-│   │   └── validators.py           # Pydantic request/response models
-│   └── requirements.txt
-│
-├── 📂 backend/                     # Node.js Express API (port 5000)
-│   ├── 📂 config/
-│   │   ├── database.js             # MongoDB connection
-│   │   └── email.js                # Nodemailer transporter
-│   ├── 📂 controllers/
-│   │   ├── authController.js       # Register, login, verify, reset
-│   │   ├── userController.js       # Profile, dashboard, account
-│   │   ├── predictionController.js # All prediction CRUD + email/PDF
-│   │   ├── adminController.js      # Admin dashboard, user management
-│   │   ├── analyticsController.js  # Analytics generation & insights
-│   │   ├── exportController.js     # CSV/JSON data export
-│   │   ├── notificationController.js # Notification CRUD
-│   │   └── profileController.js    # Extended profile data logging
-│   ├── 📂 middleware/
-│   │   ├── auth.js                 # JWT protect, authorize, optionalAuth
-│   │   ├── cache.js                # In-memory response caching
-│   │   ├── errorHandler.js         # Centralized error handling
-│   │   ├── rateLimiter.js          # Global, auth, prediction, email limiters
-│   │   ├── requestLogger.js        # Winston request/response logging
-│   │   └── validator.js            # express-validator schemas
-│   ├── 📂 models/
-│   │   ├── User.js                 # User with auth methods
-│   │   ├── Prediction.js           # Prediction with aggregations
-│   │   ├── Analytics.js            # Period analytics
-│   │   ├── Notification.js         # TTL-indexed notifications
-│   │   ├── MentalWellnessProfile.js
-│   │   ├── StudentProfile.js
-│   │   ├── ScreenTimeLog.js
-│   │   ├── SleepRecord.js
-│   │   ├── SocialMediaUsage.js
-│   │   └── MentalHealthAssessment.js
-│   ├── 📂 routes/
-│   │   ├── index.js                # Central router
-│   │   ├── authRoutes.js
-│   │   ├── userRoutes.js
-│   │   ├── predictionRoutes.js
-│   │   ├── adminRoutes.js
-│   │   ├── analyticsRoutes.js
-│   │   ├── exportRoutes.js
-│   │   ├── notificationRoutes.js
-│   │   └── profileRoutes.js
-│   ├── 📂 utils/
-│   │   ├── aiService.js            # HTTP client for AI service
-│   │   ├── emailService.js         # Email sending functions
-│   │   ├── emailTemplates.js       # HTML email templates
-│   │   ├── notificationService.js  # Notification creation helpers
-│   │   ├── pdfGenerator.js         # PDFKit report generation
-│   │   ├── scheduledTasks.js       # node-cron task initialization
-│   │   ├── weeklyEmailService.js   # Weekly summary email logic
-│   │   └── logger.js               # Winston logger configuration
-│   ├── 📂 scripts/
-│   │   └── seedAdmin.js            # Admin user seeding script
-│   ├── server.js                   # Express app entry point
-│   └── package.json
-│
-├── 📂 frontend/                    # Next.js 16 app (port 3000)
-│   ├── 📂 app/
-│   │   ├── layout.tsx              # Root layout with providers
-│   │   ├── page.tsx                # Public landing page
-│   │   ├── (auth)/                 # Auth route group (no sidebar)
-│   │   │   ├── login/page.tsx
-│   │   │   ├── register/page.tsx
-│   │   │   ├── forgot-password/page.tsx
-│   │   │   ├── reset-password/page.tsx
-│   │   │   └── verify-email/page.tsx
-│   │   └── (dashboard)/            # Dashboard route group (with sidebar)
-│   │       ├── dashboard/page.tsx
-│   │       ├── predictions/
-│   │       │   ├── page.tsx        # Prediction history
-│   │       │   ├── new/page.tsx    # Prediction type selector
-│   │       │   ├── mental-wellness/page.tsx
-│   │       │   ├── stress/page.tsx
-│   │       │   └── academic/page.tsx
-│   │       ├── analytics/page.tsx
-│   │       ├── profile/page.tsx
-│   │       ├── settings/page.tsx
-│   │       └── admin/
-│   │           ├── page.tsx        # Admin overview
-│   │           ├── users/[id]/page.tsx
-│   │           ├── broadcast/page.tsx
-│   │           ├── notifications/page.tsx
-│   │           ├── predictions/page.tsx
-│   │           └── stats/page.tsx
-│   ├── 📂 components/
-│   │   ├── layout/                 # Navbar, Sidebar, ThemeToggle, BackToHomeButton
-│   │   ├── three/                  # AuthBackground (dynamic) + AuthBackgroundCanvas
-│   │   ├── charts/                 # WellnessTrendChart, UserGrowthChart, PredictionTypeChart,
-│   │   │                           # StressDistributionChart, ActivityHeatmap
-│   │   ├── ui/                     # button, card, input, label, skeleton, confirmation-dialog,
-│   │   │                           # empty-state, error-state, loading-skeleton
-│   │   └── providers.tsx           # QueryClient + ThemeProvider + Toaster
-│   ├── 📂 lib/
-│   │   ├── api/                    # Axios API client functions per domain
-│   │   ├── hooks/                  # useAuth, useAdmin, usePredictions, useAnalytics,
-│   │   │                           # useDashboard, useProfile
-│   │   ├── store/                  # authStore (Zustand persist), uiStore
-│   │   └── constants.ts            # Shared constants (thresholds, labels)
-│   ├── 📂 types/
-│   │   ├── index.ts                # Domain types (User, Prediction, etc.)
-│   │   └── api.ts                  # API response types
-│   └── package.json
-│
-├── 📂 email_template_previews/     # HTML preview of all 7 email templates
-├── 📂 logo/                        # WellSync logo assets
-├── 📂 report/                      # Project documentation
-├── .env.example                    # Environment variable template
-└── README.md
+â”œâ”€â”€ ðŸ“‚ ai/                          # Python ML service
+â”‚   â”œâ”€â”€ ðŸ“‚ api/
+â”‚   â”‚   â””â”€â”€ main.py                 # FastAPI application (port 8000)
+â”‚   â”œâ”€â”€ ðŸ“‚ data/
+â”‚   â”‚   â”œâ”€â”€ ScreenTime_MentalWellness.csv     # 400 rows Ã— 15 cols
+â”‚   â”‚   â””â”€â”€ Students_Social_Media_Addiction.csv # 705 rows Ã— 13 cols
+â”‚   â”œâ”€â”€ ðŸ“‚ models/
+â”‚   â”‚   â”œâ”€â”€ mental_health/          # Trained wellness & stress models
+â”‚   â”‚   â”‚   â”œâ”€â”€ best_model.pkl
+â”‚   â”‚   â”‚   â”œâ”€â”€ stress_model.pkl
+â”‚   â”‚   â”‚   â”œâ”€â”€ reports/            # Training & evaluation reports
+â”‚   â”‚   â”‚   â””â”€â”€ visualizations/     # Prediction & residual plots
+â”‚   â”‚   â””â”€â”€ academic/               # Trained academic impact model
+â”‚   â”‚       â”œâ”€â”€ best_model.pkl
+â”‚   â”‚       â”œâ”€â”€ reports/
+â”‚   â”‚       â””â”€â”€ visualizations/
+â”‚   â”œâ”€â”€ ðŸ“‚ src/
+â”‚   â”‚   â”œâ”€â”€ mental_health/
+â”‚   â”‚   â”‚   â”œâ”€â”€ preprocess.py       # Feature engineering (wellness)
+â”‚   â”‚   â”‚   â”œâ”€â”€ preprocess_stress.py # Feature engineering (stress)
+â”‚   â”‚   â”‚   â”œâ”€â”€ train.py            # Wellness model training pipeline
+â”‚   â”‚   â”‚   â”œâ”€â”€ train_stress.py     # Stress model training pipeline
+â”‚   â”‚   â”‚   â”œâ”€â”€ evaluate.py         # Model evaluation
+â”‚   â”‚   â”‚   â””â”€â”€ evaluate_stress.py
+â”‚   â”‚   â””â”€â”€ academic/
+â”‚   â”‚       â”œâ”€â”€ preprocess.py       # Academic feature engineering
+â”‚   â”‚       â”œâ”€â”€ train.py            # Academic model training
+â”‚   â”‚       â””â”€â”€ evaluate.py
+â”‚   â”œâ”€â”€ ðŸ“‚ utils/
+â”‚   â”‚   â”œâ”€â”€ model_loader.py         # Model loading & predictor classes
+â”‚   â”‚   â”œâ”€â”€ preprocessing.py        # Production inference preprocessing
+â”‚   â”‚   â””â”€â”€ validators.py           # Pydantic request/response models
+â”‚   â””â”€â”€ requirements.txt
+â”‚
+â”œâ”€â”€ ðŸ“‚ backend/                     # Node.js Express API (port 5000)
+â”‚   â”œâ”€â”€ ðŸ“‚ config/
+â”‚   â”‚   â”œâ”€â”€ database.js             # MongoDB connection
+â”‚   â”‚   â””â”€â”€ email.js                # Nodemailer transporter
+â”‚   â”œâ”€â”€ ðŸ“‚ controllers/
+â”‚   â”‚   â”œâ”€â”€ authController.js       # Register, login, verify, reset
+â”‚   â”‚   â”œâ”€â”€ userController.js       # Profile, dashboard, account
+â”‚   â”‚   â”œâ”€â”€ predictionController.js # All prediction CRUD + email/PDF
+â”‚   â”‚   â”œâ”€â”€ adminController.js      # Admin dashboard, user management
+â”‚   â”‚   â”œâ”€â”€ analyticsController.js  # Analytics generation & insights
+â”‚   â”‚   â”œâ”€â”€ exportController.js     # CSV/JSON data export
+â”‚   â”‚   â”œâ”€â”€ notificationController.js # Notification CRUD
+â”‚   â”‚   â””â”€â”€ profileController.js    # Extended profile data logging
+â”‚   â”œâ”€â”€ ðŸ“‚ middleware/
+â”‚   â”‚   â”œâ”€â”€ auth.js                 # JWT protect, authorize, optionalAuth
+â”‚   â”‚   â”œâ”€â”€ cache.js                # In-memory response caching
+â”‚   â”‚   â”œâ”€â”€ errorHandler.js         # Centralized error handling
+â”‚   â”‚   â”œâ”€â”€ rateLimiter.js          # Global, auth, prediction, email limiters
+â”‚   â”‚   â”œâ”€â”€ requestLogger.js        # Winston request/response logging
+â”‚   â”‚   â””â”€â”€ validator.js            # express-validator schemas
+â”‚   â”œâ”€â”€ ðŸ“‚ models/
+â”‚   â”‚   â”œâ”€â”€ User.js                 # User with auth methods
+â”‚   â”‚   â”œâ”€â”€ Prediction.js           # Prediction with aggregations
+â”‚   â”‚   â”œâ”€â”€ Analytics.js            # Period analytics
+â”‚   â”‚   â”œâ”€â”€ Notification.js         # TTL-indexed notifications
+â”‚   â”‚   â”œâ”€â”€ MentalWellnessProfile.js
+â”‚   â”‚   â”œâ”€â”€ StudentProfile.js
+â”‚   â”‚   â”œâ”€â”€ ScreenTimeLog.js
+â”‚   â”‚   â”œâ”€â”€ SleepRecord.js
+â”‚   â”‚   â”œâ”€â”€ SocialMediaUsage.js
+â”‚   â”‚   â””â”€â”€ MentalHealthAssessment.js
+â”‚   â”œâ”€â”€ ðŸ“‚ routes/
+â”‚   â”‚   â”œâ”€â”€ index.js                # Central router
+â”‚   â”‚   â”œâ”€â”€ authRoutes.js
+â”‚   â”‚   â”œâ”€â”€ userRoutes.js
+â”‚   â”‚   â”œâ”€â”€ predictionRoutes.js
+â”‚   â”‚   â”œâ”€â”€ adminRoutes.js
+â”‚   â”‚   â”œâ”€â”€ analyticsRoutes.js
+â”‚   â”‚   â”œâ”€â”€ exportRoutes.js
+â”‚   â”‚   â”œâ”€â”€ notificationRoutes.js
+â”‚   â”‚   â””â”€â”€ profileRoutes.js
+â”‚   â”œâ”€â”€ ðŸ“‚ utils/
+â”‚   â”‚   â”œâ”€â”€ aiService.js            # HTTP client for AI service
+â”‚   â”‚   â”œâ”€â”€ emailService.js         # Email sending functions
+â”‚   â”‚   â”œâ”€â”€ emailTemplates.js       # HTML email templates
+â”‚   â”‚   â”œâ”€â”€ notificationService.js  # Notification creation helpers
+â”‚   â”‚   â”œâ”€â”€ pdfGenerator.js         # PDFKit report generation
+â”‚   â”‚   â”œâ”€â”€ scheduledTasks.js       # node-cron task initialization
+â”‚   â”‚   â”œâ”€â”€ weeklyEmailService.js   # Weekly summary email logic
+â”‚   â”‚   â””â”€â”€ logger.js               # Winston logger configuration
+â”‚   â”œâ”€â”€ ðŸ“‚ scripts/
+â”‚   â”‚   â””â”€â”€ seedAdmin.js            # Admin user seeding script
+â”‚   â”œâ”€â”€ server.js                   # Express app entry point
+â”‚   â””â”€â”€ package.json
+â”‚
+â”œâ”€â”€ ðŸ“‚ frontend/                    # Next.js 16 app (port 3000)
+â”‚   â”œâ”€â”€ ðŸ“‚ app/
+â”‚   â”‚   â”œâ”€â”€ layout.tsx              # Root layout with providers
+â”‚   â”‚   â”œâ”€â”€ page.tsx                # Public landing page
+â”‚   â”‚   â”œâ”€â”€ (auth)/                 # Auth route group (no sidebar)
+â”‚   â”‚   â”‚   â”œâ”€â”€ login/page.tsx
+â”‚   â”‚   â”‚   â”œâ”€â”€ register/page.tsx
+â”‚   â”‚   â”‚   â”œâ”€â”€ forgot-password/page.tsx
+â”‚   â”‚   â”‚   â”œâ”€â”€ reset-password/page.tsx
+â”‚   â”‚   â”‚   â””â”€â”€ verify-email/page.tsx
+â”‚   â”‚   â””â”€â”€ (dashboard)/            # Dashboard route group (with sidebar)
+â”‚   â”‚       â”œâ”€â”€ dashboard/page.tsx
+â”‚   â”‚       â”œâ”€â”€ predictions/
+â”‚   â”‚       â”‚   â”œâ”€â”€ page.tsx        # Prediction history
+â”‚   â”‚       â”‚   â”œâ”€â”€ new/page.tsx    # Prediction type selector
+â”‚   â”‚       â”‚   â”œâ”€â”€ mental-wellness/page.tsx
+â”‚   â”‚       â”‚   â”œâ”€â”€ stress/page.tsx
+â”‚   â”‚       â”‚   â””â”€â”€ academic/page.tsx
+â”‚   â”‚       â”œâ”€â”€ analytics/page.tsx
+â”‚   â”‚       â”œâ”€â”€ profile/page.tsx
+â”‚   â”‚       â”œâ”€â”€ settings/page.tsx
+â”‚   â”‚       â””â”€â”€ admin/
+â”‚   â”‚           â”œâ”€â”€ page.tsx        # Admin overview
+â”‚   â”‚           â”œâ”€â”€ users/[id]/page.tsx
+â”‚   â”‚           â”œâ”€â”€ broadcast/page.tsx
+â”‚   â”‚           â”œâ”€â”€ notifications/page.tsx
+â”‚   â”‚           â”œâ”€â”€ predictions/page.tsx
+â”‚   â”‚           â””â”€â”€ stats/page.tsx
+â”‚   â”œâ”€â”€ ðŸ“‚ components/
+â”‚   â”‚   â”œâ”€â”€ layout/                 # Navbar, Sidebar, ThemeToggle, BackToHomeButton
+â”‚   â”‚   â”œâ”€â”€ three/                  # AuthBackground (dynamic) + AuthBackgroundCanvas
+â”‚   â”‚   â”œâ”€â”€ charts/                 # WellnessTrendChart, UserGrowthChart, PredictionTypeChart,
+â”‚   â”‚   â”‚                           # StressDistributionChart, ActivityHeatmap
+â”‚   â”‚   â”œâ”€â”€ ui/                     # button, card, input, label, skeleton, confirmation-dialog,
+â”‚   â”‚   â”‚                           # empty-state, error-state, loading-skeleton
+â”‚   â”‚   â””â”€â”€ providers.tsx           # QueryClient + ThemeProvider + Toaster
+â”‚   â”œâ”€â”€ ðŸ“‚ lib/
+â”‚   â”‚   â”œâ”€â”€ api/                    # Axios API client functions per domain
+â”‚   â”‚   â”œâ”€â”€ hooks/                  # useAuth, useAdmin, usePredictions, useAnalytics,
+â”‚   â”‚   â”‚                           # useDashboard, useProfile
+â”‚   â”‚   â”œâ”€â”€ store/                  # authStore (Zustand persist), uiStore
+â”‚   â”‚   â””â”€â”€ constants.ts            # Shared constants (thresholds, labels)
+â”‚   â”œâ”€â”€ ðŸ“‚ types/
+â”‚   â”‚   â”œâ”€â”€ index.ts                # Domain types (User, Prediction, etc.)
+â”‚   â”‚   â””â”€â”€ api.ts                  # API response types
+â”‚   â””â”€â”€ package.json
+â”‚
+â”œâ”€â”€ ðŸ“‚ email_template_previews/     # HTML preview of all 7 email templates
+â”œâ”€â”€ ðŸ“‚ logo/                        # WellSync logo assets
+â”œâ”€â”€ ðŸ“‚ report/                      # Project documentation
+â”œâ”€â”€ .env.example                    # Environment variable template
+â””â”€â”€ README.md
 ```
 
 ---
 
-## 🚀 Quick Start
+## ðŸš€ Quick Start
 
 ### Prerequisites
 
 | Tool | Version | Download |
 |---|---|---|
-| Node.js | ≥ 16.0.0 | [nodejs.org](https://nodejs.org/) |
-| Python | ≥ 3.8 | [python.org](https://python.org/) |
-| MongoDB | ≥ 4.4 | [mongodb.com](https://mongodb.com/) or [Atlas](https://cloud.mongodb.com/) |
+| Node.js | â‰¥ 16.0.0 | [nodejs.org](https://nodejs.org/) |
+| Python | â‰¥ 3.8 | [python.org](https://python.org/) |
+| MongoDB | â‰¥ 4.4 | [mongodb.com](https://mongodb.com/) or [Atlas](https://cloud.mongodb.com/) |
 | Git | Latest | [git-scm.com](https://git-scm.com/) |
 
 ### 1. Clone the Repository
@@ -448,27 +449,27 @@ python -m src.academic.train
 
 ---
 
-## 🔧 Environment Variables
+## ðŸ”§ Environment Variables
 
 Create a `.env` file in the `backend/` directory based on `.env.example`:
 
 ```env
-# ─── Server ───────────────────────────────────────────────
+# â”€â”€â”€ Server â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 NODE_ENV=development
 PORT=5000
 HOST=localhost
 
-# ─── MongoDB ──────────────────────────────────────────────
+# â”€â”€â”€ MongoDB â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 MONGODB_URI=mongodb://localhost:27017/wellsync
 MONGODB_TEST_URI=mongodb://localhost:27017/wellsync_test
 
-# ─── JWT ──────────────────────────────────────────────────
+# â”€â”€â”€ JWT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 JWT_SECRET=your_super_secret_jwt_key_change_this_in_production
 JWT_EXPIRE=7d
 JWT_REFRESH_SECRET=your_refresh_token_secret_change_this
 JWT_REFRESH_EXPIRE=30d
 
-# ─── Email (Gmail SMTP) ───────────────────────────────────
+# â”€â”€â”€ Email (Gmail SMTP) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 EMAIL_SERVICE=gmail
 EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
@@ -477,22 +478,22 @@ EMAIL_USER=your_email@gmail.com
 EMAIL_PASSWORD=your_gmail_app_password   # Use App Password, not account password
 EMAIL_FROM=WellSync <noreply@wellsync.com>
 
-# ─── AI Service ───────────────────────────────────────────
+# â”€â”€â”€ AI Service â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 AI_SERVICE_URL=http://localhost:8000
 AI_SERVICE_TIMEOUT=30000
 
-# ─── CORS ─────────────────────────────────────────────────
+# â”€â”€â”€ CORS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 FRONTEND_URL=http://localhost:3000
 
-# ─── Rate Limiting ────────────────────────────────────────
+# â”€â”€â”€ Rate Limiting â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 RATE_LIMIT_WINDOW_MS=900000     # 15 minutes
 RATE_LIMIT_MAX_REQUESTS=100
 
-# ─── Security ─────────────────────────────────────────────
+# â”€â”€â”€ Security â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 BCRYPT_ROUNDS=12
 PASSWORD_MIN_LENGTH=8
 
-# ─── Logging ──────────────────────────────────────────────
+# â”€â”€â”€ Logging â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 LOG_LEVEL=info
 LOG_FILE=logs/app.log
 ```
@@ -505,92 +506,92 @@ NEXT_PUBLIC_API_URL=http://localhost:5000/api
 
 ---
 
-## 📡 API Reference
+## ðŸ“¡ API Reference
 
 All API endpoints are prefixed with `/api`. Protected routes require `Authorization: Bearer <token>`.
 
-### Authentication — `/api/auth`
+### Authentication â€” `/api/auth`
 
 | Method | Endpoint | Auth | Description |
 |---|---|---|---|
-| `POST` | `/auth/register` | ❌ | Register new user (sends welcome + verification email) |
-| `POST` | `/auth/login` | ❌ | Login, returns JWT + refresh token |
-| `GET` | `/auth/me` | ✅ | Get current authenticated user |
-| `POST` | `/auth/verify-email` | ❌ | Verify email with 6-digit code |
-| `POST` | `/auth/resend-verification` | ✅ | Resend email verification code |
-| `POST` | `/auth/forgot-password` | ❌ | Request password reset (sends email with code) |
-| `POST` | `/auth/reset-password` | ❌ | Reset password with 6-digit code |
-| `PUT` | `/auth/change-password` | ✅ | Change password (requires current password) |
-| `POST` | `/auth/logout` | ✅ | Logout (server-side logging) |
+| `POST` | `/auth/register` | âŒ | Register new user (sends welcome + verification email) |
+| `POST` | `/auth/login` | âŒ | Login, returns JWT + refresh token |
+| `GET` | `/auth/me` | âœ… | Get current authenticated user |
+| `POST` | `/auth/verify-email` | âŒ | Verify email with 6-digit code |
+| `POST` | `/auth/resend-verification` | âœ… | Resend email verification code |
+| `POST` | `/auth/forgot-password` | âŒ | Request password reset (sends email with code) |
+| `POST` | `/auth/reset-password` | âŒ | Reset password with 6-digit code |
+| `PUT` | `/auth/change-password` | âœ… | Change password (requires current password) |
+| `POST` | `/auth/logout` | âœ… | Logout (server-side logging) |
 
-### Users — `/api/users`
-
-| Method | Endpoint | Auth | Description |
-|---|---|---|---|
-| `GET` | `/users/profile` | ✅ | Get full user profile |
-| `PUT` | `/users/profile` | ✅ | Update name, profile fields, preferences |
-| `GET` | `/users/dashboard` | ✅ | Dashboard data (stats, recent predictions) |
-| `DELETE` | `/users/account` | ✅ | Permanently delete account (requires password) |
-| `PUT` | `/users/deactivate` | ✅ | Deactivate account |
-
-### Predictions — `/api/predictions`
+### Users â€” `/api/users`
 
 | Method | Endpoint | Auth | Description |
 |---|---|---|---|
-| `POST` | `/predictions/mental-wellness` | ✅ | Get mental wellness score (0–100) |
-| `POST` | `/predictions/stress-level` | ✅ | Get stress level prediction |
-| `POST` | `/predictions/academic-impact` | ✅ | Get academic impact/addiction score |
-| `GET` | `/predictions` | ✅ | Get prediction history (paginated, filterable) |
-| `GET` | `/predictions/stats` | ✅ | Aggregated stats per prediction type |
-| `GET` | `/predictions/trends/:type` | ✅ | Time-series scores for a type |
-| `GET` | `/predictions/:id` | ✅ | Get specific prediction |
-| `PUT` | `/predictions/:id` | ✅ | Update notes, tags, favourite status |
-| `DELETE` | `/predictions/:id` | ✅ | Delete a prediction |
-| `POST` | `/predictions/:id/email` | ✅ | Email prediction report as PDF attachment |
-| `GET` | `/predictions/:id/pdf` | ✅ | Download prediction report as PDF |
-| `GET` | `/predictions/examples/:type` | ❌ | Get example input payload |
+| `GET` | `/users/profile` | âœ… | Get full user profile |
+| `PUT` | `/users/profile` | âœ… | Update name, profile fields, preferences |
+| `GET` | `/users/dashboard` | âœ… | Dashboard data (stats, recent predictions) |
+| `DELETE` | `/users/account` | âœ… | Permanently delete account (requires password) |
+| `PUT` | `/users/deactivate` | âœ… | Deactivate account |
 
-### Analytics — `/api/analytics`
+### Predictions â€” `/api/predictions`
 
 | Method | Endpoint | Auth | Description |
 |---|---|---|---|
-| `GET` | `/analytics/insights` | ✅ | AI-generated insights from prediction history |
-| `POST` | `/analytics/generate` | ✅ | Compute and save analytics for a period |
-| `GET` | `/analytics/:period` | ✅ | Fetch analytics (daily/weekly/monthly/yearly) |
-| `GET` | `/analytics/compare` | ✅ | Compare two date ranges |
+| `POST` | `/predictions/mental-wellness` | âœ… | Get mental wellness score (0â€“100) |
+| `POST` | `/predictions/stress-level` | âœ… | Get stress level prediction |
+| `POST` | `/predictions/academic-impact` | âœ… | Get academic impact/addiction score |
+| `GET` | `/predictions` | âœ… | Get prediction history (paginated, filterable) |
+| `GET` | `/predictions/stats` | âœ… | Aggregated stats per prediction type |
+| `GET` | `/predictions/trends/:type` | âœ… | Time-series scores for a type |
+| `GET` | `/predictions/:id` | âœ… | Get specific prediction |
+| `PUT` | `/predictions/:id` | âœ… | Update notes, tags, favourite status |
+| `DELETE` | `/predictions/:id` | âœ… | Delete a prediction |
+| `POST` | `/predictions/:id/email` | âœ… | Email prediction report as PDF attachment |
+| `GET` | `/predictions/:id/pdf` | âœ… | Download prediction report as PDF |
+| `GET` | `/predictions/examples/:type` | âŒ | Get example input payload |
 
-### Profiles — `/api/profiles`
-
-| Method | Endpoint | Auth | Description |
-|---|---|---|---|
-| `GET/POST` | `/profiles/mental-wellness` | ✅ | Mental wellness profile (upsert) |
-| `GET/POST` | `/profiles/student` | ✅ | Student academic profile (upsert) |
-| `GET/POST` | `/profiles/screen-time` | ✅ | Daily screen time logging |
-| `GET/POST` | `/profiles/sleep` | ✅ | Daily sleep record logging |
-| `POST` | `/profiles/social-media` | ✅ | Social media usage logging |
-| `POST` | `/profiles/mental-health-assessment` | ✅ | Mental health assessment logging |
-| `GET` | `/profiles/overview` | ✅ | Combined overview of all profiles |
-
-### Notifications — `/api/notifications`
+### Analytics â€” `/api/analytics`
 
 | Method | Endpoint | Auth | Description |
 |---|---|---|---|
-| `GET` | `/notifications` | ✅ | Get notifications (paginated, filterable) |
-| `GET` | `/notifications/unread-count` | ✅ | Get unread notification count |
-| `PUT` | `/notifications/mark-read` | ✅ | Mark specific notifications as read |
-| `PUT` | `/notifications/mark-all-read` | ✅ | Mark all notifications as read |
-| `DELETE` | `/notifications/clear-read` | ✅ | Delete all read notifications |
-| `DELETE` | `/notifications/:id` | ✅ | Delete specific notification |
+| `GET` | `/analytics/insights` | âœ… | AI-generated insights from prediction history |
+| `POST` | `/analytics/generate` | âœ… | Compute and save analytics for a period |
+| `GET` | `/analytics/:period` | âœ… | Fetch analytics (daily/weekly/monthly/yearly) |
+| `GET` | `/analytics/compare` | âœ… | Compare two date ranges |
 
-### Export — `/api/export`
+### Profiles â€” `/api/profiles`
 
 | Method | Endpoint | Auth | Description |
 |---|---|---|---|
-| `GET` | `/export/data` | ✅ | Export all user data as JSON |
-| `GET` | `/export/predictions/csv` | ✅ | Export predictions as CSV |
-| `GET` | `/export/analytics` | ✅ | Export analytics as JSON report |
+| `GET/POST` | `/profiles/mental-wellness` | âœ… | Mental wellness profile (upsert) |
+| `GET/POST` | `/profiles/student` | âœ… | Student academic profile (upsert) |
+| `GET/POST` | `/profiles/screen-time` | âœ… | Daily screen time logging |
+| `GET/POST` | `/profiles/sleep` | âœ… | Daily sleep record logging |
+| `POST` | `/profiles/social-media` | âœ… | Social media usage logging |
+| `POST` | `/profiles/mental-health-assessment` | âœ… | Mental health assessment logging |
+| `GET` | `/profiles/overview` | âœ… | Combined overview of all profiles |
 
-### Admin — `/api/admin` (Admin role required)
+### Notifications â€” `/api/notifications`
+
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| `GET` | `/notifications` | âœ… | Get notifications (paginated, filterable) |
+| `GET` | `/notifications/unread-count` | âœ… | Get unread notification count |
+| `PUT` | `/notifications/mark-read` | âœ… | Mark specific notifications as read |
+| `PUT` | `/notifications/mark-all-read` | âœ… | Mark all notifications as read |
+| `DELETE` | `/notifications/clear-read` | âœ… | Delete all read notifications |
+| `DELETE` | `/notifications/:id` | âœ… | Delete specific notification |
+
+### Export â€” `/api/export`
+
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| `GET` | `/export/data` | âœ… | Export all user data as JSON |
+| `GET` | `/export/predictions/csv` | âœ… | Export predictions as CSV |
+| `GET` | `/export/analytics` | âœ… | Export analytics as JSON report |
+
+### Admin â€” `/api/admin` (Admin role required)
 
 | Method | Endpoint | Description |
 |---|---|---|
@@ -607,12 +608,12 @@ All API endpoints are prefixed with `/api`. Protected routes require `Authorizat
 | `DELETE` | `/admin/notifications/:id` | Delete single notification |
 | `DELETE` | `/admin/notifications/bulk` | Bulk delete notifications |
 
-### AI Service — `http://localhost:8000`
+### AI Service â€” `http://localhost:8000`
 
 | Method | Endpoint | Description |
 |---|---|---|
 | `GET` | `/health` | AI service health check |
-| `GET` | `/models/info` | Model metadata (R², MAE, training date) |
+| `GET` | `/models/info` | Model metadata (RÂ², MAE, training date) |
 | `GET` | `/models/available` | List all available .pkl model files |
 | `POST` | `/predict/mental-wellness` | Mental wellness inference |
 | `POST` | `/predict/stress` | Stress level inference |
@@ -623,11 +624,11 @@ All API endpoints are prefixed with `/api`. Protected routes require `Authorizat
 
 ---
 
-## 🤖 AI Models
+## ðŸ¤– AI Models
 
 ### Model Overview
 
-| Model | Algorithm | Dataset | Train R² | Test R² | MAE | Features |
+| Model | Algorithm | Dataset | Train RÂ² | Test RÂ² | MAE | Features |
 |---|---|---|---|---|---|---|
 | Mental Wellness | Voting Ensemble (RF+GB+ET) | ScreenTime_MentalWellness.csv | 0.9738 | **0.9426** | 4.018 | 26 |
 | Stress Level | Ridge Regression (tuned) | ScreenTime_MentalWellness.csv | 0.9088 | **0.8373** | 0.612 | 36 |
@@ -637,23 +638,23 @@ All API endpoints are prefixed with `/api`. Protected routes require `Authorizat
 
 ```
 Stage 1: Data Loading & EDA
-         ↓
+         â†“
 Stage 2: Preprocessing & Feature Engineering
-         (11–14 engineered features per model)
-         ↓
+         (11â€“14 engineered features per model)
+         â†“
 Stage 3: Train/Test Split (80/20, stratified)
-         ↓
+         â†“
 Stage 4: Baseline Model Comparison
          (8 algorithms: RF, GB, ET, Ridge, Lasso, ElasticNet, AdaBoost, KNN)
-         ↓
+         â†“
 Stage 5: Hyperparameter Tuning
-         (GridSearchCV / RandomizedSearchCV, 5–20 iterations, 5-fold CV)
-         ↓
+         (GridSearchCV / RandomizedSearchCV, 5â€“20 iterations, 5-fold CV)
+         â†“
 Stage 6: Ensemble Creation
          (VotingRegressor + StackingRegressor with Ridge meta-learner)
-         ↓
+         â†“
 Stage 7: Evaluation & Artifact Saving
-         (R², MAE, RMSE, MAPE + 10-fold CV + plots + reports)
+         (RÂ², MAE, RMSE, MAPE + 10-fold CV + plots + reports)
 ```
 
 ### Input Features
@@ -678,7 +679,7 @@ Stage 7: Evaluation & Artifact Saving
 }
 ```
 
-**Response:** Wellness score (0–100) with interpretation (Poor / Below Average / Moderate / Good / Excellent)
+**Response:** Wellness score (0â€“100) with interpretation (Poor / Below Average / Moderate / Good / Excellent)
 
 #### Stress Level Prediction (`POST /predict/stress`)
 
@@ -689,7 +690,7 @@ Same 13 fields as mental wellness **plus**:
 }
 ```
 
-**Response:** Stress score (0–10) with category (Low ≤3 / Moderate ≤6 / High ≤8 / Very High >8) and personalised recommendations
+**Response:** Stress score (0â€“10) with category (Low â‰¤3 / Moderate â‰¤6 / High â‰¤8 / Very High >8) and personalised recommendations
 
 #### Academic Impact Prediction (`POST /predict/academic-impact`)
 
@@ -709,7 +710,7 @@ Same 13 fields as mental wellness **plus**:
 }
 ```
 
-**Response:** Addiction score (2–9) with interpretation (Low / Low-Moderate / Moderate / High Risk)
+**Response:** Addiction score (2â€“9) with interpretation (Low / Low-Moderate / Moderate / High Risk)
 
 ### Engineered Features
 
@@ -724,7 +725,7 @@ All 11 wellness features **plus**: `total_screen_ratio`, `sleep_deficit`, `poor_
 
 ---
 
-## 🖥️ Frontend Pages
+## ðŸ–¥ï¸ Frontend Pages
 
 ### Public Pages
 | Page | Route | Description |
@@ -761,7 +762,7 @@ All 11 wellness features **plus**: `total_screen_ratio`, `sleep_deficit`, `poor_
 
 ---
 
-## 🗄️ Database Models
+## ðŸ—„ï¸ Database Models
 
 ### User
 ```
@@ -819,19 +820,19 @@ Indexes: { user, isRead, createdAt }, { user, type }, TTL on expiresAt
 
 ---
 
-## 📧 Email Templates
+## ðŸ“§ Email Templates
 
 WellSync includes 7 professional HTML email templates with responsive design and gradient branding:
 
 | # | Template | Trigger |
 |---|---|---|
-| 1 | 👋 **Welcome Email** | New user registration |
-| 2 | ✉️ **Email Verification** | Verify email address (6-digit code, 15-min expiry) |
-| 3 | 🔒 **Password Reset** | User requests password reset (6-digit code) |
-| 4 | 💚 **Mental Wellness Report** | After mental wellness prediction (with PDF attachment) |
-| 5 | 😰 **Stress Level Report** | After stress level prediction (with PDF attachment) |
-| 6 | 📅 **Weekly Wellness Update** | Automated weekly summary (via node-cron) |
-| 7 | 🎉 **Account Activation** | After successful email verification |
+| 1 | ðŸ‘‹ **Welcome Email** | New user registration |
+| 2 | âœ‰ï¸ **Email Verification** | Verify email address (6-digit code, 15-min expiry) |
+| 3 | ðŸ”’ **Password Reset** | User requests password reset (6-digit code) |
+| 4 | ðŸ’š **Mental Wellness Report** | After mental wellness prediction (with PDF attachment) |
+| 5 | ðŸ˜° **Stress Level Report** | After stress level prediction (with PDF attachment) |
+| 6 | ðŸ“… **Weekly Wellness Update** | Automated weekly summary (via node-cron) |
+| 7 | ðŸŽ‰ **Account Activation** | After successful email verification |
 
 Preview all templates by opening `email_template_previews/index.html` in a browser.
 
@@ -845,7 +846,7 @@ The `weeklyEmailService.js` runs automatically via `scheduledTasks.js` every wee
 
 ---
 
-## 🔐 Security
+## ðŸ” Security
 
 ### Authentication
 - **JWT tokens** with configurable expiry (default 7 days)
@@ -863,8 +864,8 @@ The `weeklyEmailService.js` runs automatically via `scheduledTasks.js` every wee
 | Email | 1 hour | 3 | Email-sending endpoints |
 
 ### Other Security Measures
-- `helmet.js` — Secure HTTP headers (XSS, clickjacking, etc.)
-- `express-mongo-sanitize` — MongoDB query injection prevention
+- `helmet.js` â€” Secure HTTP headers (XSS, clickjacking, etc.)
+- `express-mongo-sanitize` â€” MongoDB query injection prevention
 - CORS restricted to `FRONTEND_URL`
 - Input validation with `express-validator` on all routes
 - Console output stripped in production (errors/warnings only)
@@ -872,11 +873,11 @@ The `weeklyEmailService.js` runs automatically via `scheduledTasks.js` every wee
 
 ---
 
-## 🧪 Testing
+## ðŸ§ª Testing
 
-### Backend Test Suite — 220 Tests Passing ✅
+### Backend Test Suite â€” 220 Tests Passing âœ…
 
-All backend tests use **mocked dependencies** (MongoDB, email service, AI service, rate limiters) — no real database or network required.
+All backend tests use **mocked dependencies** (MongoDB, email service, AI service, rate limiters) â€” no real database or network required.
 
 #### Run All Tests
 ```bash
@@ -888,28 +889,28 @@ npm run test:watch                # Watch mode (re-runs on file save)
 
 #### Run Individual Test Suites
 ```bash
-# Auth tests (50 tests) — register, login, verify email, forgot/reset password
+# Auth tests (50 tests) â€” register, login, verify email, forgot/reset password
 npx jest --testPathPattern=auth.test.js --no-coverage --forceExit --verbose
 
-# User controller tests (26 tests) — dashboard, profile, account deletion
+# User controller tests (26 tests) â€” dashboard, profile, account deletion
 npx jest --testPathPattern=user.test.js --no-coverage --forceExit --verbose
 
-# Prediction API tests (31 tests) — all 3 prediction types, CRUD
+# Prediction API tests (31 tests) â€” all 3 prediction types, CRUD
 npx jest --testPathPattern=prediction.test.js --no-coverage --forceExit --verbose
 
-# Admin API tests (25 tests) — user management, roles, status, broadcast
+# Admin API tests (25 tests) â€” user management, roles, status, broadcast
 npx jest --testPathPattern=admin.test.js --no-coverage --forceExit --verbose
 
-# Analytics tests (15 tests) — period analytics, insights, compare
+# Analytics tests (15 tests) â€” period analytics, insights, compare
 npx jest --testPathPattern=analytics.test.js --no-coverage --forceExit --verbose
 
-# Notification tests (20 tests) — list, unread count, mark read, delete
+# Notification tests (20 tests) â€” list, unread count, mark read, delete
 npx jest --testPathPattern=notification.test.js --no-coverage --forceExit --verbose
 
-# Middleware tests (29 tests) — protect, authorize, errorHandler, validator
+# Middleware tests (29 tests) â€” protect, authorize, errorHandler, validator
 npx jest --testPathPattern=middleware.test.js --no-coverage --forceExit --verbose
 
-# Integration tests (24 tests) — end-to-end user journey flows
+# Integration tests (24 tests) â€” end-to-end user journey flows
 npx jest --testPathPattern=integration.test.js --no-coverage --forceExit --verbose
 ```
 
@@ -921,17 +922,17 @@ npx jest --testPathPattern=auth.test.js -t "should register a new user" --no-cov
 #### Test Suite Summary
 | Suite | Tests | Coverage |
 |---|---|---|
-| `auth.test.js` | 50 ✅ | register, login, verify-email, forgot/reset-password, change-password, logout |
-| `user.test.js` | 26 ✅ | dashboard stats, profile update, prediction stats, account delete |
-| `prediction.test.js` | 31 ✅ | mental-wellness, stress-level, academic-impact, list, get, delete |
-| `admin.test.js` | 25 ✅ | list users, get user, role change, status toggle, delete, broadcast |
-| `analytics.test.js` | 15 ✅ | insights, generate, period fetch, compare |
-| `notification.test.js` | 20 ✅ | list, unread-count, mark-read, mark-all-read, clear-read, delete |
-| `middleware.test.js` | 29 ✅ | protect JWT, authorize roles, errorHandler, validator chains |
-| `integration.test.js` | 24 ✅ | full user journeys: register→predict→dashboard, password reset, admin flows |
-| **Total** | **220 ✅** | |
+| `auth.test.js` | 50 âœ… | register, login, verify-email, forgot/reset-password, change-password, logout |
+| `user.test.js` | 26 âœ… | dashboard stats, profile update, prediction stats, account delete |
+| `prediction.test.js` | 31 âœ… | mental-wellness, stress-level, academic-impact, list, get, delete |
+| `admin.test.js` | 25 âœ… | list users, get user, role change, status toggle, delete, broadcast |
+| `analytics.test.js` | 15 âœ… | insights, generate, period fetch, compare |
+| `notification.test.js` | 20 âœ… | list, unread-count, mark-read, mark-all-read, clear-read, delete |
+| `middleware.test.js` | 29 âœ… | protect JWT, authorize roles, errorHandler, validator chains |
+| `integration.test.js` | 24 âœ… | full user journeys: registerâ†’predictâ†’dashboard, password reset, admin flows |
+| **Total** | **220 âœ…** | |
 
-> **Note:** Console error logs during test runs (e.g. "AI Service is not available") are **expected** — they are Winston logs from intentional error-path test cases. All 220 tests pass.
+> **Note:** Console error logs during test runs (e.g. "AI Service is not available") are **expected** â€” they are Winston logs from intentional error-path test cases. All 220 tests pass.
 
 ### AI Service Tests
 ```bash
@@ -944,13 +945,13 @@ pytest --cov=api tests/         # With coverage report
 ### Frontend Checks
 ```bash
 cd frontend
-npm run lint    # ESLint — enforce code quality
-npm run build   # Production build — TypeScript + Next.js verification
+npm run lint    # ESLint â€” enforce code quality
+npm run build   # Production build â€” TypeScript + Next.js verification
 ```
 
 ---
 
-## 🚢 Deployment
+## ðŸš¢ Deployment
 
 ### Environment Setup
 1. Set `NODE_ENV=production` in backend `.env`
@@ -983,7 +984,7 @@ Each service can be containerised independently. Ensure:
 
 ---
 
-## 🤝 Contributing
+## ðŸ¤ Contributing
 
 ### Git Workflow
 
@@ -1016,7 +1017,7 @@ Detailed description if needed
 ### Branches
 | Branch | Purpose |
 |---|---|
-| `main` | Production-ready — fully merged, all tests passing |
+| `main` | Production-ready â€” fully merged, all tests passing |
 | `production` | Pre-production hardening & security hardening |
 | `testing` | Full backend test suite (220 tests, 10 commits) |
 | `Development` | Active development branch |
@@ -1026,7 +1027,7 @@ Detailed description if needed
 
 ---
 
-## 🐛 Troubleshooting
+## ðŸ› Troubleshooting
 
 ### Common Issues
 
@@ -1057,7 +1058,7 @@ lsof -i :5000 && kill -9 <PID>
 - Check `EMAIL_USER` and `EMAIL_PASSWORD` in `.env`
 
 **Three.js/Auth page error (`ReactCurrentOwner`):**
-- Fixed in latest build — ensure `@react-three/fiber` is v9.5.0+
+- Fixed in latest build â€” ensure `@react-three/fiber` is v9.5.0+
 - Run `npm install @react-three/fiber@latest --legacy-peer-deps`
 
 **Theme preference not saving:**
@@ -1067,15 +1068,15 @@ lsof -i :5000 && kill -9 <PID>
 
 ---
 
-## 📊 Performance
+## ðŸ“Š Performance
 
 ### AI Model Inference
-- Mental Wellness: ~20–50ms
-- Stress Level: ~10–30ms
-- Academic Impact: ~20–50ms
+- Mental Wellness: ~20â€“50ms
+- Stress Level: ~10â€“30ms
+- Academic Impact: ~20â€“50ms
 
 ### Backend Optimisations
-- In-memory response caching (`cache.js`) — short (5min), medium (15min), long (1hr)
+- In-memory response caching (`cache.js`) â€” short (5min), medium (15min), long (1hr)
 - Response compression via `compression` middleware
 - MongoDB indexes on all frequently queried fields (`{user, createdAt}`, `{user, predictionType}`)
 - Pagination for all list endpoints
@@ -1089,29 +1090,29 @@ lsof -i :5000 && kill -9 <PID>
 
 ---
 
-## 📦 Branch Structure
+## ðŸ“¦ Branch Structure
 
 | Branch | Purpose | Status |
 |---|---|---|
-| `main` | Production-ready — all branches merged | ✅ Up to date |
-| `production` | Pre-production hardening & security fixes | ✅ Merged into main |
-| `testing` | All 220 backend tests + 10-commit test history | ✅ Merged into main |
-| `Development` | Feature development & bug fixes | ✅ Merged into main |
+| `main` | Production-ready â€” all branches merged | âœ… Up to date |
+| `production` | Pre-production hardening & security fixes | âœ… Merged into main |
+| `testing` | All 220 backend tests + 10-commit test history | âœ… Merged into main |
+| `Development` | Feature development & bug fixes | âœ… Merged into main |
 
 ---
 
-## 📊 Datasets
+## ðŸ“Š Datasets
 
-- **ScreenTime_MentalWellness.csv** — 400 student records with lifestyle metrics, screen time patterns, and wellness scores (15 columns)
-- **Students_Social_Media_Addiction.csv** — 705 student records with social media usage, academic performance, and mental health data (13 columns)
+- **ScreenTime_MentalWellness.csv** â€” 400 student records with lifestyle metrics, screen time patterns, and wellness scores (15 columns)
+- **Students_Social_Media_Addiction.csv** â€” 705 student records with social media usage, academic performance, and mental health data (13 columns)
 
 ---
 
 <div align="center">
 
-**Built with ❤️ for student mental wellness**
+**Built with â¤ï¸ for student mental wellness**
 
-*WellSync — Sync your mind, sync your life.*
+*WellSync â€” Sync your mind, sync your life.*
 
 [![GitHub Stars](https://img.shields.io/github/stars/YahyaEajass05/WellSync?style=social)](https://github.com/YahyaEajass05/WellSync/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/YahyaEajass05/WellSync?style=social)](https://github.com/YahyaEajass05/WellSync/network/members)
@@ -1119,3 +1120,4 @@ lsof -i :5000 && kill -9 <PID>
 [![GitHub](https://img.shields.io/badge/GitHub-YahyaEajass05-181717?style=flat-square&logo=github)](https://github.com/YahyaEajass05/WellSync)
 
 </div>
+
