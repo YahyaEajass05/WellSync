@@ -614,18 +614,30 @@ function DangerTab() {
         return;
       }
 
-      // ✅ Success — set deletion flag FIRST so the dashboard layout
-      // auth-guard useEffect skips its router.replace('/login') call,
-      // then wipe storage, then hard-redirect with the ?deleted=true param.
+      // ✅ Success — clear ALL auth state then hard-redirect.
+      // Order matters:
+      // 1. Set deletion flag so dashboard layout auth-guard skips router.replace
+      // 2. Clear localStorage keys
+      // 3. CLEAR AUTH COOKIES — critical! The Next.js middleware reads the
+      //    'token' cookie to decide auth state. If the cookie is still set,
+      //    middleware intercepts /login (guestOnlyRoute) and redirects back
+      //    to /dashboard, causing the spinner loop the user sees.
+      // 4. Hard redirect with window.location.replace (not router.push)
       (window as any).__wellsync_deleting = true;
+
+      // Clear localStorage
       localStorage.removeItem('token');
       localStorage.removeItem('auth-storage');
       localStorage.removeItem('user');
+      localStorage.removeItem('pending-verification-email');
       sessionStorage.clear();
 
-      // Hard redirect — browser navigates away before React can re-render.
-      // window.location.replace is used (not router.push) so the browser
-      // fully unloads the current page and cannot go back.
+      // Clear auth cookies so Next.js middleware stops treating user as authenticated
+      document.cookie = 'token=; path=/; max-age=0; SameSite=Lax';
+      document.cookie = 'user_role=; path=/; max-age=0; SameSite=Lax';
+
+      // Hard redirect — browser fully unloads, middleware sees no cookie,
+      // /login renders normally with the ?deleted=true success banner.
       window.location.replace('/login?deleted=true');
 
     } catch {
