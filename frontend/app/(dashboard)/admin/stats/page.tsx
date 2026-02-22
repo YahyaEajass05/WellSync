@@ -113,6 +113,7 @@ export default function SystemStatsPage() {
   const aiPreds        = analytics?.predictions?.academicImpact ?? 0;
   const recentPreds    = analytics?.predictions?.recentLastWeek ?? 0;
   const avgMW          = analytics?.predictions?.avgMentalWellnessScore ?? 'N/A';
+  const avgSL          = analytics?.predictions?.avgStressLevel ?? 'N/A';
   const avgAI          = analytics?.predictions?.avgAcademicImpactScore ?? 'N/A';
 
   const predsPerUser   = totalUsers > 0 ? (totalPreds / totalUsers).toFixed(2) : '0';
@@ -318,27 +319,58 @@ export default function SystemStatsPage() {
           </Card>
         </div>
 
-        {/* Average scores */}
+        {/* Average scores — one card per prediction type */}
         <div className="grid gap-4 sm:grid-cols-3 mt-4">
-          <Card className="text-center">
-            <CardContent className="pt-6">
+          {/* Mental Wellness */}
+          <Card className="text-center border-blue-200 dark:border-blue-900">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-blue-600 flex items-center justify-center gap-2">
+                <Brain className="h-4 w-4" /> Mental Wellness
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
               <div className="text-4xl font-bold text-blue-600">{avgMW}</div>
-              <p className="text-sm font-medium mt-2">Avg Mental Wellness Score</p>
-              <p className="text-xs text-muted-foreground">out of 100</p>
+              <p className="text-xs text-muted-foreground mt-1">avg score / 100</p>
+              <div className="mt-3 pt-3 border-t text-sm">
+                <span className="font-semibold">{mwPreds}</span>
+                <span className="text-muted-foreground ml-1">total predictions</span>
+              </div>
             </CardContent>
           </Card>
-          <Card className="text-center">
-            <CardContent className="pt-6">
-              <div className="text-4xl font-bold text-amber-500">{slPreds}</div>
-              <p className="text-sm font-medium mt-2">Stress Predictions</p>
-              <p className="text-xs text-muted-foreground">total all time</p>
+
+          {/* Stress Level */}
+          <Card className="text-center border-amber-200 dark:border-amber-900">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-amber-600 flex items-center justify-center gap-2">
+                <Activity className="h-4 w-4" /> Stress Level
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-4xl font-bold text-amber-500">
+                {avgSL !== 'N/A' ? avgSL : '—'}
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">avg stress score / 100</p>
+              <div className="mt-3 pt-3 border-t text-sm">
+                <span className="font-semibold">{slPreds}</span>
+                <span className="text-muted-foreground ml-1">total predictions</span>
+              </div>
             </CardContent>
           </Card>
-          <Card className="text-center">
-            <CardContent className="pt-6">
+
+          {/* Academic Impact */}
+          <Card className="text-center border-emerald-200 dark:border-emerald-900">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-emerald-600 flex items-center justify-center gap-2">
+                <TrendingUp className="h-4 w-4" /> Academic Impact
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
               <div className="text-4xl font-bold text-emerald-600">{avgAI}</div>
-              <p className="text-sm font-medium mt-2">Avg Academic Impact Score</p>
-              <p className="text-xs text-muted-foreground">out of 10</p>
+              <p className="text-xs text-muted-foreground mt-1">avg score / 10</p>
+              <div className="mt-3 pt-3 border-t text-sm">
+                <span className="font-semibold">{aiPreds}</span>
+                <span className="text-muted-foreground ml-1">total predictions</span>
+              </div>
             </CardContent>
           </Card>
         </div>

@@ -26,6 +26,8 @@ export function PredictionTypeChart({ data }: PredictionTypeChartProps) {
 
   const total = chartData.reduce((sum, item) => sum + item.value, 0);
 
+  // Always show all 3 types — even if some are 0.
+  // Only show empty state if ALL 3 are 0.
   if (total === 0) {
     return (
       <div className="h-[300px] flex items-center justify-center text-muted-foreground">
@@ -33,6 +35,10 @@ export function PredictionTypeChart({ data }: PredictionTypeChartProps) {
       </div>
     );
   }
+
+  // Filter out zero-value slices so the pie doesn't render invisible segments
+  // but keep the legend so all 3 types are always visible as labels.
+  const nonZeroData = chartData.filter(d => d.value > 0);
 
   // Custom label renderer that handles the positioning properly
   const renderCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
@@ -59,7 +65,7 @@ export function PredictionTypeChart({ data }: PredictionTypeChartProps) {
     <ResponsiveContainer width="100%" height={300}>
       <PieChart>
         <Pie
-          data={chartData}
+          data={nonZeroData}
           cx="50%"
           cy="50%"
           labelLine={false}
@@ -68,9 +74,11 @@ export function PredictionTypeChart({ data }: PredictionTypeChartProps) {
           fill="#8884d8"
           dataKey="value"
         >
-          {chartData.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-          ))}
+          {nonZeroData.map((entry, index) => {
+            // Match color to the original chartData index so colors are stable
+            const originalIndex = chartData.findIndex(d => d.name === entry.name);
+            return <Cell key={`cell-${index}`} fill={COLORS[originalIndex % COLORS.length]} />;
+          })}
         </Pie>
         <Tooltip 
           contentStyle={{ 
@@ -79,12 +87,18 @@ export function PredictionTypeChart({ data }: PredictionTypeChartProps) {
             borderRadius: '6px',
             color: 'hsl(var(--foreground))'
           }}
-          formatter={(value: number) => [value, 'Count']}
+          formatter={(value: number, name: string) => [value, name]}
         />
+        {/* Always show all 3 legend items regardless of zero counts */}
         <Legend 
           verticalAlign="bottom" 
           height={36}
           iconType="circle"
+          payload={chartData.map((entry, index) => ({
+            value: `${entry.name} (${entry.value})`,
+            type: 'circle' as const,
+            color: COLORS[index % COLORS.length],
+          }))}
         />
       </PieChart>
     </ResponsiveContainer>
