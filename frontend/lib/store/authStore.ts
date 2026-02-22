@@ -20,8 +20,15 @@ export const useAuthStore = create<AuthState>()(
       setUser: (user) =>
         set({ user, isAuthenticated: !!user }),
       setToken: (token) => set({ token }),
-      logout: () =>
-        set({ user: null, token: null, isAuthenticated: false }),
+      logout: () => {
+        // Clear persisted storage keys so the dashboard layout auth-guard
+        // does not find a stale token after logout/account deletion.
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('token');
+          localStorage.removeItem('auth-storage');
+        }
+        set({ user: null, token: null, isAuthenticated: false });
+      },
     }),
     {
       name: 'auth-storage',

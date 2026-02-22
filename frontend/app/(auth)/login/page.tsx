@@ -35,6 +35,7 @@ export default function LoginPage() {
   const searchParams = useSearchParams();
   const { login, isLoginLoading, loginError, isLoginError } = useAuth();
   const [showVerifiedMessage, setShowVerifiedMessage] = useState(false);
+  const [showDeletedMessage, setShowDeletedMessage] = useState(false);
 
   const {
     register,
@@ -44,19 +45,26 @@ export default function LoginPage() {
     resolver: zodResolver(loginSchema),
   });
 
-  // Check if redirected from email verification or password reset
+  // Check if redirected from email verification, password reset, or account deletion
   useEffect(() => {
     const verified = searchParams.get('verified');
     const reset = searchParams.get('reset');
-    
+    const deleted = searchParams.get('deleted');
+
     if (verified === 'true') {
       setShowVerifiedMessage(true);
       toast.success('Email verified successfully! You can now log in.');
       router.replace('/login');
     }
-    
+
     if (reset === 'true') {
       toast.success('Password reset successfully! Please log in with your new password.');
+      router.replace('/login');
+    }
+
+    if (deleted === 'true') {
+      setShowDeletedMessage(true);
+      toast.success('Your account has been permanently deleted. We\'re sorry to see you go.');
       router.replace('/login');
     }
   }, [searchParams, router]);
@@ -95,6 +103,15 @@ export default function LoginPage() {
               <CheckCircle2 className="h-5 w-5 text-green-500" />
               <p className="text-sm text-green-700 dark:text-green-300">
                 Email verified! Please log in to continue.
+              </p>
+            </div>
+          )}
+
+          {showDeletedMessage && (
+            <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg flex items-center gap-2">
+              <CheckCircle2 className="h-5 w-5 text-blue-500" />
+              <p className="text-sm text-blue-700 dark:text-blue-300">
+                Your account has been permanently deleted. We&apos;re sorry to see you go.
               </p>
             </div>
           )}
