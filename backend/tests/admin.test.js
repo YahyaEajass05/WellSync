@@ -10,6 +10,9 @@
  *  - Rate limiters
  */
 
+// ─── Port override: must happen before server is required ─────────────────────
+process.env.PORT = '5013';
+
 // ─── Mocks (must be declared before any require of the app) ───────────────────
 
 jest.mock('../config/database', () => jest.fn().mockResolvedValue(true));

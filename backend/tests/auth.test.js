@@ -9,6 +9,9 @@
  *  - Database connection
  */
 
+// ─── Port override: must happen before server is required ─────────────────────
+process.env.PORT = '5010';
+
 // ─── Mocks (must be declared before any require of the app) ───────────────────
 
 // database.js does `module.exports = connectDB` (default function export)

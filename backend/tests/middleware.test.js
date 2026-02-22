@@ -6,6 +6,9 @@
  * tests which use express-validator's run() API).
  */
 
+// ─── Port override ─────────────────────────────────────────────────────────────
+process.env.PORT = '5014';
+
 // ─── Mocks ────────────────────────────────────────────────────────────────────
 
 jest.mock('../models/User');

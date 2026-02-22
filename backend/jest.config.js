@@ -18,4 +18,7 @@ module.exports = {
   verbose: true,
   forceExit: true,
   clearMocks: true,
+  // Run test suites sequentially to avoid port conflicts between suites
+  // that each start their own Express server via require('../server')
+  runInBand: true,
 };
