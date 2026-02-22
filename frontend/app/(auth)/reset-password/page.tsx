@@ -89,7 +89,6 @@ export default function ResetPasswordPage() {
       }, 2000);
     } catch (error: any) {
       setResetStatus('error');
-      console.error('Reset password error:', error.response?.data);
       const errorMessage =
         error.response?.data?.message ||
         error.response?.data?.error ||

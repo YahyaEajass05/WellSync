@@ -1,5 +1,5 @@
-pandas
-numpy
-joblib
-matplotlib
-scikit-learn
+# WellSync AI Service - Python Dependencies
+# For the full versioned dependency list, see ai/requirements.txt
+# Install with: pip install -r ai/requirements.txt
+
+-r ai/requirements.txt

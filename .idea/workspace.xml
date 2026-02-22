@@ -6,6 +6,19 @@
   <component name="ChangeListManager">
     <list default="true" id="e5f2139c-e03f-4693-8066-6bfb2bbda600" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/app/(auth)/forgot-password/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/app/(auth)/forgot-password/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/app/(auth)/reset-password/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/app/(auth)/reset-password/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/app/(auth)/verify-email/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/app/(auth)/verify-email/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/components/layout/Logo.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/components/layout/Navbar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/components/layout/Navbar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/components/three/Scene.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/components/three/StressVisualization.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/components/three/WellnessOrb.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/lib/api/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/api/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/lib/constants.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/constants.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/lib/hooks/useAnalytics.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/hooks/useAnalytics.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/lib/store/uiStore.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/store/uiStore.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/types/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/types/index.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,6 +36,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="PackageJsonUpdateNotifier">
+    <dismissed value="$PROJECT_DIR$/frontend/package.json" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
 }</component>
@@ -31,38 +47,38 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Python.evaluate.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.preprocess.executor&quot;: &quot;Run&quot;,
-    &quot;Python.python tmp_rovodev_explain_model.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python.train.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;Development&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/Python Projects/WellSync/logo&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;settings.sync&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;D:\\Python Projects\\WellSync\\frontend\\node_modules\\typescript\\lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.evaluate.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.preprocess.executor": "Run",
+    "Python.python tmp_rovodev_explain_model.py.executor": "Run",
+    "Python.train.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "testing",
+    "ignore.virus.scanning.warn.message": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "D:/Python Projects/WellSync/logo",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "settings.sync",
+    "to.speed.mode.migration.done": "true",
+    "ts.external.directory.path": "D:\\Python Projects\\WellSync\\frontend\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mongo&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mongo"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\Python Projects\WellSync\logo" />
@@ -167,7 +183,11 @@
       <workItem from="1770229922183" duration="4574000" />
       <workItem from="1770266078984" duration="25000" />
       <workItem from="1771344538168" duration="4881000" />
-      <workItem from="1771547658885" duration="3026000" />
+      <workItem from="1771547658885" duration="24647000" />
+      <workItem from="1771606044635" duration="54000" />
+      <workItem from="1771633859046" duration="3782000" />
+      <workItem from="1771680652824" duration="15623000" />
+      <workItem from="1771718156287" duration="1957000" />
     </task>
     <servers />
   </component>
