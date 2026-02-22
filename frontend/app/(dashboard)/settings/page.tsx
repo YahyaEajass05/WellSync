@@ -580,7 +580,16 @@ function DangerTab() {
       router.push('/login');
     },
     onError: (err: any) => {
-      setStatus({ type: 'error', message: err?.response?.data?.error ?? 'Failed to delete account.' });
+      // Extract error message — backend sends { success: false, error: '...' }
+      // for password mismatch (400) and other validation errors.
+      // Never redirects on error because backend now returns 400, not 401.
+      const message =
+        err?.response?.data?.error ??
+        err?.response?.data?.message ??
+        'Failed to delete account. Please try again.';
+      setStatus({ type: 'error', message });
+      // Reset password field so user can re-enter cleanly
+      setDeletePassword('');
     },
   });
 
