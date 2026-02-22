@@ -41,10 +41,18 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
     if (error.response?.status === 401) {
-      // Clear token and redirect to login
-      if (typeof window !== 'undefined') {
+      const url = (error.config as any)?.url ?? '';
+      // Do NOT redirect for account-deletion endpoint — a wrong confirmation
+      // password returns 400 from the backend, but guard here too so that
+      // any future change to that route never accidentally logs the user out
+      // while they are still on the page trying to type the right password.
+      const isAccountDeletion = url.includes('/users/account');
+
+      if (!isAccountDeletion && typeof window !== 'undefined') {
+        // Real session expiry — clear stored credentials and send to login
         localStorage.removeItem('token');
         localStorage.removeItem('user');
+        localStorage.removeItem('auth-storage');
         window.location.href = '/login';
       }
     }
