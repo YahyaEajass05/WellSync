@@ -3,6 +3,7 @@ WellSync AI API
 FastAPI endpoints for Mental Wellness and Academic Impact predictions
 """
 
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -29,13 +30,50 @@ from ai.utils.validators import (
     ModelInfo
 )
 
+# Initialize model loaders (lazy loading)
+mental_wellness_predictor = None
+academic_impact_predictor = None
+stress_prediction_predictor = None
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Load models on startup using modern lifespan handler"""
+    global mental_wellness_predictor, academic_impact_predictor, stress_prediction_predictor
+
+    try:
+        print("\nLoading Mental Wellness Model...")
+        mental_wellness_predictor = MentalWellnessPredictor()
+        print("Mental Wellness Model Loaded")
+
+        print("\nLoading Academic Impact Model...")
+        academic_impact_predictor = AcademicImpactPredictor()
+        print("Academic Impact Model Loaded")
+
+        print("\nLoading Stress Prediction Model...")
+        try:
+            stress_prediction_predictor = StressPredictionPredictor()
+            print("Stress Prediction Model Loaded")
+        except FileNotFoundError:
+            print("Stress Prediction Model not found (run training first)")
+
+        print("\nAll available models loaded successfully!\n")
+    except Exception as e:
+        print(f"\nError loading models: {e}\n")
+
+    yield  # Application runs here
+
+    print("\nShutting down WellSync AI API...")
+
+
 # Initialize FastAPI app
 app = FastAPI(
     title="WellSync AI API",
     description="Dual Machine Learning System for Mental Wellness and Academic Impact Prediction",
     version="1.0.0",
     docs_url="/docs",
-    redoc_url="/redoc"
+    redoc_url="/redoc",
+    lifespan=lifespan
 )
 
 # CORS middleware
@@ -46,37 +84,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Initialize model loaders (lazy loading)
-mental_wellness_predictor = None
-academic_impact_predictor = None
-stress_prediction_predictor = None
-
-
-@app.on_event("startup")
-async def startup_event():
-    """Load models on startup"""
-    global mental_wellness_predictor, academic_impact_predictor, stress_prediction_predictor
-    
-    try:
-        print("\n🚀 Loading Mental Wellness Model...")
-        mental_wellness_predictor = MentalWellnessPredictor()
-        print("✅ Mental Wellness Model Loaded")
-        
-        print("\n🚀 Loading Academic Impact Model...")
-        academic_impact_predictor = AcademicImpactPredictor()
-        print("✅ Academic Impact Model Loaded")
-        
-        print("\n🚀 Loading Stress Prediction Model...")
-        try:
-            stress_prediction_predictor = StressPredictionPredictor()
-            print("✅ Stress Prediction Model Loaded")
-        except FileNotFoundError:
-            print("⚠️  Stress Prediction Model not found (run training first)")
-        
-        print("\n✅ All available models loaded successfully!\n")
-    except Exception as e:
-        print(f"\n❌ Error loading models: {e}\n")
 
 
 @app.get("/", tags=["Root"])
@@ -175,7 +182,7 @@ async def predict_mental_wellness(input_data: MentalWellnessInput):
             )
         
         # Convert input to dict
-        input_dict = input_data.dict()
+        input_dict = input_data.model_dump()
         
         # Make prediction
         result = mental_wellness_predictor.predict(input_dict)
@@ -218,7 +225,7 @@ async def predict_academic_impact(input_data: AcademicImpactInput):
             )
         
         # Convert input to dict
-        input_dict = input_data.dict()
+        input_dict = input_data.model_dump()
         
         # Make prediction
         result = academic_impact_predictor.predict(input_dict)
@@ -308,7 +315,7 @@ async def predict_stress_level(input_data: StressPredictionInput):
             )
         
         # Convert input to dict
-        input_dict = input_data.dict()
+        input_dict = input_data.model_dump()
         
         # Make prediction
         result = stress_prediction_predictor.predict(input_dict)
