@@ -34,15 +34,20 @@ export function useAuth() {
   const registerMutation = useMutation({
     mutationFn: (data: RegisterData) => authApi.register(data),
     onSuccess: (data) => {
-      setToken(data.token);
-      setUser(data.user);
-      localStorage.setItem('token', data.token);
+      // ── IMPORTANT: Do NOT set the auth token or cookie here. ──────────────
+      // Setting the token cookie after registration causes the Next.js
+      // middleware to treat the user as authenticated. When verify-email
+      // redirects to /login?verified=true, the middleware intercepts /login
+      // (a guestOnlyRoute) and redirects straight to /dashboard — skipping
+      // the login step entirely and ignoring the ?verified=true banner.
+      //
+      // Correct flow: Register → Verify Email → Login → Dashboard
+      //
+      // We only store the user email in localStorage so the verify-email page
+      // can read it and pre-fill / send the API request with the right email.
+      localStorage.setItem('pending-verification-email', data.user?.email ?? '');
       localStorage.setItem('user', JSON.stringify(data.user));
-      // Set cookies so middleware can read auth state on the server edge
-      const maxAge = 7 * 24 * 60 * 60;
-      document.cookie = `token=${data.token}; path=/; max-age=${maxAge}; SameSite=Lax`;
-      document.cookie = `user_role=${data.user.role || 'user'}; path=/; max-age=${maxAge}; SameSite=Lax`;
-      toast.success('Account created successfully! Please verify your email.');
+      toast.success('Account created! Please check your email for the verification code.');
       router.push('/verify-email');
     },
     onError: (error: any) => {
