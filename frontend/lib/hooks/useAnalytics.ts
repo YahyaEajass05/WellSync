@@ -23,7 +23,17 @@ export function useAnalytics() {
     },
   });
 
-  const useWeeklyAnalytics = () => useQuery({
+  return {
+    insights: insightsQuery.data,
+    isLoadingInsights: insightsQuery.isLoading,
+    insightsError: insightsQuery.error,
+    generateAnalytics: generateMutation.mutate,
+    isGenerating: generateMutation.isPending,
+  };
+}
+
+export function useWeeklyAnalytics() {
+  return useQuery({
     queryKey: ['analytics', 'weekly'],
     queryFn: async () => {
       await axios.post('/analytics/generate', { period: 'weekly' });
@@ -32,8 +42,10 @@ export function useAnalytics() {
     },
     refetchOnWindowFocus: false,
   });
+}
 
-  const useMonthlyAnalytics = () => useQuery({
+export function useMonthlyAnalytics() {
+  return useQuery({
     queryKey: ['analytics', 'monthly'],
     queryFn: async () => {
       await axios.post('/analytics/generate', { period: 'monthly' });
@@ -42,14 +54,4 @@ export function useAnalytics() {
     },
     refetchOnWindowFocus: false,
   });
-
-  return {
-    insights: insightsQuery.data,
-    isLoadingInsights: insightsQuery.isLoading,
-    insightsError: insightsQuery.error,
-    generateAnalytics: generateMutation.mutate,
-    isGenerating: generateMutation.isPending,
-    useWeeklyAnalytics,
-    useMonthlyAnalytics,
-  };
 }

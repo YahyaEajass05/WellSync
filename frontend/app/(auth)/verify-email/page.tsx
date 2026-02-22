@@ -109,7 +109,6 @@ export default function VerifyEmailPage() {
       }, 2000);
     } catch (error: any) {
       setVerificationStatus('error');
-      console.error('Verification error:', error.response?.data); // Debug logging
       const errorMessage =
         error.response?.data?.message ||
         error.response?.data?.error ||

@@ -140,6 +140,10 @@ export interface DashboardStats {
     count: number;
     averagePrediction: number;
   };
+  stressLevel: {
+    count: number;
+    averagePrediction: number;
+  };
   academicImpact: {
     count: number;
     averagePrediction: number;
@@ -159,6 +163,12 @@ export interface DashboardData {
     mentalWellness?: {
       score: number;
       interpretation: string;
+      date: string;
+    };
+    stressLevel?: {
+      score: number;
+      interpretation: string;
+      stressCategory?: string;
       date: string;
     };
     academicImpact?: {

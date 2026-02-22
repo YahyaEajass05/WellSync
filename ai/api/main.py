@@ -3,6 +3,7 @@ WellSync AI API
 FastAPI endpoints for Mental Wellness and Academic Impact predictions
 """
 
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -29,54 +30,65 @@ from ai.utils.validators import (
     ModelInfo
 )
 
-# Initialize FastAPI app
-app = FastAPI(
-    title="WellSync AI API",
-    description="Dual Machine Learning System for Mental Wellness and Academic Impact Prediction",
-    version="1.0.0",
-    docs_url="/docs",
-    redoc_url="/redoc"
-)
-
-# CORS middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # In production, specify exact origins
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
 # Initialize model loaders (lazy loading)
 mental_wellness_predictor = None
 academic_impact_predictor = None
 stress_prediction_predictor = None
 
 
-@app.on_event("startup")
-async def startup_event():
-    """Load models on startup"""
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Load models on startup using modern lifespan handler"""
     global mental_wellness_predictor, academic_impact_predictor, stress_prediction_predictor
-    
+
     try:
-        print("\n🚀 Loading Mental Wellness Model...")
+        print("\nLoading Mental Wellness Model...")
         mental_wellness_predictor = MentalWellnessPredictor()
-        print("✅ Mental Wellness Model Loaded")
-        
-        print("\n🚀 Loading Academic Impact Model...")
+        print("Mental Wellness Model Loaded")
+
+        print("\nLoading Academic Impact Model...")
         academic_impact_predictor = AcademicImpactPredictor()
-        print("✅ Academic Impact Model Loaded")
-        
-        print("\n🚀 Loading Stress Prediction Model...")
+        print("Academic Impact Model Loaded")
+
+        print("\nLoading Stress Prediction Model...")
         try:
             stress_prediction_predictor = StressPredictionPredictor()
-            print("✅ Stress Prediction Model Loaded")
+            print("Stress Prediction Model Loaded")
         except FileNotFoundError:
-            print("⚠️  Stress Prediction Model not found (run training first)")
-        
-        print("\n✅ All available models loaded successfully!\n")
+            print("Stress Prediction Model not found (run training first)")
+
+        print("\nAll available models loaded successfully!\n")
     except Exception as e:
-        print(f"\n❌ Error loading models: {e}\n")
+        print(f"\nError loading models: {e}\n")
+
+    yield  # Application runs here
+
+    print("\nShutting down WellSync AI API...")
+
+
+# Initialize FastAPI app
+app = FastAPI(
+    title="WellSync AI API",
+    description="Dual Machine Learning System for Mental Wellness and Academic Impact Prediction",
+    version="1.0.0",
+    docs_url="/docs",
+    redoc_url="/redoc",
+    lifespan=lifespan
+)
+
+# CORS middleware
+# In production set ALLOWED_ORIGINS env var to a comma-separated list of
+# allowed frontend origins, e.g. "https://wellsync.example.com"
+_raw_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000,http://localhost:3001")
+_allowed_origins = [o.strip() for o in _raw_origins.split(",") if o.strip()]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=_allowed_origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type", "Authorization"],
+)
 
 
 @app.get("/", tags=["Root"])
@@ -175,7 +187,7 @@ async def predict_mental_wellness(input_data: MentalWellnessInput):
             )
         
         # Convert input to dict
-        input_dict = input_data.dict()
+        input_dict = input_data.model_dump()
         
         # Make prediction
         result = mental_wellness_predictor.predict(input_dict)
@@ -218,7 +230,7 @@ async def predict_academic_impact(input_data: AcademicImpactInput):
             )
         
         # Convert input to dict
-        input_dict = input_data.dict()
+        input_dict = input_data.model_dump()
         
         # Make prediction
         result = academic_impact_predictor.predict(input_dict)
@@ -304,11 +316,11 @@ async def predict_stress_level(input_data: StressPredictionInput):
         if not stress_prediction_predictor:
             raise HTTPException(
                 status_code=503, 
-                detail="Stress Prediction model not loaded. Please run training first: ./run_stress_train.ps1"
+                detail="Stress Prediction model not loaded. Please run the stress model training script first."
             )
         
         # Convert input to dict
-        input_dict = input_data.dict()
+        input_dict = input_data.model_dump()
         
         # Make prediction
         result = stress_prediction_predictor.predict(input_dict)
@@ -345,13 +357,14 @@ async def get_stress_prediction_example():
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request, exc):
-    """Global exception handler"""
+    """Global exception handler - never expose internal details in production"""
+    import logging
+    logging.getLogger("wellsync.ai").error(f"Unhandled exception: {exc}", exc_info=True)
     return JSONResponse(
         status_code=500,
         content={
-            "error": "Internal server error",
-            "detail": str(exc),
-            "type": type(exc).__name__
+            "success": False,
+            "error": "An internal server error occurred. Please try again later.",
         }
     )
 
