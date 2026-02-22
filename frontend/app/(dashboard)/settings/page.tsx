@@ -555,43 +555,62 @@ function NotificationsTab() {
 
 // ── Danger Zone Tab ───────────────────────────────────────────────────────────
 function DangerTab() {
-  const router = useRouter();
   const { logout } = useAuthStore();
   const [deletePassword, setDeletePassword] = useState('');
   const [showDeletePw, setShowDeletePw] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState('');
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showDeactivateDialog, setShowDeactivateDialog] = useState(false);
-  const [status, setStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [deactivateError, setDeactivateError] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isDeactivating, setIsDeactivating] = useState(false);
 
-  const { mutate: deactivate, isPending: deactivating } = useMutation({
-    mutationFn: settingsApi.deactivateAccount,
-    onSuccess: () => {
+  // ── Delete Account ────────────────────────────────────────────────────────
+  // We use manual fetch instead of useMutation so that we fully control the
+  // sequence: show error FIRST, then (only on success) clear auth and redirect.
+  // useMutation + logout() caused the dashboard auth-guard to fire before the
+  // error state could be rendered, resulting in a silent redirect.
+  const handleDeleteAccount = async () => {
+    if (!deletePassword) return;
+    setIsDeleting(true);
+    setDeleteError(null);
+    try {
+      await settingsApi.deleteAccount(deletePassword);
+      // ✅ Success — clear auth then hard-redirect (bypasses Next.js router
+      // so the dashboard layout auth-guard never sees an unauthenticated state
+      // and flashes the dashboard before /login loads).
       logout();
-      router.push('/login');
-    },
-    onError: () => setStatus({ type: 'error', message: 'Failed to deactivate account.' }),
-  });
-
-  const { mutate: deleteAcc, isPending: deleting } = useMutation({
-    mutationFn: () => settingsApi.deleteAccount(deletePassword),
-    onSuccess: () => {
-      logout();
-      router.push('/login');
-    },
-    onError: (err: any) => {
-      // Extract error message — backend sends { success: false, error: '...' }
-      // for password mismatch (400) and other validation errors.
-      // Never redirects on error because backend now returns 400, not 401.
+      window.location.replace('/login');
+    } catch (err: any) {
+      // ❌ Error — show message inline, stay on page
       const message =
         err?.response?.data?.error ??
         err?.response?.data?.message ??
-        'Failed to delete account. Please try again.';
-      setStatus({ type: 'error', message });
-      // Reset password field so user can re-enter cleanly
+        'Failed to delete account. Please check your password and try again.';
+      setDeleteError(message);
       setDeletePassword('');
-    },
-  });
+      setIsDeleting(false);
+    }
+  };
+
+  // ── Deactivate Account ────────────────────────────────────────────────────
+  const handleDeactivate = async () => {
+    setIsDeactivating(true);
+    setDeactivateError(null);
+    try {
+      await settingsApi.deactivateAccount();
+      logout();
+      window.location.replace('/login');
+    } catch (err: any) {
+      const message =
+        err?.response?.data?.error ??
+        err?.response?.data?.message ??
+        'Failed to deactivate account. Please try again.';
+      setDeactivateError(message);
+      setIsDeactivating(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -618,10 +637,13 @@ function DangerTab() {
           ) : (
             <div className="rounded-lg border border-yellow-300 bg-yellow-50 dark:bg-yellow-900/10 p-4 space-y-3">
               <p className="text-sm font-medium text-yellow-800 dark:text-yellow-400">Are you sure you want to deactivate your account?</p>
+              {deactivateError && (
+                <Alert type="error" message={deactivateError} />
+              )}
               <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={() => setShowDeactivateDialog(false)}>Cancel</Button>
-                <Button size="sm" className="bg-yellow-600 hover:bg-yellow-700 text-white" onClick={() => deactivate()} disabled={deactivating}>
-                  {deactivating ? 'Deactivating...' : 'Yes, Deactivate'}
+                <Button variant="outline" size="sm" onClick={() => { setShowDeactivateDialog(false); setDeactivateError(null); }}>Cancel</Button>
+                <Button size="sm" className="bg-yellow-600 hover:bg-yellow-700 text-white" onClick={handleDeactivate} disabled={isDeactivating}>
+                  {isDeactivating ? 'Deactivating...' : 'Yes, Deactivate'}
                 </Button>
               </div>
             </div>
@@ -648,25 +670,38 @@ function DangerTab() {
               <p className="text-sm font-medium text-destructive">This action is permanent and cannot be undone.</p>
               <div className="space-y-1.5">
                 <Label htmlFor="confirmText">Type <strong>DELETE</strong> to confirm</Label>
-                <Input id="confirmText" placeholder="DELETE" value={confirmDelete} onChange={e => setConfirmDelete(e.target.value)} />
+                <Input id="confirmText" placeholder="DELETE" value={confirmDelete} onChange={e => { setConfirmDelete(e.target.value); setDeleteError(null); }} />
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="deletePw">Enter your password</Label>
                 <div className="relative">
-                  <Input id="deletePw" type={showDeletePw ? 'text' : 'password'} placeholder="Your current password"
-                    value={deletePassword} onChange={e => setDeletePassword(e.target.value)} />
+                  <Input
+                    id="deletePw"
+                    type={showDeletePw ? 'text' : 'password'}
+                    placeholder="Your current password"
+                    value={deletePassword}
+                    onChange={e => { setDeletePassword(e.target.value); setDeleteError(null); }}
+                    className={deleteError ? 'border-destructive focus-visible:ring-destructive' : ''}
+                  />
                   <button type="button" onClick={() => setShowDeletePw(v => !v)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
                     {showDeletePw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 </div>
               </div>
-              {status && <Alert type={status.type} message={status.message} />}
+              {/* Error message — shown here when password is wrong or request fails */}
+              {deleteError && (
+                <Alert type="error" message={deleteError} />
+              )}
               <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={() => { setShowDeleteDialog(false); setConfirmDelete(''); setDeletePassword(''); setStatus(null); }}>Cancel</Button>
-                <Button variant="destructive" size="sm" disabled={confirmDelete !== 'DELETE' || !deletePassword || deleting}
-                  onClick={() => deleteAcc()}>
-                  {deleting ? 'Deleting...' : 'Permanently Delete'}
+                <Button variant="outline" size="sm" onClick={() => { setShowDeleteDialog(false); setConfirmDelete(''); setDeletePassword(''); setDeleteError(null); }}>Cancel</Button>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  disabled={confirmDelete !== 'DELETE' || !deletePassword || isDeleting}
+                  onClick={handleDeleteAccount}
+                >
+                  {isDeleting ? 'Deleting...' : 'Permanently Delete'}
                 </Button>
               </div>
             </div>
