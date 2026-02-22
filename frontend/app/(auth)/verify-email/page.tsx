@@ -51,9 +51,15 @@ export default function VerifyEmailPage() {
     resolver: zodResolver(verifySchema),
   });
 
-  // Get user email from localStorage
+  // Get user email from localStorage — try pending-verification-email first
+  // (set by register without token), fall back to user object for backward compat
   useEffect(() => {
     if (typeof window !== 'undefined') {
+      const pendingEmail = localStorage.getItem('pending-verification-email');
+      if (pendingEmail) {
+        setUserEmail(pendingEmail);
+        return;
+      }
       const storedUser = localStorage.getItem('user');
       if (storedUser) {
         try {
@@ -89,21 +95,30 @@ export default function VerifyEmailPage() {
     setVerificationStatus('idle');
 
     try {
-      // Get user email from localStorage
-      let userEmail = '';
+      // Get email — prefer pending-verification-email (no token flow)
+      let email = '';
       if (typeof window !== 'undefined') {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-          const user = JSON.parse(storedUser);
-          userEmail = user.email;
+        email = localStorage.getItem('pending-verification-email') ?? '';
+        if (!email) {
+          const storedUser = localStorage.getItem('user');
+          if (storedUser) {
+            try { email = JSON.parse(storedUser).email ?? ''; } catch {}
+          }
         }
       }
 
-      await authApi.verifyEmail(data.code, userEmail);
+      await authApi.verifyEmail(data.code, email);
       setVerificationStatus('success');
       toast.success('Email verified successfully!');
 
-      // Redirect to login after 2 seconds
+      // Clean up pending state — no longer needed after verification
+      localStorage.removeItem('pending-verification-email');
+      localStorage.removeItem('user');
+
+      // Redirect to login with ?verified=true banner after 2 seconds.
+      // Because no token cookie was set during registration, the middleware
+      // will NOT intercept /login and redirect to dashboard — the user will
+      // see the login page with the success banner as expected.
       setTimeout(() => {
         router.push('/login?verified=true');
       }, 2000);
