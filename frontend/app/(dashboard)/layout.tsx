@@ -16,6 +16,13 @@ export default function DashboardLayout({
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
+    // If the page is in the middle of a hard navigation (e.g. account deletion
+    // calling window.location.replace) do nothing — the browser is already
+    // leaving. Without this guard the auth-guard fires router.replace('/login')
+    // which races with window.location.replace('/login?deleted=true') and
+    // strips the query param, removing the success banner.
+    if (typeof window !== 'undefined' && window.__wellsync_deleting) return;
+
     // Check both Zustand store and localStorage for token
     const token =
       localStorage.getItem('token') ||
