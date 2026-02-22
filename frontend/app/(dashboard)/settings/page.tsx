@@ -567,29 +567,69 @@ function DangerTab() {
   const [isDeactivating, setIsDeactivating] = useState(false);
 
   // ── Delete Account ────────────────────────────────────────────────────────
-  // We use manual fetch instead of useMutation so that we fully control the
-  // sequence: show error FIRST, then (only on success) clear auth and redirect.
-  // useMutation + logout() caused the dashboard auth-guard to fire before the
-  // error state could be rendered, resulting in a silent redirect.
+  // IMPORTANT: We bypass axios entirely and use native fetch() here.
+  // Reason: calling logout() before redirect causes the dashboard layout's
+  // useEffect (which watches isAuthenticated) to fire router.replace('/login')
+  // which races with and overrides our window.location.replace('/login?deleted=true').
+  // By using fetch() we can check the response, and ONLY on success we wipe
+  // localStorage synchronously and immediately call window.location.replace
+  // before React gets a chance to re-render the layout.
   const handleDeleteAccount = async () => {
     if (!deletePassword) return;
     setIsDeleting(true);
     setDeleteError(null);
+
     try {
-      await settingsApi.deleteAccount(deletePassword);
-      // ✅ Success — clear auth then hard-redirect with ?deleted=true so the
-      // login page shows a success banner. We use window.location.replace
-      // (not router.push) to fully bypass Next.js router and the dashboard
-      // layout auth-guard, preventing any dashboard flash before /login loads.
-      logout();
+      // Get token directly from localStorage (same way axios-instance does it)
+      let token = localStorage.getItem('token');
+      if (!token) {
+        try {
+          const s = localStorage.getItem('auth-storage');
+          if (s) token = JSON.parse(s)?.state?.token ?? null;
+        } catch {}
+      }
+
+      const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+
+      const res = await fetch(`${API_BASE}/users/account`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ password: deletePassword }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        // ❌ Error — show message inline, stay on page
+        const message =
+          data?.error ??
+          data?.message ??
+          'Failed to delete account. Please check your password and try again.';
+        setDeleteError(message);
+        setDeletePassword('');
+        setIsDeleting(false);
+        return;
+      }
+
+      // ✅ Success — set deletion flag FIRST so the dashboard layout
+      // auth-guard useEffect skips its router.replace('/login') call,
+      // then wipe storage, then hard-redirect with the ?deleted=true param.
+      (window as any).__wellsync_deleting = true;
+      localStorage.removeItem('token');
+      localStorage.removeItem('auth-storage');
+      localStorage.removeItem('user');
+      sessionStorage.clear();
+
+      // Hard redirect — browser navigates away before React can re-render.
+      // window.location.replace is used (not router.push) so the browser
+      // fully unloads the current page and cannot go back.
       window.location.replace('/login?deleted=true');
-    } catch (err: any) {
-      // ❌ Error — show message inline, stay on page
-      const message =
-        err?.response?.data?.error ??
-        err?.response?.data?.message ??
-        'Failed to delete account. Please check your password and try again.';
-      setDeleteError(message);
+
+    } catch {
+      setDeleteError('Network error. Please check your connection and try again.');
       setDeletePassword('');
       setIsDeleting(false);
     }
