@@ -13,13 +13,18 @@ export const ROUTES = {
   RESET_PASSWORD: '/reset-password',
   DASHBOARD: '/dashboard',
   PREDICTIONS: '/predictions',
-  PREDICTIONS_NEW: '/predictions/new',
+  PREDICTIONS_NEW: '/predictions/new', // /app/(dashboard)/predictions/new/page.tsx
   PREDICTIONS_MENTAL_WELLNESS: '/predictions/mental-wellness',
   PREDICTIONS_ACADEMIC: '/predictions/academic',
   PREDICTIONS_STRESS: '/predictions/stress',
   ANALYTICS: '/analytics',
   PROFILE: '/profile',
   SETTINGS: '/settings',
+  ADMIN: '/admin',
+  ADMIN_PREDICTIONS: '/admin/predictions',
+  ADMIN_BROADCAST: '/admin/broadcast',
+  ADMIN_STATS: '/admin/stats',
+  ADMIN_USER_DETAILS: (id: string) => `/admin/users/${id}`,
 } as const;
 
 export const PREDICTION_TYPES = {

@@ -50,21 +50,11 @@ export default function ForgotPasswordPage() {
     setIsSubmitting(true);
 
     try {
-      console.log('Sending forgot password request for:', data.email);
       await authApi.forgotPassword(data.email);
-      console.log('Forgot password request successful');
       setEmailSent(true);
       setSubmittedEmail(data.email);
       toast.success('Password reset code sent to your email!');
     } catch (error: any) {
-      console.error('Forgot password error details:', {
-        status: error.response?.status,
-        statusText: error.response?.statusText,
-        data: error.response?.data,
-        message: error.message,
-        fullError: error
-      });
-      
       const errorMessage =
         error.response?.data?.message ||
         error.response?.data?.error ||
