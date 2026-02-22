@@ -408,20 +408,45 @@ export default function SystemStatsPage() {
           </CardHeader>
           <CardContent>
             {userStatusData.length === 0 ? (
-              <div className="h-[260px] flex items-center justify-center text-muted-foreground">No user data</div>
+              <div className="h-[220px] flex items-center justify-center text-muted-foreground">No user data</div>
             ) : (
-              <ResponsiveContainer width="100%" height={260}>
-                <PieChart>
-                  <Pie data={userStatusData} cx="50%" cy="50%" outerRadius={90} dataKey="value" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine>
-                    {userStatusData.map((entry, i) => <Cell key={i} fill={entry.fill} />)}
-                  </Pie>
-                  <Tooltip
-                    contentStyle={{ backgroundColor: 'hsl(var(--background))', border: '1px solid hsl(var(--border))', borderRadius: '6px', color: 'hsl(var(--foreground))' }}
-                    formatter={(v: number) => [v, 'Users']}
-                  />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
+              <>
+                <ResponsiveContainer width="100%" height={200}>
+                  <PieChart>
+                    <Pie
+                      data={userStatusData}
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={80}
+                      innerRadius={40}
+                      dataKey="value"
+                      labelLine={false}
+                    >
+                      {userStatusData.map((entry, i) => <Cell key={i} fill={entry.fill} />)}
+                    </Pie>
+                    <Tooltip
+                      contentStyle={{ backgroundColor: 'hsl(var(--background))', border: '1px solid hsl(var(--border))', borderRadius: '6px', color: 'hsl(var(--foreground))' }}
+                      formatter={(v: number, name: string) => [v, name]}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+                {/* Custom legend — keeps labels inside the card */}
+                <div className="space-y-2 mt-2">
+                  {userStatusData.map((entry) => {
+                    const total = userStatusData.reduce((s, d) => s + d.value, 0);
+                    const pct = total > 0 ? Math.round((entry.value / total) * 100) : 0;
+                    return (
+                      <div key={entry.name} className="flex items-center justify-between text-sm">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="shrink-0 h-3 w-3 rounded-full" style={{ backgroundColor: entry.fill }} />
+                          <span className="truncate text-muted-foreground">{entry.name}</span>
+                        </div>
+                        <span className="ml-2 font-semibold shrink-0">{entry.value} ({pct}%)</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
             )}
           </CardContent>
         </Card>
