@@ -78,6 +78,12 @@ exports.getAdminDashboard = asyncHandler(async (req, res) => {
         { $group: { _id: null, avg: { $avg: '$result.prediction' } } }
     ]);
 
+    // Average stress level score (numeric score 0-100)
+    const avgStressLevel = await Prediction.aggregate([
+        { $match: { predictionType: 'stress_level' } },
+        { $group: { _id: null, avg: { $avg: '$result.stressScore' } } }
+    ]);
+
     // Get wellness trend data for charts (last 30 days)
     const wellnessTrend = await Prediction.aggregate([
         {
@@ -146,6 +152,7 @@ exports.getAdminDashboard = asyncHandler(async (req, res) => {
                 academicImpact: academicImpactPredictions,
                 recentLastWeek: recentPredictions,
                 avgMentalWellnessScore: avgMentalWellness[0]?.avg?.toFixed(1) || 'N/A',
+                avgStressLevel: avgStressLevel[0]?.avg?.toFixed(1) || 'N/A',
                 avgAcademicImpactScore: avgAcademicImpact[0]?.avg?.toFixed(1) || 'N/A'
             },
             trends: {
