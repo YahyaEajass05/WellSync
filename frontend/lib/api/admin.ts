@@ -30,7 +30,7 @@ export interface AdminAnalytics {
     academicImpact: number;
     recentLastWeek: number;
     avgMentalWellnessScore: string;
-    avgStressLevel: string;
+    avgStressLevel: string;    // avg numeric stress score (0-100)
     avgAcademicImpactScore: string;
   };
   trends: {
