@@ -1,9 +1,8 @@
 # Dependencies
 node_modules/
-package-lock.json
+# Note: package-lock.json is tracked at the repo root level for reproducible installs
 
-# Documentation and Script Files (exclude from repository)
-*.md
+# Script Files
 *.ps1
 
 # Environment variables

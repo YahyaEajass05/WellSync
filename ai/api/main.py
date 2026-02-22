@@ -77,12 +77,17 @@ app = FastAPI(
 )
 
 # CORS middleware
+# In production set ALLOWED_ORIGINS env var to a comma-separated list of
+# allowed frontend origins, e.g. "https://wellsync.example.com"
+_raw_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000,http://localhost:3001")
+_allowed_origins = [o.strip() for o in _raw_origins.split(",") if o.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, specify exact origins
+    allow_origins=_allowed_origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type", "Authorization"],
 )
 
 
@@ -311,7 +316,7 @@ async def predict_stress_level(input_data: StressPredictionInput):
         if not stress_prediction_predictor:
             raise HTTPException(
                 status_code=503, 
-                detail="Stress Prediction model not loaded. Please run training first: ./run_stress_train.ps1"
+                detail="Stress Prediction model not loaded. Please run the stress model training script first."
             )
         
         # Convert input to dict
@@ -352,13 +357,14 @@ async def get_stress_prediction_example():
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request, exc):
-    """Global exception handler"""
+    """Global exception handler - never expose internal details in production"""
+    import logging
+    logging.getLogger("wellsync.ai").error(f"Unhandled exception: {exc}", exc_info=True)
     return JSONResponse(
         status_code=500,
         content={
-            "error": "Internal server error",
-            "detail": str(exc),
-            "type": type(exc).__name__
+            "success": False,
+            "error": "An internal server error occurred. Please try again later.",
         }
     )
 
