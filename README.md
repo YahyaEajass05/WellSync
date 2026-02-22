@@ -5,11 +5,18 @@
 ### AI-Powered Mental Wellness & Academic Performance Prediction System
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.1.6-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-≥16.0.0-green?style=for-the-badge&logo=node.js)](https://nodejs.org/)
-[![Python](https://img.shields.io/badge/Python-3.8+-blue?style=for-the-badge&logo=python)](https://python.org/)
-[![MongoDB](https://img.shields.io/badge/MongoDB-8.0-green?style=for-the-badge&logo=mongodb)](https://mongodb.com/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-teal?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
-[![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
+[![Node.js](https://img.shields.io/badge/Node.js-≥16.0.0-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-8.0-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://mongodb.com/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Express.js](https://img.shields.io/badge/Express.js-4.18-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com/)
+[![scikit-learn](https://img.shields.io/badge/scikit--learn-1.3+-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
+[![Jest](https://img.shields.io/badge/Jest-220_Tests_Passing-C21325?style=for-the-badge&logo=jest&logoColor=white)](https://jestjs.io/)
+[![GitHub](https://img.shields.io/badge/GitHub-WellSync-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/YahyaEajass05/WellSync)
+[![Build](https://img.shields.io/badge/Build-Passing-brightgreen?style=for-the-badge&logo=github-actions&logoColor=white)]()
+[![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen?style=for-the-badge&logo=github)](https://github.com/YahyaEajass05/WellSync/pulls)
 
 **WellSync** is a full-stack AI-powered digital health platform designed for students and educational institutions. It uses machine learning to predict mental wellness scores, stress levels, and academic impact based on lifestyle factors including screen time, sleep quality, physical activity, and social media usage patterns.
 
@@ -37,6 +44,8 @@
 - [Testing](#-testing)
 - [Deployment](#-deployment)
 - [Contributing](#-contributing)
+- [Troubleshooting](#-troubleshooting)
+- [Performance](#-performance)
 
 ---
 
@@ -48,12 +57,14 @@ WellSync is built as a three-tier application addressing the growing need for st
 
 - **3 AI Prediction Models** — Mental Wellness (R² = 0.943), Stress Level (R² = 0.837), Academic Impact (R² = 0.990)
 - **< 200ms Inference** — FastAPI-powered prediction service
+- **220 Backend Tests Passing** — 8 Jest test suites covering auth, users, predictions, admin, analytics, notifications, middleware & integration
 - **7 Email Templates** — Beautiful HTML emails for all lifecycle events
 - **Automated Weekly Reports** — node-cron powered weekly wellness summaries
 - **Role-Based Access** — User and Admin roles with full admin dashboard
 - **Dark/Light Mode** — Full theme support via next-themes
 - **3D Animated UI** — React Three Fiber background on auth pages
 - **Export Functionality** — JSON and CSV export of all user data
+- **Production Branch** — Hardened for deployment with restricted CORS, TypeScript enforcement, and secure error handling
 
 ---
 
@@ -863,27 +874,78 @@ The `weeklyEmailService.js` runs automatically via `scheduledTasks.js` every wee
 
 ## 🧪 Testing
 
-### Backend Tests
+### Backend Test Suite — 220 Tests Passing ✅
+
+All backend tests use **mocked dependencies** (MongoDB, email service, AI service, rate limiters) — no real database or network required.
+
+#### Run All Tests
 ```bash
 cd backend
-npm test              # Run Jest test suite with coverage
-npm run test:watch    # Watch mode
-node tests/test-backend.js  # Integration tests
+npm test                          # Full suite (220 tests, 8 suites)
+npm test -- --coverage            # With detailed coverage report
+npm run test:watch                # Watch mode (re-runs on file save)
 ```
+
+#### Run Individual Test Suites
+```bash
+# Auth tests (50 tests) — register, login, verify email, forgot/reset password
+npx jest --testPathPattern=auth.test.js --no-coverage --forceExit --verbose
+
+# User controller tests (26 tests) — dashboard, profile, account deletion
+npx jest --testPathPattern=user.test.js --no-coverage --forceExit --verbose
+
+# Prediction API tests (31 tests) — all 3 prediction types, CRUD
+npx jest --testPathPattern=prediction.test.js --no-coverage --forceExit --verbose
+
+# Admin API tests (25 tests) — user management, roles, status, broadcast
+npx jest --testPathPattern=admin.test.js --no-coverage --forceExit --verbose
+
+# Analytics tests (15 tests) — period analytics, insights, compare
+npx jest --testPathPattern=analytics.test.js --no-coverage --forceExit --verbose
+
+# Notification tests (20 tests) — list, unread count, mark read, delete
+npx jest --testPathPattern=notification.test.js --no-coverage --forceExit --verbose
+
+# Middleware tests (29 tests) — protect, authorize, errorHandler, validator
+npx jest --testPathPattern=middleware.test.js --no-coverage --forceExit --verbose
+
+# Integration tests (24 tests) — end-to-end user journey flows
+npx jest --testPathPattern=integration.test.js --no-coverage --forceExit --verbose
+```
+
+#### Run a Single Test by Name
+```bash
+npx jest --testPathPattern=auth.test.js -t "should register a new user" --no-coverage --forceExit
+```
+
+#### Test Suite Summary
+| Suite | Tests | Coverage |
+|---|---|---|
+| `auth.test.js` | 50 ✅ | register, login, verify-email, forgot/reset-password, change-password, logout |
+| `user.test.js` | 26 ✅ | dashboard stats, profile update, prediction stats, account delete |
+| `prediction.test.js` | 31 ✅ | mental-wellness, stress-level, academic-impact, list, get, delete |
+| `admin.test.js` | 25 ✅ | list users, get user, role change, status toggle, delete, broadcast |
+| `analytics.test.js` | 15 ✅ | insights, generate, period fetch, compare |
+| `notification.test.js` | 20 ✅ | list, unread-count, mark-read, mark-all-read, clear-read, delete |
+| `middleware.test.js` | 29 ✅ | protect JWT, authorize roles, errorHandler, validator chains |
+| `integration.test.js` | 24 ✅ | full user journeys: register→predict→dashboard, password reset, admin flows |
+| **Total** | **220 ✅** | |
+
+> **Note:** Console error logs during test runs (e.g. "AI Service is not available") are **expected** — they are Winston logs from intentional error-path test cases. All 220 tests pass.
 
 ### AI Service Tests
 ```bash
 cd ai
 pytest                          # Run all tests
 pytest tests/test_api.py        # Test FastAPI endpoints
-pytest --cov=api tests/         # With coverage
+pytest --cov=api tests/         # With coverage report
 ```
 
 ### Frontend Checks
 ```bash
 cd frontend
-npm run lint    # ESLint
-npm run build   # Production build verification
+npm run lint    # ESLint — enforce code quality
+npm run build   # Production build — TypeScript + Next.js verification
 ```
 
 ---
@@ -954,7 +1016,9 @@ Detailed description if needed
 ### Branches
 | Branch | Purpose |
 |---|---|
-| `main` | Production-ready code |
+| `main` | Production-ready — fully merged, all tests passing |
+| `production` | Pre-production hardening & security hardening |
+| `testing` | Full backend test suite (220 tests, 10 commits) |
 | `Development` | Active development branch |
 | `feature/*` | New features |
 | `bugfix/*` | Bug fixes |
@@ -1025,23 +1089,21 @@ lsof -i :5000 && kill -9 <PID>
 
 ---
 
-## 📄 License
+## 📦 Branch Structure
 
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+| Branch | Purpose | Status |
+|---|---|---|
+| `main` | Production-ready — all branches merged | ✅ Up to date |
+| `production` | Pre-production hardening & security fixes | ✅ Merged into main |
+| `testing` | All 220 backend tests + 10-commit test history | ✅ Merged into main |
+| `Development` | Feature development & bug fixes | ✅ Merged into main |
 
 ---
 
-## 👥 Team & Acknowledgements
+## 📊 Datasets
 
-| Role | Name |
-|---|---|
-| Developer | Yahya Eajass |
-| Project Supervisor | Ms. Upeka Wijeshinghe |
-| Institution | ICBT Campus |
-
-### Datasets
-- **ScreenTime_MentalWellness.csv** — 400 student records with lifestyle metrics and wellness scores
-- **Students_Social_Media_Addiction.csv** — 705 student records with social media and academic data
+- **ScreenTime_MentalWellness.csv** — 400 student records with lifestyle metrics, screen time patterns, and wellness scores (15 columns)
+- **Students_Social_Media_Addiction.csv** — 705 student records with social media usage, academic performance, and mental health data (13 columns)
 
 ---
 
@@ -1051,6 +1113,9 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 
 *WellSync — Sync your mind, sync your life.*
 
-[![GitHub](https://img.shields.io/badge/GitHub-YahyaEajass05-black?style=flat-square&logo=github)](https://github.com/YahyaEajass05/WellSync)
+[![GitHub Stars](https://img.shields.io/github/stars/YahyaEajass05/WellSync?style=social)](https://github.com/YahyaEajass05/WellSync/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/YahyaEajass05/WellSync?style=social)](https://github.com/YahyaEajass05/WellSync/network/members)
+[![GitHub Issues](https://img.shields.io/github/issues/YahyaEajass05/WellSync?style=flat-square)](https://github.com/YahyaEajass05/WellSync/issues)
+[![GitHub](https://img.shields.io/badge/GitHub-YahyaEajass05-181717?style=flat-square&logo=github)](https://github.com/YahyaEajass05/WellSync)
 
 </div>
