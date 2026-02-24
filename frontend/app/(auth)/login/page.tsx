@@ -47,6 +47,7 @@ export default function LoginPage() {
 
   // Check if redirected from email verification, password reset, or account deletion
   useEffect(() => {
+    if (!searchParams) return;
     const verified = searchParams.get('verified');
     const reset = searchParams.get('reset');
     const deleted = searchParams.get('deleted');

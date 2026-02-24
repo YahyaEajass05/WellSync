@@ -85,18 +85,8 @@ function NeuralConnections({ isDark }: { isDark: boolean }) {
   return (
     <lineSegments ref={linesRef}>
       <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={positions.length / 3}
-          array={positions}
-          itemSize={3}
-        />
-        <bufferAttribute
-          attach="attributes-color"
-          count={colors.length / 3}
-          array={colors}
-          itemSize={3}
-        />
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
+        <bufferAttribute attach="attributes-color" args={[colors, 3]} />
       </bufferGeometry>
       <lineBasicMaterial
         vertexColors
@@ -161,18 +151,8 @@ function SignalWaves({ isDark }: { isDark: boolean }) {
   return (
     <points ref={particlesRef}>
       <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={positions.length / 3}
-          array={positions}
-          itemSize={3}
-        />
-        <bufferAttribute
-          attach="attributes-size"
-          count={sizes.length}
-          array={sizes}
-          itemSize={1}
-        />
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
+        <bufferAttribute attach="attributes-size" args={[sizes, 1]} />
       </bufferGeometry>
       <pointsMaterial
         color={isDark ? "#60a5fa" : "#3b82f6"}
@@ -261,18 +241,8 @@ function SynapticParticles({ isDark }: { isDark: boolean }) {
   return (
     <points ref={particlesRef}>
       <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={positions.length / 3}
-          array={positions}
-          itemSize={3}
-        />
-        <bufferAttribute
-          attach="attributes-color"
-          count={colors.length / 3}
-          array={colors}
-          itemSize={3}
-        />
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
+        <bufferAttribute attach="attributes-color" args={[colors, 3]} />
       </bufferGeometry>
       <pointsMaterial
         size={0.05}

@@ -162,13 +162,9 @@ exports.deleteAccount = asyncHandler(async (req, res) => {
     const isMatch = await user.comparePassword(password);
 
     if (!isMatch) {
-        // Use 400 (Bad Request) not 401 — a wrong confirmation password is a
-        // validation error, not a session/authentication failure. Using 401
-        // would trigger the axios interceptor to clear the token and redirect
-        // the user to /login instead of showing the inline error message.
-        return res.status(400).json({
+        return res.status(401).json({
             success: false,
-            error: 'Incorrect password. Please try again.'
+            error: 'Invalid password. Please try again.'
         });
     }
 

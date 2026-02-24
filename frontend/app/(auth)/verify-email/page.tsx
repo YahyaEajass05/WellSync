@@ -74,6 +74,7 @@ export default function VerifyEmailPage() {
 
   // Auto-fill code from URL if present
   useEffect(() => {
+    if (!searchParams) return;
     const code = searchParams.get('code');
     if (code) {
       setValue('code', code);
@@ -231,7 +232,7 @@ export default function VerifyEmailPage() {
               <Button
                 type="submit"
                 className="w-full"
-                disabled={isVerifying || verificationStatus === 'success'}
+                disabled={isVerifying}
               >
                 {isVerifying ? (
                   <>

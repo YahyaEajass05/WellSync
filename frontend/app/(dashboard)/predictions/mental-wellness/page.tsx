@@ -12,14 +12,23 @@ import { useAuthStore } from '@/lib/store/authStore';
 import axios from '@/lib/api/axios-instance';
 import { toast } from 'sonner';
 import { predictionsApi } from '@/lib/api';
-import type { Prediction } from '@/types';
+interface MentalWellnessPredictionResult {
+  _id?: string;
+  id?: string;
+  score: number;
+  interpretation: string;
+  modelUsed: string;
+  recommendations?: string[];
+  createdAt: string;
+  [key: string]: any;
+}
 
 export default function MentalWellnessPredictionPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { user } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
-  const [prediction, setPrediction] = useState<Prediction | null>(null);
+  const [prediction, setPrediction] = useState<MentalWellnessPredictionResult | null>(null);
   const [showRecommendations, setShowRecommendations] = useState(false);
   const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);

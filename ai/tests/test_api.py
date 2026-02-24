@@ -5,6 +5,7 @@ Tests all endpoints and functionality
 
 import pytest
 from fastapi.testclient import TestClient
+from unittest.mock import patch
 import sys
 import os
 
@@ -12,14 +13,25 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 
 from ai.api.main import app
+from .conftest import (
+    make_mock_mental_wellness_predictor,
+    make_mock_academic_predictor,
+    make_mock_stress_predictor,
+)
 
-client = TestClient(app)
+# Use a mocked client so tests don't require trained model files on disk
+@pytest.fixture(scope="module")
+def client():
+    with patch("ai.api.main.mental_wellness_predictor", make_mock_mental_wellness_predictor()), \
+         patch("ai.api.main.academic_impact_predictor", make_mock_academic_predictor()), \
+         patch("ai.api.main.stress_prediction_predictor", make_mock_stress_predictor()):
+        yield TestClient(app)
 
 
 class TestRootEndpoints:
     """Test root and health endpoints"""
     
-    def test_root(self):
+    def test_root(self, client):
         """Test root endpoint"""
         response = client.get("/")
         assert response.status_code == 200
@@ -28,7 +40,7 @@ class TestRootEndpoints:
         assert "version" in data
         assert data["version"] == "1.0.0"
     
-    def test_health_check(self):
+    def test_health_check(self, client):
         """Test health check endpoint"""
         response = client.get("/health")
         assert response.status_code == 200
@@ -40,7 +52,7 @@ class TestRootEndpoints:
 class TestModelEndpoints:
     """Test model information endpoints"""
     
-    def test_models_info(self):
+    def test_models_info(self, client):
         """Test models info endpoint"""
         response = client.get("/models/info")
         assert response.status_code == 200
@@ -48,7 +60,7 @@ class TestModelEndpoints:
         assert "mental_wellness" in data
         assert "academic_impact" in data
     
-    def test_available_models(self):
+    def test_available_models(self, client):
         """Test available models endpoint"""
         response = client.get("/models/available")
         assert response.status_code == 200
@@ -60,7 +72,7 @@ class TestModelEndpoints:
 class TestExampleEndpoints:
     """Test example endpoints"""
     
-    def test_mental_wellness_example(self):
+    def test_mental_wellness_example(self, client):
         """Test mental wellness example endpoint"""
         response = client.get("/examples/mental-wellness")
         assert response.status_code == 200
@@ -71,7 +83,7 @@ class TestExampleEndpoints:
         assert "gender" in example
         assert "screen_time_hours" in example
     
-    def test_academic_impact_example(self):
+    def test_academic_impact_example(self, client):
         """Test academic impact example endpoint"""
         response = client.get("/examples/academic-impact")
         assert response.status_code == 200
@@ -86,7 +98,7 @@ class TestExampleEndpoints:
 class TestPredictionEndpoints:
     """Test prediction endpoints"""
     
-    def test_mental_wellness_prediction_valid(self):
+    def test_mental_wellness_prediction_valid(self, client):
         """Test mental wellness prediction with valid input"""
         data = {
             "age": 28,
@@ -107,9 +119,9 @@ class TestPredictionEndpoints:
         response = client.post("/predict/mental-wellness", json=data)
         assert response.status_code == 200
         result = response.json()
-        assert "model_info" in result
+        assert "model_name" in result
     
-    def test_mental_wellness_prediction_invalid_age(self):
+    def test_mental_wellness_prediction_invalid_age(self, client):
         """Test mental wellness prediction with invalid age"""
         data = {
             "age": 150,  # Invalid age
@@ -130,7 +142,7 @@ class TestPredictionEndpoints:
         response = client.post("/predict/mental-wellness", json=data)
         assert response.status_code == 422  # Validation error
     
-    def test_academic_impact_prediction_valid(self):
+    def test_academic_impact_prediction_valid(self, client):
         """Test academic impact prediction with valid input"""
         data = {
             "age": 21,
@@ -149,9 +161,9 @@ class TestPredictionEndpoints:
         response = client.post("/predict/academic-impact", json=data)
         assert response.status_code == 200
         result = response.json()
-        assert "model_info" in result
+        assert "model_name" in result
     
-    def test_academic_impact_prediction_missing_field(self):
+    def test_academic_impact_prediction_missing_field(self, client):
         """Test academic impact prediction with missing field"""
         data = {
             "age": 21,
@@ -174,7 +186,7 @@ class TestPredictionEndpoints:
 class TestInputValidation:
     """Test input validation"""
     
-    def test_negative_screen_time(self):
+    def test_negative_screen_time(self, client):
         """Test negative screen time is rejected"""
         data = {
             "age": 28,
@@ -195,7 +207,7 @@ class TestInputValidation:
         response = client.post("/predict/mental-wellness", json=data)
         assert response.status_code == 422
     
-    def test_invalid_stress_level(self):
+    def test_invalid_stress_level(self, client):
         """Test invalid stress level is rejected"""
         data = {
             "age": 28,

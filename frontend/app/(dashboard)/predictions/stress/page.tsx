@@ -11,13 +11,23 @@ import { Heart, ArrowLeft, Loader2, Info, AlertCircle, Lightbulb, X, Mail, Downl
 import axios from '@/lib/api/axios-instance';
 import { toast } from 'sonner';
 import { predictionsApi } from '@/lib/api';
-import type { Prediction } from '@/types';
+interface StressPredictionResult {
+  _id?: string;
+  id?: string;
+  score: number;
+  stressCategory: string;
+  interpretation: string;
+  modelUsed: string;
+  recommendations?: string[];
+  createdAt: string;
+  [key: string]: any;
+}
 
 export default function StressLevelPredictionPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [isLoading, setIsLoading] = useState(false);
-  const [prediction, setPrediction] = useState<Prediction | null>(null);
+  const [prediction, setPrediction] = useState<StressPredictionResult | null>(null);
   const [showRecommendations, setShowRecommendations] = useState(false);
   const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);

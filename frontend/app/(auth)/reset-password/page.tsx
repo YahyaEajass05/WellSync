@@ -68,6 +68,7 @@ export default function ResetPasswordPage() {
 
   // Pre-fill email from URL parameter
   useEffect(() => {
+    if (!searchParams) return;
     const email = searchParams.get('email');
     if (email) {
       setValue('email', email);
@@ -250,7 +251,7 @@ export default function ResetPasswordPage() {
               <Button
                 type="submit"
                 className="w-full"
-                disabled={isSubmitting || resetStatus === 'success'}
+                disabled={isSubmitting}
               >
                 {isSubmitting ? (
                   <>

@@ -297,6 +297,13 @@ export interface ProfileOverview {
   };
 }
 
+// Global Window extensions
+declare global {
+  interface Window {
+    __wellsync_deleting?: boolean;
+  }
+}
+
 // Notification Types
 export interface Notification {
   _id: string;

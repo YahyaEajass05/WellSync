@@ -19,12 +19,15 @@ import {
   Brain,
   Mail,
   Loader2,
+  FileSpreadsheet,
+  FileText,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { adminApi } from '@/lib/api/admin';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useExportNotificationsCSV, useExportNotificationsPDF } from '@/lib/hooks/useAdmin';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -90,6 +93,8 @@ const typeConfig: Record<string, { label: string; icon: any; className: string }
 
 export default function AdminNotificationsPage() {
   const queryClient = useQueryClient();
+  const exportCSV = useExportNotificationsCSV();
+  const exportPDF = useExportNotificationsPDF();
 
   const [page, setPage]             = useState(1);
   const [search, setSearch]         = useState('');
@@ -171,7 +176,7 @@ export default function AdminNotificationsPage() {
     <div className="space-y-6">
 
       {/* ── Header ── */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
             <Bell className="h-8 w-8 text-primary" />
@@ -181,19 +186,29 @@ export default function AdminNotificationsPage() {
             View, search and manage all system notifications
           </p>
         </div>
-        <Button variant="outline" size="sm" onClick={() => refetch()} disabled={isFetching}>
-          <RefreshCw className={`h-4 w-4 mr-2 ${isFetching ? 'animate-spin' : ''}`} />
-          Refresh
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => exportCSV.mutate()} disabled={exportCSV.isPending}>
+            {exportCSV.isPending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <FileSpreadsheet className="h-4 w-4 mr-2 text-green-600" />}
+            Export CSV
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => exportPDF.mutate()} disabled={exportPDF.isPending}>
+            {exportPDF.isPending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <FileText className="h-4 w-4 mr-2 text-red-500" />}
+            Export PDF
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => refetch()} disabled={isFetching}>
+            <RefreshCw className={`h-4 w-4 mr-2 ${isFetching ? 'animate-spin' : ''}`} />
+            Refresh
+          </Button>
+        </div>
       </div>
 
       {/* ── Stats Cards ── */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { label: 'Total',        value: stats?.total,        color: 'text-primary'    },
-          { label: 'Unread',      value: stats?.unread,      color: 'text-yellow-500' },
-          { label: 'System Alerts',value: stats?.systemAlerts,color: 'text-red-500'    },
-          { label: 'Broadcasts',  value: stats?.broadcasts,  color: 'text-purple-500' },
+          { label: 'Total',       value: stats?.total,     color: 'text-primary'    },
+          { label: 'Unread',     value: stats?.unread,    color: 'text-yellow-500' },
+          { label: 'Read',       value: stats?.read,      color: 'text-green-500'  },
+          { label: 'Broadcasts', value: stats?.broadcast, color: 'text-purple-500' },
         ].map(s => (
           <Card key={s.label}>
             <CardContent className="pt-6 text-center">

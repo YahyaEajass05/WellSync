@@ -11,13 +11,23 @@ import { BarChart3, ArrowLeft, Loader2, Info, Lightbulb, X, Mail, Download } fro
 import axios from '@/lib/api/axios-instance';
 import { toast } from 'sonner';
 import { predictionsApi } from '@/lib/api';
-import type { Prediction } from '@/types';
+interface AcademicPredictionResult {
+  _id?: string;
+  id?: string;
+  score: number;
+  interpretation: string;
+  modelUsed: string;
+  riskLevel?: string;
+  recommendations?: string[];
+  createdAt: string;
+  [key: string]: any;
+}
 
 export default function AcademicImpactPredictionPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [isLoading, setIsLoading] = useState(false);
-  const [prediction, setPrediction] = useState<Prediction | null>(null);
+  const [prediction, setPrediction] = useState<AcademicPredictionResult | null>(null);
   const [showRecommendations, setShowRecommendations] = useState(false);
   const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);

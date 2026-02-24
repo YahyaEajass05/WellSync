@@ -556,6 +556,7 @@ function NotificationsTab() {
 // ── Danger Zone Tab ───────────────────────────────────────────────────────────
 function DangerTab() {
   const { logout } = useAuthStore();
+  const router = useRouter();
   const [deletePassword, setDeletePassword] = useState('');
   const [showDeletePw, setShowDeletePw] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState('');
