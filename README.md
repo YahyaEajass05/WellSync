@@ -1082,9 +1082,6 @@ Detailed description if needed
 | `production` | Pre-production hardening & security hardening |
 | `testing` | Full backend test suite (220 tests, 10 commits) |
 | `Development` | Active development branch |
-| `feature/*` | New features |
-| `bugfix/*` | Bug fixes |
-| `hotfix/*` | Urgent production fixes |
 
 ---
 
