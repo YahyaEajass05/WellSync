@@ -13,6 +13,7 @@ import {
   Moon,
   Shield,
   Bell,
+  Cpu,
 } from 'lucide-react';
 import { useUIStore } from '@/lib/store/uiStore';
 import { useAuthStore } from '@/lib/store/authStore';
@@ -71,6 +72,7 @@ export function Sidebar() {
               { title: 'Notifications',   href: '/admin/notifications'    },
               { title: 'Broadcast',       href: '/admin/broadcast'        },
               { title: 'Stats',           href: '/admin/stats'            },
+              { title: 'AI Models',       href: '/admin/models',  icon: Cpu },
             ],
           },
         ]
@@ -90,7 +92,7 @@ export function Sidebar() {
       <div className="flex h-full flex-col gap-2 p-4">
 
         {/* ── Theme Toggle ── */}
-        <div className="flex items-center justify-between rounded-lg border px-3 py-2 mb-2">
+        <div className="flex items-center justify-between rounded-lg border px-3 py-2 mb-2 flex-shrink-0">
           <span className="text-sm font-medium text-muted-foreground">
             {!mounted ? 'Theme' : isDark ? 'Dark Mode' : 'Light Mode'}
           </span>
@@ -118,10 +120,17 @@ export function Sidebar() {
           </button>
         </div>
 
-        <nav className="flex-1 space-y-1">
+        <nav
+          className="flex-1 space-y-1 overflow-y-auto pr-1"
+          style={{
+            scrollbarWidth: 'thin',
+            scrollbarColor: 'hsl(var(--border)) transparent',
+          }}
+        >
           {menuItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
+            const isChildActive = item.children?.some((c) => pathname === c.href);
 
             return (
               <div key={item.href}>
@@ -129,35 +138,44 @@ export function Sidebar() {
                   href={item.href}
                   className={cn(
                     'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
-                    isActive
+                    isActive || isChildActive
                       ? 'bg-primary text-primary-foreground'
                       : 'hover:bg-accent hover:text-accent-foreground'
                   )}
                 >
-                  <Icon className="h-4 w-4" />
+                  <Icon className="h-4 w-4 flex-shrink-0" />
                   {item.title}
                 </Link>
                 {item.children && (
                   <div className="ml-6 mt-1 space-y-1">
-                    {item.children.map((child) => (
-                      <Link
-                        key={child.href}
-                        href={child.href}
-                        className={cn(
-                          'block rounded-lg px-3 py-2 text-sm transition-colors',
-                          pathname === child.href
-                            ? 'bg-accent text-accent-foreground'
-                            : 'hover:bg-accent/50'
-                        )}
-                      >
-                        {child.title}
-                      </Link>
-                    ))}
+                    {item.children.map((child) => {
+                      const isChildItemActive = pathname === child.href;
+                      return (
+                        <Link
+                          key={child.href}
+                          href={child.href}
+                          className={cn(
+                            'flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors',
+                            isChildItemActive
+                              ? 'bg-accent text-accent-foreground font-medium'
+                              : 'text-muted-foreground hover:bg-accent/50 hover:text-foreground'
+                          )}
+                        >
+                          {(child as any).icon && (() => {
+                            const ChildIcon = (child as any).icon;
+                            return <ChildIcon className="h-3.5 w-3.5 flex-shrink-0" />;
+                          })()}
+                          {child.title}
+                        </Link>
+                      );
+                    })}
                   </div>
                 )}
               </div>
             );
           })}
+          {/* bottom padding so last item isn't clipped */}
+          <div className="h-4" />
         </nav>
       </div>
     </aside>
