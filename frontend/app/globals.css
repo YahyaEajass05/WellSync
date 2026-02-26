@@ -123,7 +123,7 @@
   animation: gradient-shimmer 3s linear infinite;
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar - global */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -139,6 +139,23 @@
 
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-primary/50;
+}
+
+/* Sidebar thin scrollbar */
+aside nav::-webkit-scrollbar {
+  width: 4px;
+}
+
+aside nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+aside nav::-webkit-scrollbar-thumb {
+  @apply bg-border rounded-full;
+}
+
+aside nav::-webkit-scrollbar-thumb:hover {
+  @apply bg-muted-foreground/40 rounded-full;
 }
 
 /* Smooth transitions */
