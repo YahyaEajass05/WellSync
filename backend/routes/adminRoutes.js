@@ -17,6 +17,7 @@ router.use(authorize('admin'));
 // Dashboard
 router.get('/dashboard', adminController.getAdminDashboard);
 router.get('/stats', adminController.getSystemStats);
+router.get('/models', adminController.getModelInsights);
 
 // User Management
 router.get('/users', adminController.getAllUsers);
@@ -67,5 +68,14 @@ router.delete('/notifications/:id',
     validate,
     adminController.deleteNotificationAdmin
 );
+
+// ── Export Routes ─────────────────────────────────────────────────────────────
+router.get('/export/users/csv',          adminController.exportUsersCSV);
+router.get('/export/users/pdf',          adminController.exportUsersPDF);
+router.get('/export/users/:id/pdf',      adminController.exportUserDetailPDF);
+router.get('/export/predictions/csv',    adminController.exportPredictionsCSV);
+router.get('/export/predictions/pdf',    adminController.exportPredictionsPDF);
+router.get('/export/notifications/csv',  adminController.exportNotificationsCSV);
+router.get('/export/notifications/pdf',  adminController.exportNotificationsPDF);
 
 module.exports = router;
