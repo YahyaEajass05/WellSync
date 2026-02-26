@@ -5,7 +5,7 @@ import { useAdminUsers, useAdminAnalytics, useUpdateUserRole, useUpdateUserStatu
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Users, Activity, Brain, TrendingUp, Search, Shield, Ban, Trash2, CheckCircle, XCircle, Loader2, BarChart3, Bell } from 'lucide-react';
+import { Users, Activity, Brain, TrendingUp, Search, Shield, Ban, Trash2, CheckCircle, XCircle, Loader2, BarChart3, Bell, Download, FileText, FileSpreadsheet } from 'lucide-react';
 import { toast } from 'sonner';
 import Link from 'next/link';
 import { ErrorState } from '@/components/ui/error-state';
@@ -13,6 +13,7 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
 import { DashboardSkeleton, TableSkeleton } from '@/components/ui/loading-skeleton';
 import { UserGrowthChart, PredictionTypeChart, WellnessTrendChart, StressDistributionChart, ActivityHeatmap } from '@/components/charts';
+import { useExportUsersCSV, useExportUsersPDF } from '@/lib/hooks/useAdmin';
 
 export default function AdminDashboardPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -37,6 +38,10 @@ export default function AdminDashboardPage() {
   const updateRoleMutation = useUpdateUserRole();
   const updateStatusMutation = useUpdateUserStatus();
   const deleteUserMutation = useDeleteUser();
+
+  // Export
+  const exportCSV = useExportUsersCSV();
+  const exportPDF = useExportUsersPDF();
 
   const handleToggleActive = (userId: string, currentStatus: boolean) => {
     updateStatusMutation.mutate({ userId, isActive: !currentStatus });
@@ -247,8 +252,32 @@ export default function AdminDashboardPage() {
       {/* User Management */}
       <Card>
         <CardHeader>
-          <CardTitle>User Management</CardTitle>
-          <CardDescription>View and manage all registered users</CardDescription>
+          <div className="flex items-center justify-between flex-wrap gap-3">
+            <div>
+              <CardTitle>User Management</CardTitle>
+              <CardDescription>View and manage all registered users</CardDescription>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => exportCSV.mutate()}
+                disabled={exportCSV.isPending}
+              >
+                {exportCSV.isPending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <FileSpreadsheet className="h-4 w-4 mr-2 text-green-600" />}
+                Export CSV
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => exportPDF.mutate()}
+                disabled={exportPDF.isPending}
+              >
+                {exportPDF.isPending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <FileText className="h-4 w-4 mr-2 text-red-500" />}
+                Export PDF
+              </Button>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           {/* Filters */}
