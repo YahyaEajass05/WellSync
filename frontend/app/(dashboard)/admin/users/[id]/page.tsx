@@ -5,13 +5,14 @@ import { useParams, useRouter } from 'next/navigation';
 import { useUserDetails, useUpdateUserRole, useUpdateUserStatus, useDeleteUser } from '@/lib/hooks/useAdmin';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, User, Mail, Calendar, Shield, CheckCircle, XCircle, Loader2, Trash2, Ban, Brain } from 'lucide-react';
+import { ArrowLeft, User, Mail, Calendar, Shield, CheckCircle, XCircle, Loader2, Trash2, Ban, Brain, FileText } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { ErrorState } from '@/components/ui/error-state';
 import { EmptyState } from '@/components/ui/empty-state';
 import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
 import { DashboardSkeleton } from '@/components/ui/loading-skeleton';
+import { useExportUserDetailPDF } from '@/lib/hooks/useAdmin';
 
 export default function UserDetailsPage() {
   const params = useParams();
@@ -23,6 +24,7 @@ export default function UserDetailsPage() {
   const updateRoleMutation = useUpdateUserRole();
   const updateStatusMutation = useUpdateUserStatus();
   const deleteUserMutation = useDeleteUser();
+  const exportPDF = useExportUserDetailPDF();
 
   const handleToggleRole = () => {
     const newRole = data.user.role === 'admin' ? 'user' : 'admin';
@@ -122,7 +124,19 @@ export default function UserDetailsPage() {
             </p>
           </div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
+          <Button
+            variant="outline"
+            onClick={() => exportPDF.mutate(userId)}
+            disabled={exportPDF.isPending}
+          >
+            {exportPDF.isPending ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <FileText className="h-4 w-4 mr-2 text-red-500" />
+            )}
+            Export PDF
+          </Button>
           <Button
             variant="outline"
             onClick={handleToggleRole}
