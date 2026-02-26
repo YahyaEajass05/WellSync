@@ -1,6 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { adminApi, type AdminUser, type AdminAnalytics } from '../api/admin';
+import { adminApi, type AdminUser, type AdminAnalytics, type ModelInsights } from '../api/admin';
+import { useAuthStore } from '../store/authStore';
 import { toast } from 'sonner';
+
+export function useAdminAuth() {
+  const user = useAuthStore((state) => state.user);
+  return { isAdmin: user?.role === 'admin' };
+}
 
 export function useAdminUsers(params?: {
   page?: number;
@@ -103,6 +109,14 @@ export function useSystemStats() {
   });
 }
 
+export function useModelInsights() {
+  return useQuery<ModelInsights>({
+    queryKey: ['admin', 'models'],
+    queryFn: () => adminApi.getModelInsights(),
+    staleTime: 2 * 60 * 1000,
+  });
+}
+
 export function useBroadcastNotification() {
   return useMutation({
     mutationFn: (data: { title: string; message: string; priority?: string; sendEmail?: boolean }) =>
@@ -110,5 +124,63 @@ export function useBroadcastNotification() {
     onError: (error: any) => {
       toast.error(error.response?.data?.error || 'Failed to broadcast notification');
     },
+  });
+}
+
+// ── Export hooks ────────────────────────────────────────────────────────────
+
+export function useExportUsersCSV() {
+  return useMutation({
+    mutationFn: () => adminApi.exportUsersCSV(),
+    onSuccess: () => toast.success('Users CSV downloaded'),
+    onError: () => toast.error('Failed to export users CSV'),
+  });
+}
+
+export function useExportUsersPDF() {
+  return useMutation({
+    mutationFn: () => adminApi.exportUsersPDF(),
+    onSuccess: () => toast.success('Users PDF downloaded'),
+    onError: () => toast.error('Failed to export users PDF'),
+  });
+}
+
+export function useExportUserDetailPDF() {
+  return useMutation({
+    mutationFn: (userId: string) => adminApi.exportUserDetailPDF(userId),
+    onSuccess: () => toast.success('User detail PDF downloaded'),
+    onError: () => toast.error('Failed to export user PDF'),
+  });
+}
+
+export function useExportPredictionsCSV() {
+  return useMutation({
+    mutationFn: (type?: string) => adminApi.exportPredictionsCSV(type),
+    onSuccess: () => toast.success('Predictions CSV downloaded'),
+    onError: () => toast.error('Failed to export predictions CSV'),
+  });
+}
+
+export function useExportPredictionsPDF() {
+  return useMutation({
+    mutationFn: (type?: string) => adminApi.exportPredictionsPDF(type),
+    onSuccess: () => toast.success('Predictions PDF downloaded'),
+    onError: () => toast.error('Failed to export predictions PDF'),
+  });
+}
+
+export function useExportNotificationsCSV() {
+  return useMutation({
+    mutationFn: () => adminApi.exportNotificationsCSV(),
+    onSuccess: () => toast.success('Notifications CSV downloaded'),
+    onError: () => toast.error('Failed to export notifications CSV'),
+  });
+}
+
+export function useExportNotificationsPDF() {
+  return useMutation({
+    mutationFn: () => adminApi.exportNotificationsPDF(),
+    onSuccess: () => toast.success('Notifications PDF downloaded'),
+    onError: () => toast.error('Failed to export notifications PDF'),
   });
 }
