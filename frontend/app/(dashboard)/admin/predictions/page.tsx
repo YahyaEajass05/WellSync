@@ -5,16 +5,19 @@ import { useAdminPredictions } from '@/lib/hooks/useAdmin';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Brain, Search, Loader2, ArrowLeft, Filter, TrendingUp, Calendar } from 'lucide-react';
+import { Brain, Search, Loader2, ArrowLeft, Filter, TrendingUp, Calendar, FileSpreadsheet, FileText } from 'lucide-react';
 import Link from 'next/link';
 import { ErrorState } from '@/components/ui/error-state';
 import { EmptyState } from '@/components/ui/empty-state';
 import { TableSkeleton } from '@/components/ui/loading-skeleton';
+import { useExportPredictionsCSV, useExportPredictionsPDF } from '@/lib/hooks/useAdmin';
 
 export default function AdminPredictionsPage() {
   const [page, setPage] = useState(1);
   const [typeFilter, setTypeFilter] = useState<string>('');
   const [userIdFilter, setUserIdFilter] = useState('');
+  const exportCSV = useExportPredictionsCSV();
+  const exportPDF = useExportPredictionsPDF();
 
   const { data, isLoading, error, refetch } = useAdminPredictions({
     page,
@@ -39,7 +42,7 @@ export default function AdminPredictionsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-4">
           <Link href="/admin">
             <Button variant="outline" size="sm">
@@ -56,6 +59,26 @@ export default function AdminPredictionsPage() {
               View and analyze all user predictions across the platform
             </p>
           </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => exportCSV.mutate(typeFilter || undefined)}
+            disabled={exportCSV.isPending}
+          >
+            {exportCSV.isPending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <FileSpreadsheet className="h-4 w-4 mr-2 text-green-600" />}
+            Export CSV
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => exportPDF.mutate(typeFilter || undefined)}
+            disabled={exportPDF.isPending}
+          >
+            {exportPDF.isPending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <FileText className="h-4 w-4 mr-2 text-red-500" />}
+            Export PDF
+          </Button>
         </div>
       </div>
 
