@@ -12,7 +12,6 @@ import sys
 import os
 from typing import Dict, Any
 
-# Add parent directory to path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 
 from ai.utils.model_loader import (
@@ -30,7 +29,6 @@ from ai.utils.validators import (
     ModelInfo
 )
 
-# Initialize model loaders (lazy loading)
 mental_wellness_predictor = None
 academic_impact_predictor = None
 stress_prediction_predictor = None
@@ -66,7 +64,6 @@ async def lifespan(app: FastAPI):
     print("\nShutting down WellSync AI API...")
 
 
-# Initialize FastAPI app
 app = FastAPI(
     title="WellSync AI API",
     description="Dual Machine Learning System for Mental Wellness and Academic Impact Prediction",
@@ -76,9 +73,6 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS middleware
-# In production set ALLOWED_ORIGINS env var to a comma-separated list of
-# allowed frontend origins, e.g. "https://wellsync.example.com"
 _raw_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000,http://localhost:3001")
 _allowed_origins = [o.strip() for o in _raw_origins.split(",") if o.strip()]
 
@@ -157,28 +151,7 @@ async def get_available_models_endpoint():
 
 @app.post("/predict/mental-wellness", response_model=Dict[str, Any], tags=["Predictions"])
 async def predict_mental_wellness(input_data: MentalWellnessInput):
-    """
-    Predict mental wellness score from lifestyle and screen time data
-    
-    **Required Fields:**
-    - age: Person's age (18-100)
-    - gender: Gender (Male/Female/Other)
-    - occupation: Occupation type
-    - work_mode: Work mode (Remote/Hybrid/Office)
-    - screen_time_hours: Total daily screen time
-    - work_screen_hours: Work-related screen time
-    - leisure_screen_hours: Leisure screen time
-    - sleep_hours: Average sleep hours
-    - sleep_quality_1_5: Sleep quality (1-5)
-    - stress_level_0_10: Stress level (0-10)
-    - productivity_0_100: Productivity score (0-100)
-    - exercise_minutes_per_week: Weekly exercise minutes
-    - social_hours_per_week: Weekly social hours
-    
-    **Returns:**
-    - prediction: Predicted mental wellness score (0-100)
-    - model_info: Information about the model used
-    """
+    """Predict mental wellness score from lifestyle and screen time data"""
     try:
         if not mental_wellness_predictor:
             raise HTTPException(
@@ -202,26 +175,7 @@ async def predict_mental_wellness(input_data: MentalWellnessInput):
 
 @app.post("/predict/academic-impact", response_model=Dict[str, Any], tags=["Predictions"])
 async def predict_academic_impact(input_data: AcademicImpactInput):
-    """
-    Predict social media addiction score and academic impact
-    
-    **Required Fields:**
-    - age: Student age (17-30)
-    - gender: Gender (Male/Female/Other)
-    - academic_level: Academic level (Bachelor/Master/PhD)
-    - country: Country of study
-    - most_used_platform: Most used social media platform
-    - avg_daily_usage_hours: Average daily usage (0-24)
-    - sleep_hours_per_night: Sleep hours per night
-    - mental_health_score: Mental health score (0-100)
-    - conflicts_over_social_media: Conflicts frequency (0-5)
-    - affects_academic_performance: Affects academics (Yes/No)
-    - relationship_status: Relationship status
-    
-    **Returns:**
-    - prediction: Predicted addiction score (2-9)
-    - model_info: Information about the model used
-    """
+    """Predict social media addiction score and academic impact"""
     try:
         if not academic_impact_predictor:
             raise HTTPException(
@@ -287,31 +241,7 @@ async def get_academic_impact_example():
 
 @app.post("/predict/stress", response_model=Dict[str, Any], tags=["Predictions"])
 async def predict_stress_level(input_data: StressPredictionInput):
-    """
-    Predict stress level from lifestyle and behavioral data
-    
-    **Required Fields:**
-    - age: Person's age (18-100)
-    - gender: Gender (Male/Female/Other)
-    - occupation: Occupation type
-    - work_mode: Work mode (Remote/Hybrid/Office)
-    - screen_time_hours: Total daily screen time
-    - work_screen_hours: Work-related screen time
-    - leisure_screen_hours: Leisure screen time
-    - sleep_hours: Average sleep hours
-    - sleep_quality_1_5: Sleep quality (1-5)
-    - productivity_0_100: Productivity score (0-100)
-    - exercise_minutes_per_week: Weekly exercise minutes
-    - social_hours_per_week: Weekly social hours
-    - mental_wellness_index_0_100: Mental wellness score (0-100)
-    
-    **Returns:**
-    - prediction: Predicted stress level (0-10)
-    - stress_category: Category (Low/Moderate/High/Very High)
-    - interpretation: Human-readable interpretation
-    - recommendations: Personalized recommendations
-    - model_info: Information about the model used
-    """
+    """Predict stress level from lifestyle and behavioral data"""
     try:
         if not stress_prediction_predictor:
             raise HTTPException(
