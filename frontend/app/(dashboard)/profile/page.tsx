@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-// ── Types ──────────────────────────────────────────────────────────────────────
+// Types
 const TABS = [
   { id: 'overview',    label: 'Overview',         icon: User },
   { id: 'wellness',    label: 'Wellness Profile',  icon: Brain },
@@ -28,7 +28,7 @@ const TABS = [
 ] as const;
 type TabId = typeof TABS[number]['id'];
 
-// ── Shared UI helpers ──────────────────────────────────────────────────────────
+// Shared UI helpers
 function Badge({ label, color }: { label: string; color: string }) {
   return <span className={cn('inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium', color)}>{label}</span>;
 }
@@ -69,7 +69,7 @@ function SelectField({ id, value, onChange, options, placeholder }: {
   );
 }
 
-// ── Overview Tab ──────────────────────────────────────────────────────────────
+// Overview Tab
 function OverviewTab() {
   const { user: storeUser } = useAuthStore();
   const { data: overview, isLoading: overviewLoading } = useProfileOverview();
@@ -349,7 +349,7 @@ function OverviewTab() {
   );
 }
 
-// ── Wellness Tab ──────────────────────────────────────────────────────────────
+// Wellness Tab
 function WellnessTab() {
   const { data, isLoading } = useMentalWellnessProfile();
   const { mutate: save, isPending, isSuccess, isError, error } = useSaveMentalWellnessProfile();
@@ -501,7 +501,7 @@ function WellnessTab() {
   );
 }
 
-// ── Data constants ────────────────────────────────────────────────────────────
+// Data constants:
 const COUNTRIES = [
   'Afghanistan','Albania','Algeria','Andorra','Angola','Antigua and Barbuda','Argentina','Armenia','Australia',
   'Austria','Azerbaijan','Bahamas','Bahrain','Bangladesh','Barbados','Belarus','Belgium','Belize','Benin',
@@ -581,7 +581,7 @@ const FIELDS_OF_STUDY = [
   'Other',
 ];
 
-// ── Student Tab ───────────────────────────────────────────────────────────────
+// Student Tab
 function StudentTab() {
   const { data, isLoading } = useStudentProfile();
   const { mutate: save, isPending, isSuccess, isError, error } = useSaveStudentProfile();
@@ -741,7 +741,7 @@ function StudentTab() {
   );
 }
 
-// ── Screen Time Tab ───────────────────────────────────────────────────────────
+// Screen Time Tab:
 function ScreenTimeTab() {
   const { data, isLoading } = useScreenTime(7);
   const { mutate: logTime, isPending, isSuccess, isError, error } = useLogScreenTime();
@@ -848,7 +848,7 @@ function ScreenTimeTab() {
   );
 }
 
-// ── Sleep Tab ─────────────────────────────────────────────────────────────────
+// Sleep Tab:
 function SleepTab() {
   const { data, isLoading } = useSleep(7);
   const { mutate: logSleep, isPending, isSuccess, isError, error } = useLogSleep();
@@ -973,7 +973,7 @@ function SleepTab() {
   );
 }
 
-// ── Main Page Export ──────────────────────────────────────────────────────────
+// Main Page Export:
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<TabId>('overview');
   return (

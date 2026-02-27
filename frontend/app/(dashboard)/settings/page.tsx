@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-// ── Tabs ──────────────────────────────────────────────────────────────────────
+// Tabs
 const TABS = [
   { id: 'personal',     label: 'Personal Info',   icon: User },
   { id: 'password',     label: 'Password',        icon: Lock },
@@ -26,7 +26,7 @@ const TABS = [
 ] as const;
 type TabId = typeof TABS[number]['id'];
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+// Helpers
 function Spinner() {
   return <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></div>;
 }
@@ -49,7 +49,7 @@ function SelectField({ id, value, onChange, options }: { id: string; value: stri
   );
 }
 
-// ── Personal Info Tab ─────────────────────────────────────────────────────────
+// Personal Info Tab
 function PersonalTab() {
   const queryClient = useQueryClient();
   const { setUser } = useAuthStore();
@@ -270,7 +270,7 @@ function PersonalTab() {
   );
 }
 
-// ── Password Tab ──────────────────────────────────────────────────────────────
+// Password Tab:
 function PasswordTab() {
   const [form, setForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
   const [show, setShow] = useState({ current: false, newPw: false, confirm: false });
@@ -396,7 +396,7 @@ function PasswordTab() {
   );
 }
 
-// ── Preferences Tab ───────────────────────────────────────────────────────────
+// Preferences Tab:
 function PreferencesTab() {
   const queryClient = useQueryClient();
   const { setTheme: setNextTheme } = useTheme();
@@ -461,7 +461,7 @@ function PreferencesTab() {
   );
 }
 
-// ── Notifications Tab ─────────────────────────────────────────────────────────
+// Notifications Tab
 function NotificationsTab() {
   const queryClient = useQueryClient();
   const { data: user, isLoading } = useQuery({ queryKey: ['settings-user'], queryFn: settingsApi.getProfile });
@@ -553,7 +553,7 @@ function NotificationsTab() {
   );
 }
 
-// ── Danger Zone Tab ───────────────────────────────────────────────────────────
+// Danger Zone Tab:
 function DangerTab() {
   const { logout } = useAuthStore();
   const router = useRouter();
@@ -567,7 +567,7 @@ function DangerTab() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isDeactivating, setIsDeactivating] = useState(false);
 
-  // ── Delete Account ────────────────────────────────────────────────────────
+  // Delete Account
   // IMPORTANT: We bypass axios entirely and use native fetch() here.
   // Reason: calling logout() before redirect causes the dashboard layout's
   // useEffect (which watches isAuthenticated) to fire router.replace('/login')
@@ -648,7 +648,7 @@ function DangerTab() {
     }
   };
 
-  // ── Deactivate Account ────────────────────────────────────────────────────
+  // Deactivate Account
   const handleDeactivate = async () => {
     setIsDeactivating(true);
     setDeactivateError(null);
@@ -779,7 +779,7 @@ function DangerTab() {
   );
 }
 
-// ── Main Page ─────────────────────────────────────────────────────────────────
+// Main Page:
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState<TabId>('personal');
   return (
