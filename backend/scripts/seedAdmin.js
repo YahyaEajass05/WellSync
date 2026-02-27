@@ -16,7 +16,7 @@ require('dotenv').config({ path: path.join(__dirname, '../.env') });
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-// ── Inline minimal User model so the script is self-contained ─────────────────
+// Inline minimal User model so the script is self-contained
 const userSchema = new mongoose.Schema(
   {
     firstName:            { type: String, required: true, trim: true },
@@ -68,7 +68,7 @@ userSchema.pre('save', async function (next) {
 // Use existing model if already registered (avoids OverwriteModelError when imported)
 const User = mongoose.models.User || mongoose.model('User', userSchema);
 
-// ── Admin credentials ─────────────────────────────────────────────────────────
+// Admin credentials
 const ADMIN = {
   firstName:       'WellSync',
   lastName:        'Admin',
@@ -90,22 +90,22 @@ const ADMIN = {
   },
 };
 
-// ── Main ──────────────────────────────────────────────────────────────────────
+// Main
 async function seed() {
   const uri = process.env.MONGODB_URI;
   if (!uri) {
-    console.error('\n❌  MONGODB_URI is not set in your .env file.');
+    console.error('\nMONGODB_URI is not set in your .env file.');
     console.error('    Copy .env.example → backend/.env and fill in the values.\n');
     process.exit(1);
   }
 
-  console.log('\n' + '═'.repeat(60));
-  console.log('  WellSync — Admin Seed Script');
-  console.log('═'.repeat(60));
-  console.log(`\n📡 Connecting to MongoDB…`);
+  console.log('\n' + '='.repeat(60));
+  console.log('  WellSync - Admin Seed Script');
+  console.log('='.repeat(60));
+  console.log(`\nConnecting to MongoDB...`);
 
   await mongoose.connect(uri);
-  console.log(`✅ Connected to: ${mongoose.connection.host} / ${mongoose.connection.name}`);
+  console.log(`Connected to: ${mongoose.connection.host} / ${mongoose.connection.name}`);
 
   // Check if admin already exists (case-insensitive)
   const existing = await User.findOne({ email: ADMIN.email });
@@ -121,9 +121,9 @@ async function seed() {
         existing.isSystemAdmin = true;
       }
       await existing.save();
-      console.log(`\n⬆️  Existing user "${existing.email}" promoted to system admin role.`);
+      console.log(`\nExisting user "${existing.email}" promoted to system admin role.`);
     } else {
-      console.log(`\n✅ System admin account already exists — no changes made.`);
+      console.log(`\nSystem admin account already exists - no changes made.`);
       console.log(`   Email       : ${existing.email}`);
       console.log(`   Role        : ${existing.role}`);
       console.log(`   System Admin: ${existing.isSystemAdmin}`);
@@ -133,25 +133,25 @@ async function seed() {
     const admin = new User(ADMIN);
     await admin.save();
 
-    console.log('\n🎉 Admin account created successfully!');
-    console.log('─'.repeat(40));
+    console.log('\nAdmin account created successfully!');
+    console.log('-'.repeat(40));
     console.log(`   Name     : ${admin.firstName} ${admin.lastName}`);
     console.log(`   Email    : ${admin.email}`);
     console.log(`   Password : Admin@123`);
     console.log(`   Role     : ${admin.role}`);
     console.log(`   Verified : ${admin.isEmailVerified}`);
     console.log(`   Country  : ${admin.profile.country}`);
-    console.log('─'.repeat(40));
-    console.log('\n⚠️  Remember to change the password after first login!\n');
+    console.log('-'.repeat(40));
+    console.log('\nRemember to change the password after first login!\n');
   }
 
   await mongoose.connection.close();
-  console.log('🔌 Database connection closed.\n');
+  console.log('Database connection closed.\n');
   process.exit(0);
 }
 
 seed().catch((err) => {
-  console.error('\n❌ Seed script failed:', err.message);
+  console.error('\nSeed script failed:', err.message);
   mongoose.connection.close();
   process.exit(1);
 });
