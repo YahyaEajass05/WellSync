@@ -31,14 +31,14 @@ export default function Error({
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center relative overflow-hidden px-4">
 
-      {/* ── Animated Background ── */}
+      {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/3 left-1/4 w-80 h-80 bg-destructive/5 rounded-full blur-3xl animate-float" />
         <div className="absolute bottom-1/4 right-1/3 w-64 h-64 bg-orange-500/5 rounded-full blur-3xl animate-float-slow" />
         <div className="absolute top-2/3 left-1/2 w-48 h-48 bg-red-500/5 rounded-full blur-2xl animate-float" style={{ animationDelay: '1.5s' }} />
       </div>
 
-      {/* ── Grid Pattern ── */}
+      {/* Grid Pattern */}
       <div
         className="absolute inset-0 opacity-[0.02]"
         style={{
@@ -47,10 +47,10 @@ export default function Error({
         }}
       />
 
-      {/* ── Main Content ── */}
+      {/* Main Content */}
       <div className={`relative z-10 text-center max-w-xl mx-auto transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
 
-        {/* ── Animated Error Icon ── */}
+        {/* Animated Error Icon */}
         <div className="relative mb-8 flex items-center justify-center">
 
           {/* Pulse rings */}
@@ -67,7 +67,7 @@ export default function Error({
           <div className="absolute w-1.5 h-1.5 rounded-full bg-orange-400" style={{ animation: 'orbit 4s linear infinite reverse', animationDelay: '1s' }} />
         </div>
 
-        {/* ── 500 Number ── */}
+        {/* 500 Number */}
         <div className="animate-bounce-in mb-4">
           <span className="text-8xl font-black"
             style={{
@@ -81,7 +81,7 @@ export default function Error({
           </span>
         </div>
 
-        {/* ── Message ── */}
+        {/* Message */}
         <div className="animate-slide-up" style={{ animationDelay: '0.3s' }}>
           <h2 className="text-2xl md:text-3xl font-bold mb-3">
             Something Went Wrong
@@ -94,7 +94,7 @@ export default function Error({
           {error?.message && (
             <div className="mt-4 mb-6 p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-left">
               <p className="text-xs text-muted-foreground font-mono break-all">
-                ⚠️ {error.message}
+                {error.message}
               </p>
               {error.digest && (
                 <p className="text-xs text-muted-foreground mt-1 font-mono">
@@ -112,7 +112,7 @@ export default function Error({
           </div>
         </div>
 
-        {/* ── Action Buttons ── */}
+        {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-3 justify-center animate-slide-up" style={{ animationDelay: '0.5s' }}>
           <Button
             size="lg"
@@ -130,7 +130,7 @@ export default function Error({
           </Link>
         </div>
 
-        {/* ── Help Text ── */}
+        {/* Help Text */}
         <div className="mt-10 animate-slide-up" style={{ animationDelay: '0.7s' }}>
           <p className="text-sm text-muted-foreground">
             If this persists, contact us at{' '}
@@ -140,7 +140,7 @@ export default function Error({
           </p>
         </div>
 
-        {/* ── WellSync Branding ── */}
+        {/* WellSync Branding */}
         <div className="mt-8 animate-fade-in" style={{ animationDelay: '1s' }}>
           <p className="text-xs text-muted-foreground">
             <span className="font-semibold text-primary">WellSync</span> — AI-Powered Mental Wellness Platform

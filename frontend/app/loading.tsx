@@ -2,16 +2,16 @@ export default function Loading() {
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center relative overflow-hidden">
 
-      {/* ── Animated Background Orbs ── */}
+      {/* Animated Background Orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-primary/10 rounded-full blur-3xl animate-float" />
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl animate-float-slow" />
       </div>
 
-      {/* ── Main Loading Content ── */}
+      {/* Main Loading Content */}
       <div className="relative z-10 flex flex-col items-center gap-8">
 
-        {/* ── Animated Logo ── */}
+        {/* Animated Logo */}
         <div className="relative">
           {/* Outer pulse ring */}
           <div className="absolute inset-0 flex items-center justify-center">
@@ -55,7 +55,7 @@ export default function Loading() {
           </div>
         </div>
 
-        {/* ── WellSync Text ── */}
+        {/* WellSync Text */}
         <div className="text-center animate-fade-in">
           <h2 className="text-2xl font-bold"
             style={{
@@ -70,7 +70,7 @@ export default function Loading() {
           <p className="text-sm text-muted-foreground mt-1">Loading your wellness data...</p>
         </div>
 
-        {/* ── Wave Loading Bar ── */}
+        {/* Wave Loading Bar */}
         <div className="flex items-end gap-1 h-8">
           {[1, 2, 3, 4, 5, 6, 7].map((i) => (
             <div
@@ -85,7 +85,7 @@ export default function Loading() {
           ))}
         </div>
 
-        {/* ── Progress dots ── */}
+        {/* Progress dots */}
         <div className="flex gap-2">
           {[0, 1, 2].map((i) => (
             <div

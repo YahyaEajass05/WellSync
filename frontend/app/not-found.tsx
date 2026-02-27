@@ -23,14 +23,14 @@ export default function NotFound() {
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center relative overflow-hidden px-4">
 
-      {/* ── Animated Background Orbs ── */}
+      {/* Animated Background Orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-primary/10 rounded-full blur-3xl animate-float" />
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-float-slow" />
         <div className="absolute top-3/4 left-1/2 w-48 h-48 bg-teal-500/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }} />
       </div>
 
-      {/* ── Floating Particles ── */}
+      {/* Floating Particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {[...Array(8)].map((_, i) => (
           <div
@@ -46,10 +46,10 @@ export default function NotFound() {
         ))}
       </div>
 
-      {/* ── Main Content ── */}
+      {/* Main Content */}
       <div className={`relative z-10 text-center max-w-2xl mx-auto transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
 
-        {/* ── Animated 404 Number ── */}
+        {/* Animated 404 Number */}
         <div className="relative mb-8">
           {/* Pulse rings */}
           <div className="absolute inset-0 flex items-center justify-center">
@@ -85,7 +85,7 @@ export default function NotFound() {
           </div>
         </div>
 
-        {/* ── Wave SVG Decoration ── */}
+        {/* Wave SVG Decoration */}
         <div className="mb-6 flex justify-center">
           <svg width="200" height="40" viewBox="0 0 200 40" className="text-primary/40">
             <path
@@ -107,7 +107,7 @@ export default function NotFound() {
           </svg>
         </div>
 
-        {/* ── Message ── */}
+        {/* Message */}
         <div className="animate-slide-up" style={{ animationDelay: '0.3s' }}>
           <h2 className="text-2xl md:text-3xl font-bold mb-3">
             Oops! Page Not Found
@@ -116,11 +116,11 @@ export default function NotFound() {
             The page you're looking for seems to have wandered off into the wellness void.
           </p>
           <p className="text-muted-foreground text-sm mb-8">
-            Don't worry — your mental wellness journey continues on the right path! 🧘
+            Don't worry — your mental wellness journey continues on the right path!
           </p>
         </div>
 
-        {/* ── Action Buttons ── */}
+        {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-3 justify-center animate-slide-up" style={{ animationDelay: '0.5s' }}>
           <Button size="lg" className="gap-2 w-full sm:w-auto" onClick={handleHomeClick}>
             <Home className="h-5 w-5" />
@@ -137,7 +137,7 @@ export default function NotFound() {
           </Button>
         </div>
 
-        {/* ── Quick Links ── */}
+        {/* Quick Links */}
         {isAuthenticated && (
           <div className="mt-10 animate-slide-up" style={{ animationDelay: '0.7s' }}>
             <p className="text-sm text-muted-foreground mb-3">Quick Links</p>
@@ -158,7 +158,7 @@ export default function NotFound() {
           </div>
         )}
 
-        {/* ── WellSync Branding ── */}
+        {/* WellSync Branding */}
         <div className="mt-12 animate-fade-in" style={{ animationDelay: '1s' }}>
           <p className="text-xs text-muted-foreground">
             <span className="font-semibold text-primary">WellSync</span> — AI-Powered Mental Wellness Platform
