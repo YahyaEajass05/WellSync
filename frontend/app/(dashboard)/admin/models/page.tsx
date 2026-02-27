@@ -15,7 +15,7 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
 } from 'recharts';
 
-/* ── colour helpers ── */
+/* colour helpers */
 const STRESS_COLORS: Record<string, string> = {
   Low: '#22c55e', Moderate: '#f59e0b', High: '#f97316', 'Very High': '#ef4444',
 };
@@ -24,7 +24,7 @@ const RISK_COLORS: Record<string, string> = {
 };
 const LINE_COLORS = ['#6366f1', '#f59e0b', '#22c55e'];
 
-/* ── tiny ui pieces ── */
+/* tiny ui pieces */
 function MetricBadge({ value, label, colorClass }: { value: string | number; label: string; colorClass: string }) {
   return (
     <div className={cn('rounded-xl p-4 flex flex-col gap-0.5', colorClass)}>
@@ -70,9 +70,7 @@ function R2Bar({ value }: { value: number }) {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   MENTAL WELLNESS MODEL CARD
-═══════════════════════════════════════════════════════════ */
+/* MENTAL WELLNESS MODEL CARD */
 function MentalWellnessCard({ data }: { data: any }) {
   const m = data?.modelMetrics;
   const trendData = (data?.trend || []).map((t: any) => ({
@@ -185,9 +183,7 @@ function MentalWellnessCard({ data }: { data: any }) {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   STRESS LEVEL MODEL CARD
-═══════════════════════════════════════════════════════════ */
+/* STRESS LEVEL MODEL CARD */
 function StressLevelCard({ data }: { data: any }) {
   const m = data?.modelMetrics;
   const trendData = (data?.trend || []).map((t: any) => ({
@@ -311,9 +307,7 @@ function StressLevelCard({ data }: { data: any }) {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   ACADEMIC IMPACT MODEL CARD
-═══════════════════════════════════════════════════════════ */
+/* ACADEMIC IMPACT MODEL CARD */
 function AcademicImpactCard({ data }: { data: any }) {
   const m = data?.modelMetrics;
   const trendData = (data?.trend || []).map((t: any) => ({
@@ -439,9 +433,7 @@ function AcademicImpactCard({ data }: { data: any }) {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   COMBINED USAGE CHART
-═══════════════════════════════════════════════════════════ */
+/* COMBINED USAGE CHART */
 function CombinedUsageChart({ data }: { data: any[] }) {
   // Pivot { _id: { date, type }, count } → { date, mental_wellness, stress_level, academic_impact }
   const byDate: Record<string, any> = {};
@@ -473,9 +465,7 @@ function CombinedUsageChart({ data }: { data: any[] }) {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   MAIN PAGE
-═══════════════════════════════════════════════════════════ */
+/* MAIN PAGE */
 export default function AdminModelsPage() {
   const { data, isLoading, error, refetch, isFetching } = useModelInsights();
   const [activeTab, setActiveTab] = useState<'mental_wellness' | 'stress_level' | 'academic_impact' | 'overview'>('overview');
@@ -499,7 +489,7 @@ export default function AdminModelsPage() {
 
   return (
     <div className="space-y-6">
-      {/* ── Page header ── */}
+      {/* Page header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
@@ -516,7 +506,7 @@ export default function AdminModelsPage() {
         </Button>
       </div>
 
-      {/* ── Global summary cards ── */}
+      {/* Global summary cards */}
       {isLoading ? (
         <div className="grid gap-4 md:grid-cols-4">
           {[...Array(4)].map((_, i) => (
@@ -579,7 +569,7 @@ export default function AdminModelsPage() {
         </div>
       )}
 
-      {/* ── Model performance comparison ── */}
+      {/* Model performance comparison */}
       {!isLoading && (
         <Card>
           <CardHeader>
@@ -613,7 +603,7 @@ export default function AdminModelsPage() {
         </Card>
       )}
 
-      {/* ── Tabs ── */}
+      {/* Tabs */}
       <div className="flex gap-1 bg-muted/50 rounded-xl p-1 border flex-wrap">
         {tabs.map((tab) => {
           const Icon = tab.icon;
@@ -635,7 +625,7 @@ export default function AdminModelsPage() {
         })}
       </div>
 
-      {/* ── Tab content ── */}
+      {/* Tab content */}
       {isLoading ? (
         <Card className="animate-pulse">
           <CardContent className="pt-6 space-y-4">

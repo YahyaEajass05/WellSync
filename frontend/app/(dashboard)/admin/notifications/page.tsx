@@ -29,7 +29,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useExportNotificationsCSV, useExportNotificationsPDF } from '@/lib/hooks/useAdmin';
 
-// ── Types ────────────────────────────────────────────────────────────────────
+// Types
 
 interface NotificationUser {
   _id: string;
@@ -70,7 +70,7 @@ interface NotificationsResponse {
   };
 }
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
+// Helpers
 
 const priorityConfig: Record<string, { label: string; className: string }> = {
   low:    { label: 'Low',    className: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' },
@@ -89,7 +89,7 @@ const typeConfig: Record<string, { label: string; icon: any; className: string }
   warning:             { label: 'Warning',         icon: AlertTriangle,className: 'text-yellow-500' },
 };
 
-// ── Main Component ───────────────────────────────────────────────────────────
+// Main Component
 
 export default function AdminNotificationsPage() {
   const queryClient = useQueryClient();
@@ -107,7 +107,7 @@ export default function AdminNotificationsPage() {
 
   const LIMIT = 15;
 
-  // ── Fetch notifications ──────────────────────────────────────────────────
+  // Fetch notifications
   const { data, isLoading, isFetching, refetch } = useQuery<NotificationsResponse>({
     queryKey: ['admin-notifications', page, search, typeFilter, priorityFilter, readFilter],
     queryFn: async () => {
@@ -128,7 +128,7 @@ export default function AdminNotificationsPage() {
   const pagination    = data?.data?.pagination;
   const stats         = data?.data?.stats;
 
-  // ── Delete single ────────────────────────────────────────────────────────
+  // Delete single
   const deleteMutation = useMutation({
     mutationFn: (id: string) => adminApi.deleteNotificationAdmin(id),
     onSuccess: () => {
@@ -139,7 +139,7 @@ export default function AdminNotificationsPage() {
     onError: () => toast.error('Failed to delete notification'),
   });
 
-  // ── Bulk delete ──────────────────────────────────────────────────────────
+  // Bulk delete
   const bulkDeleteMutation = useMutation({
     mutationFn: (ids: string[]) => adminApi.bulkDeleteNotifications(ids),
     onSuccess: (res: any) => {
@@ -151,7 +151,7 @@ export default function AdminNotificationsPage() {
     onError: () => toast.error('Failed to bulk delete'),
   });
 
-  // ── Helpers ──────────────────────────────────────────────────────────────
+  // Helpers
   const toggleSelect = (id: string) =>
     setSelected(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
 
@@ -171,11 +171,11 @@ export default function AdminNotificationsPage() {
     setPage(1); setSelected([]);
   };
 
-  // ── Render ───────────────────────────────────────────────────────────────
+  // Render
   return (
     <div className="space-y-6">
 
-      {/* ── Header ── */}
+      {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
@@ -202,7 +202,7 @@ export default function AdminNotificationsPage() {
         </div>
       </div>
 
-      {/* ── Stats Cards ── */}
+      {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
           { label: 'Total',       value: stats?.total,     color: 'text-primary'    },
@@ -219,7 +219,7 @@ export default function AdminNotificationsPage() {
         ))}
       </div>
 
-      {/* ── Filters ── */}
+      {/* Filters */}
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
@@ -284,7 +284,7 @@ export default function AdminNotificationsPage() {
         </CardContent>
       </Card>
 
-      {/* ── Bulk Actions ── */}
+      {/* Bulk Actions */}
       {selected.length > 0 && (
         <div className="flex items-center gap-3 p-3 rounded-lg bg-primary/5 border border-primary/20">
           <span className="text-sm font-medium">{selected.length} selected</span>
@@ -307,7 +307,7 @@ export default function AdminNotificationsPage() {
         </div>
       )}
 
-      {/* ── Notifications Table ── */}
+      {/* Notifications Table */}
       <Card>
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
@@ -483,7 +483,7 @@ export default function AdminNotificationsPage() {
         </CardContent>
       </Card>
 
-      {/* ── Pagination ── */}
+      {/* Pagination */}
       {pagination && pagination.pages > 1 && (
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">

@@ -24,7 +24,7 @@ import {
   ComposedChart, Line, PieChart, Pie, Cell,
 } from 'recharts';
 
-/* ─── helpers ────────────────────────────────────────────────────────────── */
+/* helpers */
 
 function StatCard({
   title, value, subtitle, icon: Icon, color = 'text-primary', trend, trendLabel,
@@ -73,7 +73,7 @@ function SectionHeader({ icon: Icon, title, subtitle }: { icon: React.ElementTyp
   );
 }
 
-/* ─── main page ──────────────────────────────────────────────────────────── */
+/* main page */
 
 export default function SystemStatsPage() {
   const { data: stats, isLoading: statsLoading, error: statsError, refetch: refetchStats } = useSystemStats();
@@ -99,7 +99,7 @@ export default function SystemStatsPage() {
     );
   }
 
-  /* ── derived values ── */
+  /* derived values */
   const totalUsers     = analytics?.users?.total ?? 0;
   const verifiedUsers  = analytics?.users?.verified ?? 0;
   const activeUsers    = analytics?.users?.active ?? 0;
@@ -120,40 +120,40 @@ export default function SystemStatsPage() {
   const inactiveUsers  = totalUsers - activeUsers;
   const unverifiedUsers = totalUsers - verifiedUsers;
 
-  /* ── engagement gauge data ── */
+  /* engagement gauge data */
   const engagementData = [
     { name: 'Verified', value: verifiedUsers, fill: '#10b981' },
     { name: 'Active',   value: activeUsers,   fill: '#3b82f6' },
   ];
 
-  /* ── prediction share bar data ── */
+  /* prediction share bar data */
   const predShareData = [
     { name: 'Mental Wellness', count: mwPreds, fill: '#3b82f6' },
     { name: 'Stress Level',    count: slPreds, fill: '#f59e0b' },
     { name: 'Academic Impact', count: aiPreds, fill: '#10b981' },
   ];
 
-  /* ── user status pie ── */
+  /* user status pie */
   const userStatusData = [
     { name: 'Active & Verified',   value: Math.min(activeUsers, verifiedUsers),         fill: '#10b981' },
     { name: 'Active & Unverified', value: Math.max(0, activeUsers - verifiedUsers),      fill: '#f59e0b' },
     { name: 'Inactive',            value: inactiveUsers,                                 fill: '#ef4444' },
   ].filter(d => d.value > 0);
 
-  /* ── weekly comparison bar data ── */
+  /* weekly comparison bar data */
   const weeklyData = [
     { label: 'Today',      users: stats?.today?.users ?? 0,      predictions: stats?.today?.predictions ?? 0 },
     { label: 'This Week',  users: stats?.thisWeek?.users ?? 0,   predictions: stats?.thisWeek?.predictions ?? 0 },
     { label: 'This Month', users: stats?.thisMonth?.users ?? 0,  predictions: stats?.thisMonth?.predictions ?? 0 },
   ];
 
-  /* ── prediction type donut ── */
+  /* prediction type donut */
   const predTypeData = { mentalWellness: mwPreds, stressLevel: slPreds, academicImpact: aiPreds };
 
   return (
     <div className="space-y-8">
 
-      {/* ── Header ── */}
+      {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div className="flex items-center gap-4">
           <Link href="/admin">
@@ -173,7 +173,7 @@ export default function SystemStatsPage() {
         </Button>
       </div>
 
-      {/* ── KPI Overview ── */}
+      {/* KPI Overview */}
       <div>
         <SectionHeader icon={Zap} title="Platform Overview" subtitle="All-time key performance indicators" />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -184,7 +184,7 @@ export default function SystemStatsPage() {
         </div>
       </div>
 
-      {/* ── Time-Period Stats ── */}
+      {/* Time-Period Stats */}
       <div>
         <SectionHeader icon={Calendar} title="Activity by Period" subtitle="New users & predictions across time windows" />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -245,7 +245,7 @@ export default function SystemStatsPage() {
         </div>
       </div>
 
-      {/* ── Period Comparison Bar Chart ── */}
+      {/* Period Comparison Bar Chart */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><BarChart3 className="h-5 w-5 text-primary" /> Period Comparison</CardTitle>
@@ -268,7 +268,7 @@ export default function SystemStatsPage() {
         </CardContent>
       </Card>
 
-      {/* ── User Growth Trend ── */}
+      {/* User Growth Trend */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><TrendingUp className="h-5 w-5 text-blue-500" /> User Growth — Last 30 Days</CardTitle>
@@ -279,7 +279,7 @@ export default function SystemStatsPage() {
         </CardContent>
       </Card>
 
-      {/* ── AI Predictions ── */}
+      {/* AI Predictions */}
       <div>
         <SectionHeader icon={Brain} title="AI Prediction Analytics" subtitle="Breakdown by prediction type and scores" />
         <div className="grid gap-6 lg:grid-cols-2">
@@ -376,7 +376,7 @@ export default function SystemStatsPage() {
         </div>
       </div>
 
-      {/* ── Wellness Trend ── */}
+      {/* Wellness Trend */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><Activity className="h-5 w-5 text-emerald-500" /> Mental Wellness Trend — Last 30 Days</CardTitle>
@@ -387,7 +387,7 @@ export default function SystemStatsPage() {
         </CardContent>
       </Card>
 
-      {/* ── Stress Distribution ── */}
+      {/* Stress Distribution */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><Brain className="h-5 w-5 text-amber-500" /> Stress Level Distribution</CardTitle>
@@ -398,7 +398,7 @@ export default function SystemStatsPage() {
         </CardContent>
       </Card>
 
-      {/* ── User Status Pie + Engagement Gauges ── */}
+      {/* User Status Pie + Engagement Gauges */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* User status pie */}
         <Card>
@@ -495,7 +495,7 @@ export default function SystemStatsPage() {
         </Card>
       </div>
 
-      {/* ── Hourly Activity ── */}
+      {/* Hourly Activity */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><Activity className="h-5 w-5 text-orange-500" /> Hourly Activity Pattern</CardTitle>
@@ -506,7 +506,7 @@ export default function SystemStatsPage() {
         </CardContent>
       </Card>
 
-      {/* ── Summary Table ── */}
+      {/* Summary Table */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><BarChart3 className="h-5 w-5 text-primary" /> Full Statistics Summary</CardTitle>
