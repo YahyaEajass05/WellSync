@@ -21,30 +21,30 @@ def preprocess_mental_wellness_input(input_data: Dict[str, Any], preprocessors: 
     # Create DataFrame from input
     df = pd.DataFrame([input_data])
     
-    # ============= FEATURE ENGINEERING (Same as training) =============
+    # Feature engineering (same as training)
     
-    # 1. Screen time ratios and patterns
+    # Screen time ratios and patterns
     df['work_screen_ratio'] = df['work_screen_hours'] / (df['screen_time_hours'] + 1e-6)
     df['leisure_screen_ratio'] = df['leisure_screen_hours'] / (df['screen_time_hours'] + 1e-6)
     
-    # 2. Sleep efficiency
+    # Sleep efficiency
     df['sleep_efficiency'] = df['sleep_quality_1_5'] / (df['sleep_hours'] + 1e-6)
     
-    # 3. Work-life balance indicators
+    # Work-life balance indicators
     df['work_life_balance'] = df['social_hours_per_week'] / (df['work_screen_hours'] + 1e-6)
     df['screen_sleep_ratio'] = df['screen_time_hours'] / (df['sleep_hours'] + 1e-6)
     
-    # 4. Health score
+    # Health score
     df['health_score'] = (
         (df['sleep_quality_1_5'] / 5) * 0.3 + 
         (df['exercise_minutes_per_week'] / 300) * 0.4 +  # Assuming max 300 mins
         (df['social_hours_per_week'] / 20) * 0.3  # Assuming max 20 hours
     )
     
-    # 5. Stress-productivity interaction
+    # Stress-productivity interaction
     df['stress_productivity_interaction'] = df['stress_level_0_10'] * (100 - df['productivity_0_100']) / 100
     
-    # 6. Age groups
+    # Age groups
     age = df['age'].iloc[0]
     if age <= 25:
         df['age_group'] = 0
@@ -55,16 +55,16 @@ def preprocess_mental_wellness_input(input_data: Dict[str, Any], preprocessors: 
     else:
         df['age_group'] = 3
     
-    # 7. Screen time categories
+    # Screen time categories
     df['high_screen_time'] = (df['screen_time_hours'] > 8).astype(int)  # Median approximation
     df['excessive_work_screen'] = (df['work_screen_hours'] > 8).astype(int)
     
-    # 8. Polynomial features
+    # Polynomial features
     df['screen_time_squared'] = df['screen_time_hours'] ** 2
     df['stress_squared'] = df['stress_level_0_10'] ** 2
     df['sleep_squared'] = df['sleep_hours'] ** 2
     
-    # ============= ENCODE CATEGORICAL VARIABLES =============
+    # Encode categorical variables
     encoders = preprocessors['encoders']
     categorical_cols = ['gender', 'occupation', 'work_mode']
     
@@ -77,7 +77,7 @@ def preprocess_mental_wellness_input(input_data: Dict[str, Any], preprocessors: 
                 # Use most common class (0) for unseen categories
                 df[col] = 0
     
-    # ============= ENSURE CORRECT FEATURE ORDER =============
+    # Ensure correct feature order
     feature_names = preprocessors['feature_names']
     
     # Add missing features with default values if any
@@ -88,7 +88,7 @@ def preprocess_mental_wellness_input(input_data: Dict[str, Any], preprocessors: 
     # Select and order features correctly
     df = df[feature_names]
     
-    # ============= SCALE FEATURES =============
+    # Scale features
     scaler = preprocessors['scaler']
     X_scaled = scaler.transform(df)
     
@@ -109,9 +109,9 @@ def preprocess_academic_input(input_data: Dict[str, Any], preprocessors: Dict) -
     # Create DataFrame from input
     df = pd.DataFrame([input_data])
     
-    # ============= FEATURE ENGINEERING (Same as training) =============
+    # Feature engineering (same as training)
     
-    # 1. Usage intensity
+    # Usage intensity
     usage = df['avg_daily_usage_hours'].iloc[0]
     if usage <= 2:
         df['usage_intensity'] = 0
@@ -122,11 +122,11 @@ def preprocess_academic_input(input_data: Dict[str, Any], preprocessors: Dict) -
     else:
         df['usage_intensity'] = 3
     
-    # 2. Sleep deficit
+    # Sleep deficit
     df['sleep_deficit'] = (8 - df['sleep_hours_per_night']).clip(lower=0)
     df['severe_sleep_deficit'] = (df['sleep_hours_per_night'] < 6).astype(int)
     
-    # 3. Mental health risk (scaled to 0-100)
+    # Mental health risk (scaled to 0-100)
     mh_score = df['mental_health_score'].iloc[0]
     if mh_score <= 30:
         df['mental_health_risk'] = 2  # High risk
@@ -135,16 +135,16 @@ def preprocess_academic_input(input_data: Dict[str, Any], preprocessors: Dict) -
     else:
         df['mental_health_risk'] = 0  # Low risk
     
-    # 4. Usage-sleep interaction
+    # Usage-sleep interaction
     df['usage_sleep_ratio'] = df['avg_daily_usage_hours'] / (df['sleep_hours_per_night'] + 1e-6)
     
-    # 5. Mental-sleep score (normalize mental_health_score by 100)
+    # Mental-sleep score (normalize mental_health_score by 100)
     df['mental_sleep_score'] = df['mental_health_score'] * df['sleep_hours_per_night'] / 100
     
-    # 6. Conflict intensity
+    # Conflict intensity
     df['high_conflict'] = (df['conflicts_over_social_media'] >= 4).astype(int)
     
-    # 7. Age groups
+    # Age groups
     age = df['age'].iloc[0]
     if age <= 19:
         df['age_group'] = 0
@@ -153,10 +153,10 @@ def preprocess_academic_input(input_data: Dict[str, Any], preprocessors: Dict) -
     else:
         df['age_group'] = 2
     
-    # 8. Academic performance binary
+    # Academic performance binary
     df['poor_academic_performance'] = (df['affects_academic_performance'].str.lower() == 'yes').astype(int)
     
-    # 9. Combined risk score (normalize mental_health_score by 100)
+    # Combined risk score (normalize mental_health_score by 100)
     df['combined_risk_score'] = (
         (df['avg_daily_usage_hours'] / 10) * 0.3 +
         (df['sleep_deficit'] / 8) * 0.25 +
@@ -164,23 +164,23 @@ def preprocess_academic_input(input_data: Dict[str, Any], preprocessors: Dict) -
         (df['conflicts_over_social_media'] / 5) * 0.2
     ) * 10
     
-    # 10. Usage squared
+    # Usage squared
     df['usage_squared'] = df['avg_daily_usage_hours'] ** 2
     
-    # 11. Mental health squared
+    # Mental health squared
     df['mental_health_squared'] = df['mental_health_score'] ** 2
     
-    # 12. Usage × conflicts interaction
+    # Usage × conflicts interaction
     df['usage_conflict_interaction'] = df['avg_daily_usage_hours'] * df['conflicts_over_social_media']
     
-    # 13. Platform usage intensity
+    # Platform usage intensity
     popular_platforms = ['Instagram', 'TikTok', 'Snapchat', 'Facebook', 'Twitter']
     df['uses_popular_platform'] = df['most_used_platform'].isin(popular_platforms).astype(int)
     
-    # 14. Relationship impact
+    # Relationship impact
     df['has_relationship'] = (df['relationship_status'].str.lower() != 'single').astype(int)
     
-    # ============= RENAME COLUMNS TO MATCH TRAINING =============
+    # Rename columns to match training
     # Training data uses capitalized column names
     column_mapping = {
         'age': 'Age',
@@ -198,7 +198,7 @@ def preprocess_academic_input(input_data: Dict[str, Any], preprocessors: Dict) -
     
     df = df.rename(columns=column_mapping)
     
-    # ============= ENCODE CATEGORICAL VARIABLES =============
+    # Encode categorical variables
     encoders = preprocessors['encoders']
     categorical_cols = ['Gender', 'Academic_Level', 'Country', 'Most_Used_Platform', 
                        'Affects_Academic_Performance', 'Relationship_Status']
@@ -211,7 +211,7 @@ def preprocess_academic_input(input_data: Dict[str, Any], preprocessors: Dict) -
                 # Use default value for unseen categories
                 df[col] = 0
     
-    # ============= ENSURE CORRECT FEATURE ORDER =============
+    # Ensure correct feature order
     feature_names = preprocessors['feature_names']
     
     # Add missing features
@@ -222,7 +222,7 @@ def preprocess_academic_input(input_data: Dict[str, Any], preprocessors: Dict) -
     # Select and order features
     df = df[feature_names]
     
-    # ============= SCALE FEATURES =============
+    # Scale features
     scaler = preprocessors['scaler']
     X_scaled = scaler.transform(df)
     

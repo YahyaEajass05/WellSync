@@ -51,7 +51,7 @@ class ModelLoader:
             raise FileNotFoundError(f"Model not found: {model_path}")
             
         self.model = joblib.load(model_path)
-        print(f"✅ Loaded model: {model_path}")
+        print(f"Loaded model: {model_path}")
         return self.model
     
     def load_preprocessors(self):
@@ -63,7 +63,7 @@ class ModelLoader:
             raise FileNotFoundError(f"Preprocessors not found: {preprocessor_path}")
             
         self.preprocessors = joblib.load(preprocessor_path)
-        print(f"✅ Loaded preprocessors")
+        print(f"Loaded preprocessors")
         return self.preprocessors
     
     def load_feature_names(self):
@@ -75,7 +75,7 @@ class ModelLoader:
             raise FileNotFoundError(f"Feature names not found: {feature_path}")
             
         self.feature_names = joblib.load(feature_path)
-        print(f"✅ Loaded {len(self.feature_names)} feature names")
+        print(f"Loaded {len(self.feature_names)} feature names")
         return self.feature_names
     
     def load_metadata(self):
@@ -87,7 +87,7 @@ class ModelLoader:
             raise FileNotFoundError(f"Metadata not found: {metadata_path}")
             
         self.metadata = joblib.load(metadata_path)
-        print(f"✅ Loaded metadata")
+        print(f"Loaded metadata")
         return self.metadata
     
     def load_all(self):
@@ -96,7 +96,7 @@ class ModelLoader:
         self.load_preprocessors()
         self.load_feature_names()
         self.load_metadata()
-        print(f"✅ All components loaded for {self.model_type}")
+        print(f"All components loaded for {self.model_type}")
         return self
     
     def get_model_info(self) -> Dict[str, Any]:
@@ -249,7 +249,7 @@ class StressPredictionPredictor:
         
         self.model = joblib.load(model_path)
         self.preprocessors = joblib.load(preprocessor_path)
-        print(f"✅ Loaded stress prediction model")
+        print(f"Loaded stress prediction model")
     
     def predict(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
         """
