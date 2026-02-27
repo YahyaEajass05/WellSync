@@ -14,8 +14,8 @@ const connectDB = async () => {
             // Mongoose 6+ handles these automatically
         });
 
-        logger.info(`✅ MongoDB Connected: ${conn.connection.host}`);
-        logger.info(`📊 Database: ${conn.connection.name}`);
+        logger.info(`MongoDB Connected: ${conn.connection.host}`);
+        logger.info(`Database: ${conn.connection.name}`);
 
         // Connection event handlers
         mongoose.connection.on('error', (err) => {
@@ -35,7 +35,7 @@ const connectDB = async () => {
 
         return conn;
     } catch (error) {
-        logger.error(`❌ MongoDB Connection Error: ${error.message}`);
+        logger.error(`MongoDB Connection Error: ${error.message}`);
         process.exit(1);
     }
 };
