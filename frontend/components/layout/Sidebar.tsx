@@ -91,7 +91,7 @@ export function Sidebar() {
     <aside className="fixed left-0 top-16 z-40 h-[calc(100vh-4rem)] w-64 border-r bg-background transition-transform lg:translate-x-0">
       <div className="flex h-full flex-col gap-2 p-4">
 
-        {/* ── Theme Toggle ── */}
+        {/* Theme Toggle */}
         <div className="flex items-center justify-between rounded-lg border px-3 py-2 mb-2 flex-shrink-0">
           <span className="text-sm font-medium text-muted-foreground">
             {!mounted ? 'Theme' : isDark ? 'Dark Mode' : 'Light Mode'}

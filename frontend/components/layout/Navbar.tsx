@@ -92,7 +92,7 @@ export function Navbar() {
         <div className="flex flex-1 items-center justify-end gap-2">
           {isAuthenticated ? (
             <>
-              {/* ── Notifications Bell ── */}
+              {/* Notifications Bell */}
               <div className="relative" ref={notifRef}>
                 <Button
                   variant="ghost"
@@ -172,7 +172,7 @@ export function Navbar() {
                 )}
               </div>
 
-              {/* ── User Menu ── */}
+              {/* User Menu */}
               <div className="relative" ref={userRef}>
                 <Button
                   variant="ghost"
