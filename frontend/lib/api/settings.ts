@@ -2,7 +2,7 @@ import axiosInstance from './axios-instance';
 import type { ApiResponse, User } from '@/types';
 
 export const settingsApi = {
-  // ── Personal Info ─────────────────────────────────────────────────────────
+  // Personal Info:
   getProfile: async (): Promise<User> => {
     const res = await axiosInstance.get<ApiResponse<{ user: User }>>('/users/profile');
     return res.data.data!.user;
@@ -23,7 +23,7 @@ export const settingsApi = {
     return res.data.data!.user;
   },
 
-  // ── Preferences ───────────────────────────────────────────────────────────
+  // Preferences:
   updatePreferences: async (preferences: {
     notifications?: { email: boolean; push: boolean };
     theme?: 'light' | 'dark' | 'auto';
@@ -32,7 +32,7 @@ export const settingsApi = {
     return res.data.data!.user;
   },
 
-  // ── Password ──────────────────────────────────────────────────────────────
+  // Password:
   changePassword: async (data: {
     currentPassword: string;
     newPassword: string;
@@ -41,7 +41,7 @@ export const settingsApi = {
     await axiosInstance.put('/auth/change-password', data);
   },
 
-  // ── Account ───────────────────────────────────────────────────────────────
+  // Account:
   deleteAccount: async (password: string): Promise<void> => {
     await axiosInstance.delete('/users/account', { data: { password } });
   },

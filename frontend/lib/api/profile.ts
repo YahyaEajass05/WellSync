@@ -8,7 +8,7 @@ import type {
   ProfileOverview,
 } from '@/types';
 
-// ── Mental Wellness Profile ────────────────────────────────────────────────────
+// Mental Wellness Profile:
 
 export const profileApi = {
   // Get profile overview
@@ -17,7 +17,7 @@ export const profileApi = {
     return res.data.data!;
   },
 
-  // ── Mental Wellness ──────────────────────────────────────────────────────────
+  // Mental Wellness:
   getMentalWellnessProfile: async (): Promise<{ profile: MentalWellnessProfile; readinessScore: number } | null> => {
     try {
       const res = await axiosInstance.get<ApiResponse<{ profile: MentalWellnessProfile; readinessScore: number }>>(
@@ -40,7 +40,7 @@ export const profileApi = {
     return res.data.data!;
   },
 
-  // ── Student Profile ──────────────────────────────────────────────────────────
+  // Student Profile:
   getStudentProfile: async (): Promise<{ profile: StudentProfile; summary: any; riskScore: number } | null> => {
     try {
       const res = await axiosInstance.get<ApiResponse<{ profile: StudentProfile; summary: any; riskScore: number }>>(
@@ -63,7 +63,7 @@ export const profileApi = {
     return res.data.data!;
   },
 
-  // ── Screen Time ──────────────────────────────────────────────────────────────
+  // Screen Time:
   getScreenTime: async (days = 7): Promise<{ trends: ScreenTimeLog[]; weeklyAverage: any; stats: any }> => {
     const res = await axiosInstance.get<ApiResponse<{ trends: ScreenTimeLog[]; weeklyAverage: any; stats: any }>>(
       `/profiles/screen-time?days=${days}`
@@ -88,7 +88,7 @@ export const profileApi = {
     return res.data.data!;
   },
 
-  // ── Sleep ────────────────────────────────────────────────────────────────────
+  // Sleep:
   getSleep: async (days = 7): Promise<{ records: SleepRecord[]; weeklyAverage: any; totalRecords: number }> => {
     const res = await axiosInstance.get<
       ApiResponse<{ records: SleepRecord[]; weeklyAverage: any; totalRecords: number }>

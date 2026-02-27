@@ -34,7 +34,7 @@ export function useAuth() {
   const registerMutation = useMutation({
     mutationFn: (data: RegisterData) => authApi.register(data),
     onSuccess: (data) => {
-      // ── IMPORTANT: Do NOT set the auth token or cookie here. ──────────────
+      // IMPORTANT: Do NOT set the auth token or cookie here.
       // Setting the token cookie after registration causes the Next.js
       // middleware to treat the user as authenticated. When verify-email
       // redirects to /login?verified=true, the middleware intercepts /login

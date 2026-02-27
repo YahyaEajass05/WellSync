@@ -156,7 +156,7 @@ export const adminApi = {
     return response.data.data;
   },
 
-  // ── Export helpers (trigger browser download) ──────────────────────────────
+  // Export helpers:
   exportUsersCSV: async () => {
     const response = await axiosInstance.get('/admin/export/users/csv', { responseType: 'blob' });
     triggerDownload(response.data, `wellsync-users-${Date.now()}.csv`, 'text/csv');

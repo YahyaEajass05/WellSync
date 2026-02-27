@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { profileApi } from '@/lib/api/profile';
 
-// ── Overview ───────────────────────────────────────────────────────────────────
+// Overview:
 export function useProfileOverview() {
   return useQuery({
     queryKey: ['profile', 'overview'],
@@ -10,7 +10,7 @@ export function useProfileOverview() {
   });
 }
 
-// ── Mental Wellness Profile ────────────────────────────────────────────────────
+// Mental Wellness Profile:
 export function useMentalWellnessProfile() {
   return useQuery({
     queryKey: ['profile', 'mental-wellness'],
@@ -29,7 +29,7 @@ export function useSaveMentalWellnessProfile() {
   });
 }
 
-// ── Student Profile ────────────────────────────────────────────────────────────
+// Student Profile:
 export function useStudentProfile() {
   return useQuery({
     queryKey: ['profile', 'student'],
@@ -48,7 +48,7 @@ export function useSaveStudentProfile() {
   });
 }
 
-// ── Screen Time ────────────────────────────────────────────────────────────────
+// Screen Time:
 export function useScreenTime(days = 7) {
   return useQuery({
     queryKey: ['profile', 'screen-time', days],
@@ -68,7 +68,7 @@ export function useLogScreenTime() {
   });
 }
 
-// ── Sleep ──────────────────────────────────────────────────────────────────────
+// Sleep:
 export function useSleep(days = 7) {
   return useQuery({
     queryKey: ['profile', 'sleep', days],
