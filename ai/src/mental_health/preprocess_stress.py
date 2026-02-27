@@ -20,9 +20,9 @@ def preprocess_stress_data(csv_path, save_preprocessors=True):
     Returns:
         X_train, X_test, y_train, y_test, feature_names, preprocessors
     """
-    print("🔄 Loading dataset for stress prediction...")
+    print("Loading dataset for stress prediction...")
     df = pd.read_csv(csv_path)
-    print(f"✅ Dataset loaded: {df.shape[0]} rows, {df.shape[1]} columns")
+    print(f"Dataset loaded: {df.shape[0]} rows, {df.shape[1]} columns")
     
     # Store original dataframe for analysis
     df_original = df.copy()
@@ -30,18 +30,18 @@ def preprocess_stress_data(csv_path, save_preprocessors=True):
     # Drop 'user_id' column (non-predictive)
     df = df.drop(columns=["user_id"])
     
-    # ============= DATA QUALITY CHECKS =============
-    print("\n📊 Data Quality Analysis:")
+    # Data Quality Checks
+    print("\nData Quality Analysis:")
     print(f"   Missing values: {df.isnull().sum().sum()}")
     print(f"   Duplicate rows: {df.duplicated().sum()}")
     
     # Remove duplicates if any
     if df.duplicated().sum() > 0:
         df = df.drop_duplicates()
-        print(f"   ✅ Removed {df.duplicated().sum()} duplicate rows")
+        print(f"   Removed {df.duplicated().sum()} duplicate rows")
     
-    # ============= FEATURE ENGINEERING =============
-    print("\n🔧 Feature Engineering for Stress Prediction:")
+    # Feature Engineering
+    print("\nFeature Engineering for Stress Prediction:")
     
     # 1. Screen time patterns (excessive screen time increases stress)
     df['total_screen_ratio'] = df['screen_time_hours'] / 24.0  # Proportion of day
@@ -95,10 +95,10 @@ def preprocess_stress_data(csv_path, save_preprocessors=True):
     # Replace any inf values with NaN, then handle them
     df = df.replace([np.inf, -np.inf], np.nan)
     
-    print(f"   ✅ Created {len(df.columns) - len(df_original.columns) + 1} new features")
+    print(f"   Created {len(df.columns) - len(df_original.columns) + 1} new features")
     
-    # ============= HANDLE MISSING VALUES =============
-    print("\n🔧 Handling missing values...")
+    # Handle Missing Values
+    print("\nHandling missing values...")
     
     # CRITICAL: Separate target BEFORE any operations that might affect indices
     y = df['stress_level_0_10'].copy()
@@ -107,14 +107,14 @@ def preprocess_stress_data(csv_path, save_preprocessors=True):
     # Check and remove rows with NaN in target
     nan_mask = y.isnull()
     if nan_mask.sum() > 0:
-        print(f"   ⚠️  Removing {nan_mask.sum()} rows with missing stress_level values")
+        print(f"   Removing {nan_mask.sum()} rows with missing stress_level values")
         y = y[~nan_mask]
         X = X[~nan_mask]
     
     # Check for remaining NaN or inf values in features
     nan_counts = X.isnull().sum()
     if nan_counts.sum() > 0:
-        print(f"   ⚠️  Found NaN values in {nan_counts[nan_counts > 0].shape[0]} features, imputing...")
+        print(f"   Found NaN values in {nan_counts[nan_counts > 0].shape[0]} features, imputing...")
     
     # Get numeric columns for imputation
     numeric_cols = X.select_dtypes(include=[np.number]).columns.tolist()
@@ -122,8 +122,8 @@ def preprocess_stress_data(csv_path, save_preprocessors=True):
     imputer = SimpleImputer(strategy="median")
     X[numeric_cols] = imputer.fit_transform(X[numeric_cols])
     
-    # ============= ENCODE CATEGORICAL VARIABLES =============
-    print("🔧 Encoding categorical variables...")
+    # Encode Categorical Variables
+    print("Encoding categorical variables...")
     categorical_cols = ["gender", "occupation", "work_mode"]
     
     # Store encoders for each column
@@ -134,8 +134,8 @@ def preprocess_stress_data(csv_path, save_preprocessors=True):
             X[col] = encoder.fit_transform(X[col])
             encoders[col] = encoder
     
-    # ============= HANDLE OUTLIERS =============
-    print("🔧 Handling outliers using IQR method...")
+    # Handle Outliers
+    print("Handling outliers using IQR method...")
     
     outlier_cols = ['screen_time_hours', 'work_screen_hours', 'leisure_screen_hours', 
                     'exercise_minutes_per_week', 'social_hours_per_week']
@@ -151,8 +151,8 @@ def preprocess_stress_data(csv_path, save_preprocessors=True):
             # Cap outliers instead of removing them
             X[col] = X[col].clip(lower=lower_bound, upper=upper_bound)
     
-    # ============= FEATURE SCALING =============
-    print("🔧 Scaling features...")
+    # Feature Scaling
+    print("Scaling features...")
     
     # Use RobustScaler for better handling of outliers
     scaler = RobustScaler()
@@ -162,8 +162,8 @@ def preprocess_stress_data(csv_path, save_preprocessors=True):
     X_scaled = scaler.fit_transform(X)
     X = pd.DataFrame(X_scaled, columns=feature_names)
     
-    # ============= TRAIN-TEST SPLIT =============
-    print("🔧 Splitting data (80% train, 20% test)...")
+    # Train-Test Split
+    print("Splitting data (80% train, 20% test)...")
     
     # Reset indices to avoid misalignment
     X = X.reset_index(drop=True)
@@ -175,7 +175,7 @@ def preprocess_stress_data(csv_path, save_preprocessors=True):
         
         # Handle any remaining NaN in bins by using qcut instead
         if stress_bins.isnull().sum() > 0:
-            print(f"   ⚠️  Using qcut for stratification due to edge cases")
+            print(f"   Using qcut for stratification due to edge cases")
             stress_bins = pd.qcut(y, q=4, labels=[0, 1, 2, 3], duplicates='drop')
         
         X_train, X_test, y_train, y_test = train_test_split(
@@ -183,19 +183,19 @@ def preprocess_stress_data(csv_path, save_preprocessors=True):
         )
     except:
         # Fallback: no stratification if binning fails
-        print(f"   ⚠️  Skipping stratification due to binning issues")
+        print(f"   Skipping stratification due to binning issues")
         X_train, X_test, y_train, y_test = train_test_split(
             X, y, test_size=0.2, random_state=42
         )
     
-    print(f"   ✅ Train set: {X_train.shape[0]} samples")
-    print(f"   ✅ Test set: {X_test.shape[0]} samples")
-    print(f"   📊 Stress level distribution (train):")
+    print(f"   Train set: {X_train.shape[0]} samples")
+    print(f"   Test set: {X_test.shape[0]} samples")
+    print(f"   Stress level distribution (train):")
     print(f"      Mean: {y_train.mean():.2f}, Std: {y_train.std():.2f}")
-    print(f"   📊 Stress level distribution (test):")
+    print(f"   Stress level distribution (test):")
     print(f"      Mean: {y_test.mean():.2f}, Std: {y_test.std():.2f}")
     
-    # ============= SAVE PREPROCESSORS =============
+    # Save Preprocessors
     if save_preprocessors:
         preprocessors = {
             'scaler': scaler,
@@ -207,10 +207,10 @@ def preprocess_stress_data(csv_path, save_preprocessors=True):
         # Create directory if it doesn't exist
         os.makedirs("../../../ai/models/mental_health", exist_ok=True)
         joblib.dump(preprocessors, "../../../ai/models/mental_health/stress_preprocessors.pkl")
-        print("\n✅ Stress preprocessors saved for deployment")
+        print("\nStress preprocessors saved for deployment")
     else:
         preprocessors = None
     
-    print("\n✅ Stress prediction preprocessing completed successfully!\n")
+    print("\nStress prediction preprocessing completed successfully!\n")
     
     return X_train, X_test, y_train, y_test, feature_names, preprocessors

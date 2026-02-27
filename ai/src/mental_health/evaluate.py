@@ -22,39 +22,35 @@ def evaluate_saved_model(model_path="ai/models/mental_health/best_model.pkl"):
     Evaluate a saved model with comprehensive metrics and visualizations
     """
     
-    print("\n" + "=" * 80)
-    print("🔍 MODEL EVALUATION & ANALYSIS")
-    print("=" * 80)
+    print("\nModel Evaluation & Analysis")
     
     # Load dataset
     csv_path = "ai/data/ScreenTime_MentalWellness.csv"
-    print(f"\n📂 Loading dataset from: {csv_path}")
+    print(f"\nLoading dataset from: {csv_path}")
     
     X_train, X_test, y_train, y_test, feature_names, _ = preprocess_data(csv_path, save_preprocessors=False)
     
     # Load model
-    print(f"📂 Loading model from: {model_path}")
+    print(f"Loading model from: {model_path}")
     model = joblib.load(model_path)
     
     # Load metadata if available
     metadata_path = "ai/models/mental_health/model_metadata.pkl"
     if os.path.exists(metadata_path):
         metadata = joblib.load(metadata_path)
-        print(f"\n📋 Model Information:")
+        print(f"\nModel Information:")
         print(f"   • Model Type: {metadata.get('best_model_name', 'N/A')}")
         print(f"   • Training Date: {metadata.get('training_date', 'N/A')}")
         print(f"   • Number of Features: {metadata.get('feature_count', 'N/A')}")
         print(f"   • Dataset Size: {metadata.get('dataset_size', 'N/A')}")
     
     # Make predictions
-    print("\n🔄 Making predictions...")
+    print("\nMaking predictions...")
     y_train_pred = model.predict(X_train)
     y_test_pred = model.predict(X_test)
     
     # Calculate comprehensive metrics
-    print("\n" + "=" * 80)
-    print("📊 PERFORMANCE METRICS")
-    print("=" * 80)
+    print("\nPerformance Metrics")
     
     # Training metrics
     train_mae = mean_absolute_error(y_train, y_train_pred)
@@ -70,13 +66,13 @@ def evaluate_saved_model(model_path="ai/models/mental_health/best_model.pkl"):
     test_r2 = r2_score(y_test, y_test_pred)
     test_mape = mean_absolute_percentage_error(y_test, y_test_pred)
     
-    print("\n🎯 Training Set Performance:")
+    print("\nTraining Set Performance:")
     print(f"   • R² Score: {train_r2:.4f}")
     print(f"   • MAE: {train_mae:.4f}")
     print(f"   • RMSE: {train_rmse:.4f}")
     print(f"   • MAPE: {train_mape:.4f}%")
     
-    print("\n🎯 Test Set Performance:")
+    print("\nTest Set Performance:")
     print(f"   • R² Score: {test_r2:.4f}")
     print(f"   • MAE: {test_mae:.4f}")
     print(f"   • RMSE: {test_rmse:.4f}")
@@ -86,19 +82,19 @@ def evaluate_saved_model(model_path="ai/models/mental_health/best_model.pkl"):
     r2_diff = train_r2 - test_r2
     mae_diff = test_mae - train_mae
     
-    print("\n🔍 Overfitting Analysis:")
+    print("\nOverfitting Analysis:")
     print(f"   • R² Difference (Train - Test): {r2_diff:.4f}")
     print(f"   • MAE Difference (Test - Train): {mae_diff:.4f}")
     
     if r2_diff < 0.05 and mae_diff < 2:
-        print("   ✅ Model generalizes well - No significant overfitting")
+        print("   Model generalizes well - No significant overfitting")
     elif r2_diff < 0.10:
-        print("   ⚠️  Slight overfitting detected - Model is acceptable")
+        print("   Slight overfitting detected - Model is acceptable")
     else:
-        print("   ❌ Significant overfitting detected - Consider regularization")
+        print("   Significant overfitting detected - Consider regularization")
     
     # Prediction quality analysis
-    print("\n📈 Prediction Quality Analysis:")
+    print("\nPrediction Quality Analysis:")
     residuals = y_test - y_test_pred
     
     print(f"   • Mean Residual: {np.mean(residuals):.4f}")
@@ -107,20 +103,18 @@ def evaluate_saved_model(model_path="ai/models/mental_health/best_model.pkl"):
     print(f"   • Max Residual: {np.max(residuals):.4f}")
     
     # Prediction range analysis
-    print("\n📊 Prediction Range Analysis:")
+    print("\nPrediction Range Analysis:")
     print(f"   • Actual Range: [{y_test.min():.2f}, {y_test.max():.2f}]")
     print(f"   • Predicted Range: [{y_test_pred.min():.2f}, {y_test_pred.max():.2f}]")
     
     # Create visualizations
-    print("\n" + "=" * 80)
-    print("📊 GENERATING VISUALIZATIONS")
-    print("=" * 80)
+    print("\nGenerating Visualizations")
     
     create_evaluation_visualizations(y_test, y_test_pred, model, feature_names)
     
     # Feature importance (if available)
     if hasattr(model, 'feature_importances_'):
-        print("\n🏆 Top 15 Most Important Features:")
+        print("\nTop 15 Most Important Features:")
         importances = model.feature_importances_
         indices = np.argsort(importances)[::-1][:15]
         
@@ -131,11 +125,8 @@ def evaluate_saved_model(model_path="ai/models/mental_health/best_model.pkl"):
     save_evaluation_report(train_r2, test_r2, train_mae, test_mae, train_rmse, test_rmse, 
                           train_mape, test_mape, residuals, model_path)
     
-    print("\n" + "=" * 80)
-    print("✅ EVALUATION COMPLETED SUCCESSFULLY!")
-    print("=" * 80)
-    print(f"\n📁 Evaluation artifacts saved in: ai/models/mental_health/visualizations/")
-    print("=" * 80 + "\n")
+    print("\nEvaluation Completed Successfully!")
+    print(f"\nEvaluation artifacts saved in: ai/models/mental_health/visualizations/")
     
     return {
         'train_r2': train_r2,
@@ -152,7 +143,7 @@ def create_evaluation_visualizations(y_test, y_pred, model, feature_names):
     os.makedirs("ai/models/mental_health/visualizations", exist_ok=True)
     
     # 1. Actual vs Predicted scatter plot
-    print("\n📊 Creating Actual vs Predicted plot...")
+    print("\nCreating Actual vs Predicted plot...")
     plt.figure(figsize=(10, 8))
     plt.scatter(y_test, y_pred, alpha=0.6, color='steelblue', edgecolors='k', s=60)
     plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 
@@ -172,11 +163,11 @@ def create_evaluation_visualizations(y_test, y_pred, model, feature_names):
     plt.grid(alpha=0.3, linestyle='--')
     plt.tight_layout()
     plt.savefig("ai/models/mental_health/visualizations/evaluation_predictions.png", dpi=300, bbox_inches='tight')
-    print("   ✅ Saved: evaluation_predictions.png")
+    print("   Saved: evaluation_predictions.png")
     plt.close()
     
     # 2. Residual analysis (2 subplots)
-    print("\n📊 Creating Residual analysis plots...")
+    print("\nCreating Residual analysis plots...")
     residuals = y_test - y_pred
     
     fig, axes = plt.subplots(1, 2, figsize=(15, 6))
@@ -202,11 +193,11 @@ def create_evaluation_visualizations(y_test, y_pred, model, feature_names):
     plt.suptitle('Residual Analysis', fontsize=16, fontweight='bold', y=1.02)
     plt.tight_layout()
     plt.savefig("ai/models/mental_health/visualizations/evaluation_residuals.png", dpi=300, bbox_inches='tight')
-    print("   ✅ Saved: evaluation_residuals.png")
+    print("   Saved: evaluation_residuals.png")
     plt.close()
     
     # 3. Error distribution by prediction range
-    print("\n📊 Creating Error distribution plot...")
+    print("\nCreating Error distribution plot...")
     fig, ax = plt.subplots(figsize=(12, 6))
     
     # Bin predictions and calculate errors
@@ -237,12 +228,12 @@ def create_evaluation_visualizations(y_test, y_pred, model, feature_names):
     ax.grid(alpha=0.3, axis='y', linestyle='--')
     plt.tight_layout()
     plt.savefig("ai/models/mental_health/visualizations/evaluation_error_distribution.png", dpi=300, bbox_inches='tight')
-    print("   ✅ Saved: evaluation_error_distribution.png")
+    print("   Saved: evaluation_error_distribution.png")
     plt.close()
     
     # 4. Feature importance (if available)
     if hasattr(model, 'feature_importances_'):
-        print("\n📊 Creating Feature importance plot...")
+        print("\nCreating Feature importance plot...")
         importances = model.feature_importances_
         indices = np.argsort(importances)[::-1][:20]
         
@@ -257,7 +248,7 @@ def create_evaluation_visualizations(y_test, y_pred, model, feature_names):
         plt.grid(alpha=0.3, axis='x', linestyle='--')
         plt.tight_layout()
         plt.savefig("ai/models/mental_health/visualizations/evaluation_feature_importance.png", dpi=300, bbox_inches='tight')
-        print("   ✅ Saved: evaluation_feature_importance.png")
+        print("   Saved: evaluation_feature_importance.png")
         plt.close()
 
 def save_evaluation_report(train_r2, test_r2, train_mae, test_mae, train_rmse, test_rmse,
@@ -333,7 +324,7 @@ def save_evaluation_report(train_r2, test_r2, train_mae, test_mae, train_rmse, t
         f.write("END OF REPORT\n")
         f.write("=" * 80 + "\n")
     
-    print(f"\n   ✅ Evaluation report saved: {report_path}")
+    print(f"\n   Evaluation report saved: {report_path}")
 
 def evaluate_model():
     """Main evaluation function"""

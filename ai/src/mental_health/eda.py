@@ -19,46 +19,42 @@ def load_data():
     """Load the mental wellness dataset"""
     csv_path = "ai/data/ScreenTime_MentalWellness.csv"
     df = pd.read_csv(csv_path)
-    print(f"✅ Dataset loaded: {df.shape[0]} rows, {df.shape[1]} columns")
+    print(f"Dataset loaded: {df.shape[0]} rows, {df.shape[1]} columns")
     return df
 
 def basic_info(df):
     """Display basic dataset information"""
-    print("\n" + "="*80)
-    print("📊 DATASET BASIC INFORMATION")
-    print("="*80)
+    print("\nDataset Basic Information")
     
     print(f"\nDataset Shape: {df.shape}")
     print(f"Total Samples: {df.shape[0]}")
     print(f"Total Features: {df.shape[1]}")
     
-    print("\n📋 Column Names and Types:")
+    print("\nColumn Names and Types:")
     print(df.dtypes)
     
-    print("\n🔍 Missing Values:")
+    print("\nMissing Values:")
     missing = df.isnull().sum()
     if missing.sum() == 0:
-        print("   ✅ No missing values found!")
+        print("   No missing values found!")
     else:
         print(missing[missing > 0])
     
-    print("\n📊 Duplicate Rows:")
+    print("\nDuplicate Rows:")
     duplicates = df.duplicated().sum()
     print(f"   Total duplicates: {duplicates}")
     
-    print("\n💾 Memory Usage:")
+    print("\nMemory Usage:")
     print(f"   {df.memory_usage(deep=True).sum() / 1024:.2f} KB")
 
 def statistical_summary(df):
     """Display statistical summary"""
-    print("\n" + "="*80)
-    print("📈 STATISTICAL SUMMARY")
-    print("="*80)
+    print("\nStatistical Summary")
     
-    print("\n📊 Numerical Features Summary:")
+    print("\nNumerical Features Summary:")
     print(df.describe())
     
-    print("\n📊 Categorical Features Summary:")
+    print("\nCategorical Features Summary:")
     categorical_cols = df.select_dtypes(include=['object']).columns
     for col in categorical_cols:
         if col != 'user_id':
@@ -67,13 +63,11 @@ def statistical_summary(df):
 
 def target_analysis(df):
     """Analyze target variable (mental wellness index)"""
-    print("\n" + "="*80)
-    print("🎯 TARGET VARIABLE ANALYSIS: Mental Wellness Index")
-    print("="*80)
+    print("\nTarget Variable Analysis: Mental Wellness Index")
     
     target = df['mental_wellness_index_0_100']
     
-    print(f"\n📊 Statistics:")
+    print(f"\nStatistics:")
     print(f"   Mean: {target.mean():.2f}")
     print(f"   Median: {target.median():.2f}")
     print(f"   Std Dev: {target.std():.2f}")
@@ -106,14 +100,12 @@ def target_analysis(df):
     
     plt.tight_layout()
     plt.savefig("ai/src/mental_health/eda_visualizations/target_distribution.png", dpi=300, bbox_inches='tight')
-    print("\n   ✅ Saved: target_distribution.png")
+    print("\n   Saved: target_distribution.png")
     plt.close()
 
 def correlation_analysis(df):
     """Analyze correlations between features"""
-    print("\n" + "="*80)
-    print("🔗 CORRELATION ANALYSIS")
-    print("="*80)
+    print("\nCorrelation Analysis")
     
     # Select numeric columns
     numeric_df = df.select_dtypes(include=[np.number])
@@ -125,7 +117,7 @@ def correlation_analysis(df):
     
     # Top correlations with target
     target_corr = correlation_matrix['mental_wellness_index_0_100'].sort_values(ascending=False)
-    print("\n📊 Top Correlations with Mental Wellness Index:")
+    print("\nTop Correlations with Mental Wellness Index:")
     print(target_corr)
     
     # Create heatmap
@@ -135,14 +127,12 @@ def correlation_analysis(df):
     plt.title('Feature Correlation Heatmap', fontsize=16, fontweight='bold', pad=20)
     plt.tight_layout()
     plt.savefig("ai/src/mental_health/eda_visualizations/correlation_heatmap.png", dpi=300, bbox_inches='tight')
-    print("\n   ✅ Saved: correlation_heatmap.png")
+    print("\n   Saved: correlation_heatmap.png")
     plt.close()
 
 def feature_distributions(df):
     """Analyze distributions of key features"""
-    print("\n" + "="*80)
-    print("📊 KEY FEATURE DISTRIBUTIONS")
-    print("="*80)
+    print("\nKey Feature Distributions")
     
     key_features = ['screen_time_hours', 'sleep_hours', 'stress_level_0_10', 
                    'productivity_0_100', 'exercise_minutes_per_week', 'social_hours_per_week']
@@ -164,14 +154,12 @@ def feature_distributions(df):
     
     plt.tight_layout()
     plt.savefig("ai/src/mental_health/eda_visualizations/feature_distributions.png", dpi=300, bbox_inches='tight')
-    print("\n   ✅ Saved: feature_distributions.png")
+    print("\n   Saved: feature_distributions.png")
     plt.close()
 
 def categorical_analysis(df):
     """Analyze categorical variables"""
-    print("\n" + "="*80)
-    print("📊 CATEGORICAL FEATURES ANALYSIS")
-    print("="*80)
+    print("\nCategorical Features Analysis")
     
     categorical_cols = ['gender', 'occupation', 'work_mode']
     
@@ -192,14 +180,12 @@ def categorical_analysis(df):
     
     plt.tight_layout()
     plt.savefig("ai/src/mental_health/eda_visualizations/categorical_distributions.png", dpi=300, bbox_inches='tight')
-    print("\n   ✅ Saved: categorical_distributions.png")
+    print("\n   Saved: categorical_distributions.png")
     plt.close()
 
 def wellness_by_category(df):
     """Analyze mental wellness by categorical variables"""
-    print("\n" + "="*80)
-    print("📊 MENTAL WELLNESS BY CATEGORIES")
-    print("="*80)
+    print("\nMental Wellness By Categories")
     
     categorical_cols = ['gender', 'occupation', 'work_mode']
     
@@ -219,14 +205,12 @@ def wellness_by_category(df):
     
     plt.tight_layout()
     plt.savefig("ai/src/mental_health/eda_visualizations/wellness_by_category.png", dpi=300, bbox_inches='tight')
-    print("\n   ✅ Saved: wellness_by_category.png")
+    print("\n   Saved: wellness_by_category.png")
     plt.close()
 
 def scatter_plots(df):
     """Create scatter plots for key relationships"""
-    print("\n" + "="*80)
-    print("📊 SCATTER PLOTS: Key Relationships")
-    print("="*80)
+    print("\nScatter Plots: Key Relationships")
     
     relationships = [
         ('screen_time_hours', 'mental_wellness_index_0_100'),
@@ -259,19 +243,17 @@ def scatter_plots(df):
     
     plt.tight_layout()
     plt.savefig("ai/src/mental_health/eda_visualizations/scatter_plots.png", dpi=300, bbox_inches='tight')
-    print("\n   ✅ Saved: scatter_plots.png")
+    print("\n   Saved: scatter_plots.png")
     plt.close()
 
 def outlier_detection(df):
     """Detect and visualize outliers"""
-    print("\n" + "="*80)
-    print("🔍 OUTLIER DETECTION")
-    print("="*80)
+    print("\nOutlier Detection")
     
     numeric_cols = ['screen_time_hours', 'sleep_hours', 'stress_level_0_10', 
                    'mental_wellness_index_0_100']
     
-    print("\n📊 Outliers using IQR method:")
+    print("\nOutliers using IQR method:")
     for col in numeric_cols:
         if col in df.columns:
             Q1 = df[col].quantile(0.25)
@@ -288,9 +270,7 @@ def outlier_detection(df):
 
 def generate_eda_report(df):
     """Generate comprehensive EDA report"""
-    print("\n" + "="*80)
-    print("📝 GENERATING EDA REPORT")
-    print("="*80)
+    print("\nGenerating EDA Report")
     
     os.makedirs("ai/src/mental_health/eda_visualizations", exist_ok=True)
     
@@ -334,13 +314,11 @@ def generate_eda_report(df):
         correlations = numeric_df.corr()['mental_wellness_index_0_100'].sort_values(ascending=False)
         f.write(str(correlations) + "\n")
     
-    print(f"   ✅ Report saved: {report_path}")
+    print(f"   Report saved: {report_path}")
 
 def run_complete_eda():
     """Run complete EDA analysis"""
-    print("\n" + "="*80)
-    print("🚀 MENTAL WELLNESS DATASET - COMPREHENSIVE EDA")
-    print("="*80)
+    print("\nMental Wellness Dataset - Comprehensive EDA")
     
     # Load data
     df = load_data()
@@ -357,11 +335,9 @@ def run_complete_eda():
     outlier_detection(df)
     generate_eda_report(df)
     
-    print("\n" + "="*80)
-    print("✅ EDA COMPLETE!")
-    print("="*80)
-    print("\n📁 All visualizations saved in: ai/src/mental_health/eda_visualizations/")
-    print("\n📊 Generated Files:")
+    print("\nEDA Complete!")
+    print("\nAll visualizations saved in: ai/src/mental_health/eda_visualizations/")
+    print("\nGenerated Files:")
     print("   • target_distribution.png")
     print("   • correlation_heatmap.png")
     print("   • feature_distributions.png")
@@ -369,7 +345,6 @@ def run_complete_eda():
     print("   • wellness_by_category.png")
     print("   • scatter_plots.png")
     print("   • EDA_REPORT.txt")
-    print("\n" + "="*80 + "\n")
 
 if __name__ == "__main__":
     run_complete_eda()

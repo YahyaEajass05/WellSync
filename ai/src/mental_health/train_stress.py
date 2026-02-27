@@ -40,28 +40,23 @@ def train_stress_models(csv_path="../../../ai/data/ScreenTime_MentalWellness.csv
         best_model, model_name, results_dict
     """
     
-    print("=" * 80)
-    print("🧠 STRESS LEVEL PREDICTION - TRAINING PIPELINE")
-    print("=" * 80)
+    print("\nStress Level Prediction - Training Pipeline")
     
-    # ============= STEP 1: PREPROCESSING =============
-    print("\n📌 STEP 1: Data Preprocessing")
-    print("-" * 80)
+    # Step 1: Preprocessing
+    print("\nStep 1: Data Preprocessing")
     
     X_train, X_test, y_train, y_test, feature_names, preprocessors = preprocess_stress_data(
         csv_path, save_preprocessors=True
     )
     
-    print(f"\n📊 Dataset Summary:")
+    print(f"\nDataset Summary:")
     print(f"   Training samples: {X_train.shape[0]}")
     print(f"   Testing samples: {X_test.shape[0]}")
     print(f"   Number of features: {X_train.shape[1]}")
     print(f"   Target range: [{y_train.min():.2f}, {y_train.max():.2f}]")
     
-    # ============= STEP 2: BASELINE MODELS =============
-    print("\n" + "=" * 80)
-    print("📌 STEP 2: Training Baseline Models")
-    print("-" * 80)
+    # Step 2: Baseline Models
+    print("\nStep 2: Training Baseline Models")
     
     models = {
         'Linear Ridge': Ridge(alpha=1.0, random_state=42),
@@ -76,7 +71,7 @@ def train_stress_models(csv_path="../../../ai/data/ScreenTime_MentalWellness.csv
     results = {}
     trained_models = {}
     
-    print("\n🔄 Training and evaluating baseline models...")
+    print("\nTraining and evaluating baseline models...")
     
     for name, model in models.items():
         print(f"\n   Training {name}...")
@@ -114,21 +109,19 @@ def train_stress_models(csv_path="../../../ai/data/ScreenTime_MentalWellness.csv
         
         trained_models[name] = model
         
-        print(f"      ✅ R² Score: {test_r2:.4f} | RMSE: {test_rmse:.4f} | MAE: {test_mae:.4f}")
+        print(f"      R² Score: {test_r2:.4f} | RMSE: {test_rmse:.4f} | MAE: {test_mae:.4f}")
     
-    # ============= STEP 3: HYPERPARAMETER TUNING =============
-    print("\n" + "=" * 80)
-    print("📌 STEP 3: Hyperparameter Tuning (Top Models)")
-    print("-" * 80)
+    # Step 3: Hyperparameter Tuning
+    print("\nStep 3: Hyperparameter Tuning (Top Models)")
     
     # Sort models by test R2 score
     sorted_models = sorted(results.items(), key=lambda x: x[1]['test_r2'], reverse=True)
     top_model_name = sorted_models[0][0]
     
-    print(f"\n🏆 Best baseline model: {top_model_name} (R² = {sorted_models[0][1]['test_r2']:.4f})")
+    print(f"\nBest baseline model: {top_model_name} (R² = {sorted_models[0][1]['test_r2']:.4f})")
     
     # Tune the best model
-    print(f"\n🔧 Tuning {top_model_name}...")
+    print(f"\nTuning {top_model_name}...")
     
     if 'Gradient Boosting' in top_model_name:
         param_grid = {
@@ -154,7 +147,7 @@ def train_stress_models(csv_path="../../../ai/data/ScreenTime_MentalWellness.csv
             base_model = RandomForestRegressor(random_state=42, n_jobs=-1)
     else:
         # For other models, use the baseline
-        print(f"   ⚠️ No tuning configuration for {top_model_name}, using baseline")
+        print(f"   No tuning configuration for {top_model_name}, using baseline")
         tuned_model = trained_models[top_model_name]
         param_grid = None
     
@@ -167,8 +160,8 @@ def train_stress_models(csv_path="../../../ai/data/ScreenTime_MentalWellness.csv
         grid_search.fit(X_train, y_train)
         tuned_model = grid_search.best_estimator_
         
-        print(f"\n   ✅ Best parameters: {grid_search.best_params_}")
-        print(f"   ✅ Best CV R² score: {grid_search.best_score_:.4f}")
+        print(f"\n   Best parameters: {grid_search.best_params_}")
+        print(f"   Best CV R² score: {grid_search.best_score_:.4f}")
     
     # Evaluate tuned model
     y_pred_train_tuned = tuned_model.predict(X_train)
@@ -178,22 +171,20 @@ def train_stress_models(csv_path="../../../ai/data/ScreenTime_MentalWellness.csv
     tuned_rmse = np.sqrt(mean_squared_error(y_test, y_pred_test_tuned))
     tuned_mae = mean_absolute_error(y_test, y_pred_test_tuned)
     
-    print(f"\n   📊 Tuned Model Performance:")
+    print(f"\n   Tuned Model Performance:")
     print(f"      R² Score: {tuned_r2:.4f}")
     print(f"      RMSE: {tuned_rmse:.4f}")
     print(f"      MAE: {tuned_mae:.4f}")
     
-    # ============= STEP 4: ENSEMBLE MODEL =============
-    print("\n" + "=" * 80)
-    print("📌 STEP 4: Creating Voting Ensemble")
-    print("-" * 80)
+    # Step 4: Ensemble Model
+    print("\nStep 4: Creating Voting Ensemble")
     
     # Select top 3 models for ensemble
     top_3_models = []
     for name, _ in sorted_models[:3]:
         top_3_models.append((name, trained_models[name]))
     
-    print(f"\n🔄 Creating ensemble with: {[name for name, _ in top_3_models]}")
+    print(f"\nCreating ensemble with: {[name for name, _ in top_3_models]}")
     
     voting_model = VotingRegressor(estimators=top_3_models, n_jobs=-1)
     voting_model.fit(X_train, y_train)
@@ -203,15 +194,13 @@ def train_stress_models(csv_path="../../../ai/data/ScreenTime_MentalWellness.csv
     voting_rmse = np.sqrt(mean_squared_error(y_test, y_pred_voting))
     voting_mae = mean_absolute_error(y_test, y_pred_voting)
     
-    print(f"\n   📊 Voting Ensemble Performance:")
+    print(f"\n   Voting Ensemble Performance:")
     print(f"      R² Score: {voting_r2:.4f}")
     print(f"      RMSE: {voting_rmse:.4f}")
     print(f"      MAE: {voting_mae:.4f}")
     
-    # ============= STEP 5: SELECT BEST MODEL =============
-    print("\n" + "=" * 80)
-    print("📌 STEP 5: Model Selection")
-    print("-" * 80)
+    # Step 5: Select Best Model
+    print("\nStep 5: Model Selection")
     
     candidates = {
         f'Tuned {top_model_name}': (tuned_model, tuned_r2, tuned_rmse, tuned_mae, y_pred_test_tuned),
@@ -221,15 +210,13 @@ def train_stress_models(csv_path="../../../ai/data/ScreenTime_MentalWellness.csv
     best_name = max(candidates.items(), key=lambda x: x[1][1])[0]
     best_model, best_r2, best_rmse, best_mae, best_predictions = candidates[best_name]
     
-    print(f"\n🏆 BEST MODEL: {best_name}")
+    print(f"\nBest Model: {best_name}")
     print(f"   R² Score: {best_r2:.4f}")
     print(f"   RMSE: {best_rmse:.4f}")
     print(f"   MAE: {best_mae:.4f}")
     
-    # ============= STEP 6: FEATURE IMPORTANCE =============
-    print("\n" + "=" * 80)
-    print("📌 STEP 6: Feature Importance Analysis")
-    print("-" * 80)
+    # Step 6: Feature Importance
+    print("\nStep 6: Feature Importance Analysis")
     
     # Get feature importance (if available)
     if hasattr(best_model, 'feature_importances_'):
@@ -253,14 +240,12 @@ def train_stress_models(csv_path="../../../ai/data/ScreenTime_MentalWellness.csv
             'Importance': feature_importance
         }).sort_values('Importance', ascending=False)
         
-        print(f"\n📊 Top 10 Most Important Features:")
+        print(f"\nTop 10 Most Important Features:")
         for idx, row in importance_df.head(10).iterrows():
             print(f"   {row['Feature']:<40} {row['Importance']:.4f}")
     
-    # ============= STEP 7: SAVE MODEL =============
-    print("\n" + "=" * 80)
-    print("📌 STEP 7: Saving Model")
-    print("-" * 80)
+    # Step 7: Save Model
+    print("\nStep 7: Saving Model")
     
     # Create directory
     os.makedirs("../../../ai/models/mental_health", exist_ok=True)
@@ -268,12 +253,10 @@ def train_stress_models(csv_path="../../../ai/data/ScreenTime_MentalWellness.csv
     # Save best model
     model_path = "../../../ai/models/mental_health/stress_model.pkl"
     joblib.dump(best_model, model_path)
-    print(f"\n✅ Model saved: {model_path}")
+    print(f"\nModel saved: {model_path}")
     
-    # ============= STEP 8: VISUALIZATIONS =============
-    print("\n" + "=" * 80)
-    print("📌 STEP 8: Generating Visualizations")
-    print("-" * 80)
+    # Step 8: Visualizations
+    print("\nStep 8: Generating Visualizations")
     
     viz_dir = "../../../ai/models/mental_health/visualizations"
     os.makedirs(viz_dir, exist_ok=True)
@@ -292,7 +275,7 @@ def train_stress_models(csv_path="../../../ai/data/ScreenTime_MentalWellness.csv
     plt.tight_layout()
     plt.savefig(f"{viz_dir}/stress_predictions.png", dpi=300, bbox_inches='tight')
     plt.close()
-    print(f"   ✅ Saved: stress_predictions.png")
+    print(f"   Saved: stress_predictions.png")
     
     # 2. Residuals Plot
     residuals = y_test - best_predictions
@@ -306,7 +289,7 @@ def train_stress_models(csv_path="../../../ai/data/ScreenTime_MentalWellness.csv
     plt.tight_layout()
     plt.savefig(f"{viz_dir}/stress_residuals.png", dpi=300, bbox_inches='tight')
     plt.close()
-    print(f"   ✅ Saved: stress_residuals.png")
+    print(f"   Saved: stress_residuals.png")
     
     # 3. Feature Importance
     if feature_importance is not None:
@@ -322,7 +305,7 @@ def train_stress_models(csv_path="../../../ai/data/ScreenTime_MentalWellness.csv
         plt.tight_layout()
         plt.savefig(f"{viz_dir}/stress_feature_importance.png", dpi=300, bbox_inches='tight')
         plt.close()
-        print(f"   ✅ Saved: stress_feature_importance.png")
+        print(f"   Saved: stress_feature_importance.png")
     
     # 4. Model Comparison
     plt.figure(figsize=(12, 6))
@@ -339,12 +322,10 @@ def train_stress_models(csv_path="../../../ai/data/ScreenTime_MentalWellness.csv
     plt.tight_layout()
     plt.savefig(f"{viz_dir}/stress_model_comparison.png", dpi=300, bbox_inches='tight')
     plt.close()
-    print(f"   ✅ Saved: stress_model_comparison.png")
+    print(f"   Saved: stress_model_comparison.png")
     
-    # ============= STEP 9: TRAINING REPORT =============
-    print("\n" + "=" * 80)
-    print("📌 STEP 9: Generating Training Report")
-    print("-" * 80)
+    # Step 9: Training Report
+    print("\nStep 9: Generating Training Report")
     
     report_dir = "../../../ai/models/mental_health/reports"
     os.makedirs(report_dir, exist_ok=True)
@@ -389,22 +370,19 @@ def train_stress_models(csv_path="../../../ai/data/ScreenTime_MentalWellness.csv
             for idx, row in importance_df.head(15).iterrows():
                 f.write(f"{row['Feature']:<40} {row['Importance']:.4f}\n")
     
-    print(f"\n✅ Report saved: {report_path}")
+    print(f"\nReport saved: {report_path}")
     
-    # ============= SUMMARY =============
-    print("\n" + "=" * 80)
-    print("🎉 TRAINING COMPLETED SUCCESSFULLY!")
-    print("=" * 80)
-    print(f"\n📊 Final Model: {best_name}")
+    # Summary
+    print("\nTraining Completed Successfully!")
+    print(f"\nFinal Model: {best_name}")
     print(f"   R² Score: {best_r2:.4f}")
     print(f"   RMSE: {best_rmse:.4f}")
     print(f"   MAE: {best_mae:.4f}")
-    print(f"\n💾 Saved Files:")
+    print(f"\nSaved Files:")
     print(f"   - Model: {model_path}")
     print(f"   - Preprocessors: ai/models/mental_health/stress_preprocessors.pkl")
     print(f"   - Report: {report_path}")
     print(f"   - Visualizations: {viz_dir}/")
-    print("\n" + "=" * 80)
     
     return best_model, best_name, results
 
@@ -412,4 +390,4 @@ def train_stress_models(csv_path="../../../ai/data/ScreenTime_MentalWellness.csv
 if __name__ == "__main__":
     # Train the stress prediction model
     model, model_name, results = train_stress_models()
-    print("\n✅ Stress prediction model training complete!")
+    print("\nStress prediction model training complete!")

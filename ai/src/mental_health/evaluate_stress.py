@@ -30,51 +30,45 @@ def evaluate_stress_model(csv_path="../../../ai/data/ScreenTime_MentalWellness.c
         evaluation_metrics: Dictionary of evaluation metrics
     """
     
-    print("=" * 80)
-    print("🧠 STRESS LEVEL PREDICTION - EVALUATION PIPELINE")
-    print("=" * 80)
+    print("\nStress Level Prediction - Evaluation Pipeline")
     
-    # ============= STEP 1: LOAD MODEL =============
-    print("\n📌 STEP 1: Loading Trained Model")
-    print("-" * 80)
+    # Step 1: Load Model
+    print("\nStep 1: Loading Trained Model")
     
     if not os.path.exists(model_path):
-        print(f"❌ Error: Model not found at {model_path}")
+        print(f"Error: Model not found at {model_path}")
         print("   Please run training first: python ai/src/mental_health/train_stress.py")
         return None
     
     model = joblib.load(model_path)
-    print(f"✅ Model loaded successfully from: {model_path}")
+    print(f"Model loaded successfully from: {model_path}")
     print(f"   Model type: {type(model).__name__}")
     
-    # ============= STEP 2: LOAD AND PREPROCESS DATA =============
-    print("\n📌 STEP 2: Loading and Preprocessing Data")
-    print("-" * 80)
+    # Step 2: Load and Preprocess Data
+    print("\nStep 2: Loading and Preprocessing Data")
     
     X_train, X_test, y_train, y_test, feature_names, preprocessors = preprocess_stress_data(
         csv_path, save_preprocessors=False
     )
     
-    print(f"\n📊 Dataset Summary:")
+    print(f"\nDataset Summary:")
     print(f"   Training samples: {X_train.shape[0]}")
     print(f"   Testing samples: {X_test.shape[0]}")
     print(f"   Number of features: {X_test.shape[1]}")
     
-    # ============= STEP 3: GENERATE PREDICTIONS =============
-    print("\n📌 STEP 3: Generating Predictions")
-    print("-" * 80)
+    # Step 3: Generate Predictions
+    print("\nStep 3: Generating Predictions")
     
-    print("\n🔄 Predicting on training set...")
+    print("\nPredicting on training set...")
     y_pred_train = model.predict(X_train)
     
-    print("🔄 Predicting on test set...")
+    print("Predicting on test set...")
     y_pred_test = model.predict(X_test)
     
-    print("✅ Predictions generated successfully")
+    print("Predictions generated successfully")
     
-    # ============= STEP 4: CALCULATE METRICS =============
-    print("\n📌 STEP 4: Calculating Evaluation Metrics")
-    print("-" * 80)
+    # Step 4: Calculate Metrics
+    print("\nStep 4: Calculating Evaluation Metrics")
     
     # Training metrics
     train_r2 = r2_score(y_train, y_pred_train)
@@ -93,32 +87,31 @@ def evaluate_stress_model(csv_path="../../../ai/data/ScreenTime_MentalWellness.c
     mean_residual = np.mean(residuals)
     std_residual = np.std(residuals)
     
-    print("\n📊 TRAINING SET METRICS:")
+    print("\nTraining Set Metrics:")
     print(f"   R² Score:  {train_r2:.4f}")
     print(f"   RMSE:      {train_rmse:.4f}")
     print(f"   MAE:       {train_mae:.4f}")
     print(f"   MAPE:      {train_mape:.2f}%")
     
-    print("\n📊 TEST SET METRICS:")
+    print("\nTest Set Metrics:")
     print(f"   R² Score:  {test_r2:.4f}")
     print(f"   RMSE:      {test_rmse:.4f}")
     print(f"   MAE:       {test_mae:.4f}")
     print(f"   MAPE:      {test_mape:.2f}%")
     
-    print("\n📊 RESIDUAL ANALYSIS:")
+    print("\nResidual Analysis:")
     print(f"   Mean Residual: {mean_residual:.4f}")
     print(f"   Std Residual:  {std_residual:.4f}")
     
     # Check for overfitting
     overfit_gap = train_r2 - test_r2
     if overfit_gap > 0.1:
-        print(f"\n⚠️  WARNING: Possible overfitting detected (gap = {overfit_gap:.4f})")
+        print(f"\nWARNING: Possible overfitting detected (gap = {overfit_gap:.4f})")
     else:
-        print(f"\n✅ Model generalization is good (gap = {overfit_gap:.4f})")
+        print(f"\nModel generalization is good (gap = {overfit_gap:.4f})")
     
-    # ============= STEP 5: STRESS LEVEL ANALYSIS =============
-    print("\n📌 STEP 5: Stress Level Distribution Analysis")
-    print("-" * 80)
+    # Step 5: Stress Level Analysis
+    print("\nStep 5: Stress Level Distribution Analysis")
     
     # Define stress categories
     def categorize_stress(level):
@@ -134,19 +127,18 @@ def evaluate_stress_model(csv_path="../../../ai/data/ScreenTime_MentalWellness.c
     y_test_categories = pd.Series(y_test.values).apply(categorize_stress)
     y_pred_categories = pd.Series(y_pred_test).apply(categorize_stress)
     
-    print("\n📊 Actual Stress Distribution:")
+    print("\nActual Stress Distribution:")
     print(y_test_categories.value_counts().sort_index())
     
-    print("\n📊 Predicted Stress Distribution:")
+    print("\nPredicted Stress Distribution:")
     print(y_pred_categories.value_counts().sort_index())
     
     # Accuracy by category
     category_accuracy = (y_test_categories == y_pred_categories).mean()
-    print(f"\n✅ Category Prediction Accuracy: {category_accuracy:.2%}")
+    print(f"\nCategory Prediction Accuracy: {category_accuracy:.2%}")
     
-    # ============= STEP 6: FEATURE IMPORTANCE =============
-    print("\n📌 STEP 6: Feature Importance Analysis")
-    print("-" * 80)
+    # Step 6: Feature Importance
+    print("\nStep 6: Feature Importance Analysis")
     
     # Get feature importance (if available)
     if hasattr(model, 'feature_importances_'):
@@ -170,16 +162,15 @@ def evaluate_stress_model(csv_path="../../../ai/data/ScreenTime_MentalWellness.c
             'Importance': feature_importance
         }).sort_values('Importance', ascending=False)
         
-        print(f"\n📊 Top 10 Most Important Features for Stress Prediction:")
+        print(f"\nTop 10 Most Important Features for Stress Prediction:")
         for idx, row in importance_df.head(10).iterrows():
             print(f"   {row['Feature']:<40} {row['Importance']:.4f}")
     else:
         importance_df = None
-        print("\n⚠️  Feature importance not available for this model type")
+        print("\nFeature importance not available for this model type")
     
-    # ============= STEP 7: VISUALIZATIONS =============
-    print("\n📌 STEP 7: Generating Evaluation Visualizations")
-    print("-" * 80)
+    # Step 7: Visualizations
+    print("\nStep 7: Generating Evaluation Visualizations")
     
     viz_dir = "../../../ai/models/mental_health/visualizations"
     os.makedirs(viz_dir, exist_ok=True)
@@ -212,7 +203,7 @@ def evaluate_stress_model(csv_path="../../../ai/data/ScreenTime_MentalWellness.c
     plt.tight_layout()
     plt.savefig(f"{viz_dir}/stress_evaluation_predictions.png", dpi=300, bbox_inches='tight')
     plt.close()
-    print(f"   ✅ Saved: stress_evaluation_predictions.png")
+    print(f"   Saved: stress_evaluation_predictions.png")
     
     # 2. Residuals Analysis
     plt.figure(figsize=(12, 6))
@@ -236,7 +227,7 @@ def evaluate_stress_model(csv_path="../../../ai/data/ScreenTime_MentalWellness.c
     plt.tight_layout()
     plt.savefig(f"{viz_dir}/stress_evaluation_residuals.png", dpi=300, bbox_inches='tight')
     plt.close()
-    print(f"   ✅ Saved: stress_evaluation_residuals.png")
+    print(f"   Saved: stress_evaluation_residuals.png")
     
     # 3. Stress Category Comparison
     plt.figure(figsize=(10, 6))
@@ -256,7 +247,7 @@ def evaluate_stress_model(csv_path="../../../ai/data/ScreenTime_MentalWellness.c
     plt.tight_layout()
     plt.savefig(f"{viz_dir}/stress_evaluation_categories.png", dpi=300, bbox_inches='tight')
     plt.close()
-    print(f"   ✅ Saved: stress_evaluation_categories.png")
+    print(f"   Saved: stress_evaluation_categories.png")
     
     # 4. Feature Importance (if available)
     if importance_df is not None:
@@ -273,7 +264,7 @@ def evaluate_stress_model(csv_path="../../../ai/data/ScreenTime_MentalWellness.c
         plt.tight_layout()
         plt.savefig(f"{viz_dir}/stress_evaluation_feature_importance.png", dpi=300, bbox_inches='tight')
         plt.close()
-        print(f"   ✅ Saved: stress_evaluation_feature_importance.png")
+        print(f"   Saved: stress_evaluation_feature_importance.png")
     
     # 5. Performance by Stress Level
     plt.figure(figsize=(10, 6))
@@ -300,11 +291,10 @@ def evaluate_stress_model(csv_path="../../../ai/data/ScreenTime_MentalWellness.c
     plt.tight_layout()
     plt.savefig(f"{viz_dir}/stress_evaluation_error_by_level.png", dpi=300, bbox_inches='tight')
     plt.close()
-    print(f"   ✅ Saved: stress_evaluation_error_by_level.png")
+    print(f"   Saved: stress_evaluation_error_by_level.png")
     
-    # ============= STEP 8: GENERATE REPORT =============
-    print("\n📌 STEP 8: Generating Evaluation Report")
-    print("-" * 80)
+    # Step 8: Generate Report
+    print("\nStep 8: Generating Evaluation Report")
     
     report_dir = "../../../ai/models/mental_health/reports"
     os.makedirs(report_dir, exist_ok=True)
@@ -348,9 +338,9 @@ def evaluate_stress_model(csv_path="../../../ai/data/ScreenTime_MentalWellness.c
         f.write("Generalization:\n")
         f.write(f"  Train-Test Gap: {overfit_gap:.4f}\n")
         if overfit_gap > 0.1:
-            f.write("  Status: ⚠️  Possible overfitting\n\n")
+            f.write("  Status: Possible overfitting\n\n")
         else:
-            f.write("  Status: ✅ Good generalization\n\n")
+            f.write("  Status: Good generalization\n\n")
         
         f.write("=" * 80 + "\n")
         f.write("RESIDUAL ANALYSIS\n")
@@ -396,19 +386,17 @@ def evaluate_stress_model(csv_path="../../../ai/data/ScreenTime_MentalWellness.c
         f.write("  High (6-8):      Elevated stress, needs attention\n")
         f.write("  Very High (8-10): Critical stress, intervention recommended\n\n")
     
-    print(f"\n✅ Report saved: {report_path}")
+    print(f"\nReport saved: {report_path}")
     
-    # ============= SUMMARY =============
-    print("\n" + "=" * 80)
-    print("🎉 EVALUATION COMPLETED SUCCESSFULLY!")
-    print("=" * 80)
-    print(f"\n📊 Model Performance Summary:")
+    # Summary
+    print("\nEvaluation Completed Successfully!")
+    print(f"\nModel Performance Summary:")
     print(f"   R² Score:  {test_r2:.4f} ({test_r2*100:.1f}% variance explained)")
     print(f"   RMSE:      {test_rmse:.4f} stress points")
     print(f"   MAE:       {test_mae:.4f} stress points")
     print(f"   MAPE:      {test_mape:.2f}%")
     print(f"   Category Accuracy: {category_accuracy:.2%}")
-    print(f"\n💾 Generated Files:")
+    print(f"\nGenerated Files:")
     print(f"   - Report: {report_path}")
     print(f"   - Visualizations: {viz_dir}/stress_evaluation_*.png")
     print("\n" + "=" * 80)
@@ -433,6 +421,6 @@ if __name__ == "__main__":
     metrics = evaluate_stress_model()
     
     if metrics:
-        print("\n✅ Stress prediction model evaluation complete!")
+        print("\nStress prediction model evaluation complete!")
     else:
-        print("\n❌ Evaluation failed. Please check the error messages above.")
+        print("\nEvaluation failed. Please check the error messages above.")

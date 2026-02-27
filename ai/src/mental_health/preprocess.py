@@ -8,7 +8,7 @@ import os
 
 def preprocess_data(csv_path, save_preprocessors=True):
     """
-    Advanced preprocessing pipeline with feature engineering for distinction-level quality.
+    Advanced preprocessing pipeline with feature engineering.
     
     Args:
         csv_path: Path to the CSV file
@@ -17,9 +17,9 @@ def preprocess_data(csv_path, save_preprocessors=True):
     Returns:
         X_train, X_test, y_train, y_test, feature_names, preprocessors
     """
-    print("🔄 Loading dataset...")
+    print("Loading dataset...")
     df = pd.read_csv(csv_path)
-    print(f"✅ Dataset loaded: {df.shape[0]} rows, {df.shape[1]} columns")
+    print(f"Dataset loaded: {df.shape[0]} rows, {df.shape[1]} columns")
     
     # Store original dataframe for analysis
     df_original = df.copy()
@@ -27,18 +27,18 @@ def preprocess_data(csv_path, save_preprocessors=True):
     # Drop 'user_id' column (non-predictive)
     df = df.drop(columns=["user_id"])
     
-    # ============= DATA QUALITY CHECKS =============
-    print("\n📊 Data Quality Analysis:")
+    # Data Quality Checks
+    print("\nData Quality Analysis:")
     print(f"   Missing values: {df.isnull().sum().sum()}")
     print(f"   Duplicate rows: {df.duplicated().sum()}")
     
     # Remove duplicates if any
     if df.duplicated().sum() > 0:
         df = df.drop_duplicates()
-        print(f"   ✅ Removed {df.duplicated().sum()} duplicate rows")
+        print(f"   Removed {df.duplicated().sum()} duplicate rows")
     
-    # ============= FEATURE ENGINEERING =============
-    print("\n🔧 Feature Engineering:")
+    # Feature Engineering
+    print("\nFeature Engineering:")
     
     # 1. Screen time ratios and patterns
     df['work_screen_ratio'] = df['work_screen_hours'] / (df['screen_time_hours'] + 1e-6)
@@ -74,10 +74,10 @@ def preprocess_data(csv_path, save_preprocessors=True):
     df['stress_squared'] = df['stress_level_0_10'] ** 2
     df['sleep_squared'] = df['sleep_hours'] ** 2
     
-    print(f"   ✅ Created {len(df.columns) - len(df_original.columns) + 1} new features")
+    print(f"   Created {len(df.columns) - len(df_original.columns) + 1} new features")
     
-    # ============= HANDLE MISSING VALUES =============
-    print("\n🔧 Handling missing values...")
+    # Handle Missing Values
+    print("\nHandling missing values...")
     numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
     if 'mental_wellness_index_0_100' in numeric_cols:
         numeric_cols.remove('mental_wellness_index_0_100')
@@ -85,8 +85,8 @@ def preprocess_data(csv_path, save_preprocessors=True):
     imputer = SimpleImputer(strategy="median")
     df[numeric_cols] = imputer.fit_transform(df[numeric_cols])
     
-    # ============= ENCODE CATEGORICAL VARIABLES =============
-    print("🔧 Encoding categorical variables...")
+    # Encode Categorical Variables
+    print("Encoding categorical variables...")
     categorical_cols = ["gender", "occupation", "work_mode"]
     
     # Store encoders for each column
@@ -96,8 +96,8 @@ def preprocess_data(csv_path, save_preprocessors=True):
         df[col] = encoder.fit_transform(df[col])
         encoders[col] = encoder
     
-    # ============= HANDLE OUTLIERS =============
-    print("🔧 Handling outliers using IQR method...")
+    # Handle Outliers
+    print("Handling outliers using IQR method...")
     
     # Use RobustScaler which is less sensitive to outliers
     outlier_cols = ['screen_time_hours', 'work_screen_hours', 'leisure_screen_hours', 
@@ -114,12 +114,12 @@ def preprocess_data(csv_path, save_preprocessors=True):
             # Cap outliers instead of removing them
             df[col] = df[col].clip(lower=lower_bound, upper=upper_bound)
     
-    # ============= PREPARE FEATURES AND TARGET =============
+    # Prepare Features and Target
     X = df.drop(columns=["mental_wellness_index_0_100"])
     y = df["mental_wellness_index_0_100"]
     
-    # ============= FEATURE SCALING =============
-    print("🔧 Scaling features...")
+    # Feature Scaling
+    print("Scaling features...")
     
     # Use RobustScaler for better handling of outliers
     scaler = RobustScaler()
@@ -129,16 +129,16 @@ def preprocess_data(csv_path, save_preprocessors=True):
     X_scaled = scaler.fit_transform(X)
     X = pd.DataFrame(X_scaled, columns=feature_names)
     
-    # ============= TRAIN-TEST SPLIT =============
-    print("🔧 Splitting data (80% train, 20% test)...")
+    # Train-Test Split
+    print("Splitting data (80% train, 20% test)...")
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42, stratify=pd.qcut(y, q=5, labels=False, duplicates='drop')
     )
     
-    print(f"   ✅ Train set: {X_train.shape[0]} samples")
-    print(f"   ✅ Test set: {X_test.shape[0]} samples")
+    print(f"   Train set: {X_train.shape[0]} samples")
+    print(f"   Test set: {X_test.shape[0]} samples")
     
-    # ============= SAVE PREPROCESSORS =============
+    # Save Preprocessors
     if save_preprocessors:
         preprocessors = {
             'scaler': scaler,
@@ -150,11 +150,11 @@ def preprocess_data(csv_path, save_preprocessors=True):
         # Create directory if it doesn't exist
         os.makedirs("ai/models/mental_health", exist_ok=True)
         joblib.dump(preprocessors, "ai/models/mental_health/preprocessors.pkl")
-        print("\n✅ Preprocessors saved for deployment")
+        print("\nPreprocessors saved for deployment")
     else:
         preprocessors = None
     
-    print("\n✅ Preprocessing completed successfully!\n")
+    print("\nPreprocessing completed successfully!\n")
     
     return X_train, X_test, y_train, y_test, feature_names, preprocessors
 

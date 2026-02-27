@@ -1,6 +1,5 @@
 """
 Advanced Machine Learning Training Pipeline for Mental Wellness Prediction
-Distinction-Level Implementation with Multiple Models, Hyperparameter Tuning, and Comprehensive Evaluation
 """
 
 import joblib
@@ -83,9 +82,7 @@ def evaluate_model(model, X_train, X_test, y_train, y_test, model_name="Model"):
 def train_multiple_models(X_train, X_test, y_train, y_test):
     """Train and compare multiple ML models"""
     
-    print("=" * 80)
-    print("🤖 TRAINING MULTIPLE MACHINE LEARNING MODELS")
-    print("=" * 80)
+    print("Training multiple machine learning models...")
     
     models = {
         'Random Forest': RandomForestRegressor(n_estimators=100, random_state=42, n_jobs=-1),
@@ -102,21 +99,19 @@ def train_multiple_models(X_train, X_test, y_train, y_test):
     predictions_dict = {}
     
     for name, model in models.items():
-        print(f"\n🔄 Training {name}...")
+        print(f"Training {name}...")
         model.fit(X_train, y_train)
         results, y_pred = evaluate_model(model, X_train, X_test, y_train, y_test, name)
         results_list.append(results)
         predictions_dict[name] = y_pred
         
-        print(f"   ✅ Test R²: {results['test_r2']:.4f} | Test MAE: {results['test_mae']:.4f} | Test RMSE: {results['test_rmse']:.4f}")
+        print(f"   Test R²: {results['test_r2']:.4f} | Test MAE: {results['test_mae']:.4f} | Test RMSE: {results['test_rmse']:.4f}")
     
     # Create results dataframe
     results_df = pd.DataFrame(results_list)
     results_df = results_df.sort_values('test_r2', ascending=False)
     
-    print("\n" + "=" * 80)
-    print("📊 MODEL COMPARISON RESULTS")
-    print("=" * 80)
+    print("\nModel comparison results:")
     print(results_df.to_string(index=False))
     
     return results_df, models, predictions_dict
@@ -124,12 +119,10 @@ def train_multiple_models(X_train, X_test, y_train, y_test):
 def hyperparameter_tuning(X_train, y_train, X_test, y_test):
     """Advanced hyperparameter tuning for top models"""
     
-    print("\n" + "=" * 80)
-    print("🎯 HYPERPARAMETER TUNING - OPTIMIZING TOP MODELS")
-    print("=" * 80)
+    print("\nHyperparameter tuning - optimizing top models...")
     
     # Random Forest tuning
-    print("\n🔄 Tuning Random Forest...")
+    print("\nTuning Random Forest...")
     rf_param_grid = {
         'n_estimators': [100, 200, 300],
         'max_depth': [10, 20, 30, None],
@@ -150,11 +143,11 @@ def hyperparameter_tuning(X_train, y_train, X_test, y_test):
     )
     rf_random.fit(X_train, y_train)
     best_rf = rf_random.best_estimator_
-    print(f"   ✅ Best RF params: {rf_random.best_params_}")
-    print(f"   ✅ Best CV R² score: {rf_random.best_score_:.4f}")
+    print(f"   Best RF params: {rf_random.best_params_}")
+    print(f"   Best CV R² score: {rf_random.best_score_:.4f}")
     
     # Gradient Boosting tuning
-    print("\n🔄 Tuning Gradient Boosting...")
+    print("\nTuning Gradient Boosting...")
     gb_param_grid = {
         'n_estimators': [100, 200, 300],
         'learning_rate': [0.01, 0.05, 0.1],
@@ -175,11 +168,11 @@ def hyperparameter_tuning(X_train, y_train, X_test, y_test):
     )
     gb_random.fit(X_train, y_train)
     best_gb = gb_random.best_estimator_
-    print(f"   ✅ Best GB params: {gb_random.best_params_}")
-    print(f"   ✅ Best CV R² score: {gb_random.best_score_:.4f}")
+    print(f"   Best GB params: {gb_random.best_params_}")
+    print(f"   Best CV R² score: {gb_random.best_score_:.4f}")
     
     # Extra Trees tuning
-    print("\n🔄 Tuning Extra Trees...")
+    print("\nTuning Extra Trees...")
     et_param_grid = {
         'n_estimators': [100, 200, 300],
         'max_depth': [10, 20, 30, None],
@@ -199,20 +192,18 @@ def hyperparameter_tuning(X_train, y_train, X_test, y_test):
     )
     et_random.fit(X_train, y_train)
     best_et = et_random.best_estimator_
-    print(f"   ✅ Best ET params: {et_random.best_params_}")
-    print(f"   ✅ Best CV R² score: {et_random.best_score_:.4f}")
+    print(f"   Best ET params: {et_random.best_params_}")
+    print(f"   Best CV R² score: {et_random.best_score_:.4f}")
     
     return best_rf, best_gb, best_et
 
 def create_ensemble_model(best_rf, best_gb, best_et, X_train, y_train):
     """Create advanced ensemble models using stacking and voting"""
     
-    print("\n" + "=" * 80)
-    print("🎭 CREATING ADVANCED ENSEMBLE MODELS")
-    print("=" * 80)
+    print("\nCreating advanced ensemble models...")
     
     # Voting Regressor (averaging predictions)
-    print("\n🔄 Creating Voting Ensemble...")
+    print("\nCreating Voting Ensemble...")
     voting_regressor = VotingRegressor(
         estimators=[
             ('rf', best_rf),
@@ -222,10 +213,10 @@ def create_ensemble_model(best_rf, best_gb, best_et, X_train, y_train):
         n_jobs=-1
     )
     voting_regressor.fit(X_train, y_train)
-    print("   ✅ Voting Ensemble trained")
+    print("   Voting Ensemble trained")
     
     # Stacking Regressor (meta-learning)
-    print("\n🔄 Creating Stacking Ensemble...")
+    print("\nCreating Stacking Ensemble...")
     stacking_regressor = StackingRegressor(
         estimators=[
             ('rf', best_rf),
@@ -237,14 +228,14 @@ def create_ensemble_model(best_rf, best_gb, best_et, X_train, y_train):
         n_jobs=-1
     )
     stacking_regressor.fit(X_train, y_train)
-    print("   ✅ Stacking Ensemble trained")
+    print("   Stacking Ensemble trained")
     
     return voting_regressor, stacking_regressor
 
 def perform_cross_validation(model, X, y, model_name="Model", cv_folds=10):
     """Perform k-fold cross-validation"""
     
-    print(f"\n🔄 Performing {cv_folds}-Fold Cross-Validation for {model_name}...")
+    print(f"\nPerforming {cv_folds}-Fold Cross-Validation for {model_name}...")
     
     kfold = KFold(n_splits=cv_folds, shuffle=True, random_state=42)
     
@@ -253,9 +244,9 @@ def perform_cross_validation(model, X, y, model_name="Model", cv_folds=10):
     mae_scores = -cross_val_score(model, X, y, cv=kfold, scoring='neg_mean_absolute_error', n_jobs=-1)
     rmse_scores = np.sqrt(-cross_val_score(model, X, y, cv=kfold, scoring='neg_mean_squared_error', n_jobs=-1))
     
-    print(f"   ✅ R² Score: {r2_scores.mean():.4f} (+/- {r2_scores.std():.4f})")
-    print(f"   ✅ MAE: {mae_scores.mean():.4f} (+/- {mae_scores.std():.4f})")
-    print(f"   ✅ RMSE: {rmse_scores.mean():.4f} (+/- {rmse_scores.std():.4f})")
+    print(f"   R² Score: {r2_scores.mean():.4f} (+/- {r2_scores.std():.4f})")
+    print(f"   MAE: {mae_scores.mean():.4f} (+/- {mae_scores.std():.4f})")
+    print(f"   RMSE: {rmse_scores.mean():.4f} (+/- {rmse_scores.std():.4f})")
     
     return {
         'r2_mean': r2_scores.mean(),
@@ -270,7 +261,7 @@ def plot_feature_importance(model, feature_names, top_n=20):
     """Plot feature importance for tree-based models"""
     
     if hasattr(model, 'feature_importances_'):
-        print(f"\n📊 Plotting Feature Importance (Top {top_n})...")
+        print(f"\nPlotting Feature Importance (Top {top_n})...")
         
         importances = model.feature_importances_
         indices = np.argsort(importances)[::-1][:top_n]
@@ -285,18 +276,18 @@ def plot_feature_importance(model, feature_names, top_n=20):
         
         os.makedirs("ai/models/mental_health/visualizations", exist_ok=True)
         plt.savefig("ai/models/mental_health/visualizations/feature_importance.png", dpi=300, bbox_inches='tight')
-        print("   ✅ Feature importance plot saved")
+        print("   Feature importance plot saved")
         plt.close()
         
         # Print top features
-        print("\n🏆 Top 10 Most Important Features:")
+        print("\nTop 10 Most Important Features:")
         for i, idx in enumerate(indices[:10], 1):
             print(f"   {i}. {feature_names[idx]}: {importances[idx]:.4f}")
 
 def plot_predictions(y_test, y_pred, model_name="Model"):
     """Plot actual vs predicted values"""
     
-    print(f"\n📊 Plotting Predictions for {model_name}...")
+    print(f"\nPlotting Predictions for {model_name}...")
     
     plt.figure(figsize=(10, 8))
     plt.scatter(y_test, y_pred, alpha=0.6, color='steelblue', edgecolors='k', s=50)
@@ -311,13 +302,13 @@ def plot_predictions(y_test, y_pred, model_name="Model"):
     os.makedirs("ai/models/mental_health/visualizations", exist_ok=True)
     filename = f"ai/models/mental_health/visualizations/{model_name.lower().replace(' ', '_')}_predictions.png"
     plt.savefig(filename, dpi=300, bbox_inches='tight')
-    print(f"   ✅ Prediction plot saved: {filename}")
+    print(f"   Prediction plot saved: {filename}")
     plt.close()
 
 def plot_residuals(y_test, y_pred, model_name="Model"):
     """Plot residuals distribution"""
     
-    print(f"\n📊 Plotting Residuals for {model_name}...")
+    print(f"\nPlotting Residuals for {model_name}...")
     
     residuals = y_test - y_pred
     
@@ -343,13 +334,13 @@ def plot_residuals(y_test, y_pred, model_name="Model"):
     
     filename = f"ai/models/mental_health/visualizations/{model_name.lower().replace(' ', '_')}_residuals.png"
     plt.savefig(filename, dpi=300, bbox_inches='tight')
-    print(f"   ✅ Residual plot saved: {filename}")
+    print(f"   Residual plot saved: {filename}")
     plt.close()
 
 def save_model_report(results_df, best_model_results, cv_results, feature_names):
     """Save comprehensive model training report"""
     
-    print("\n📝 Generating Model Training Report...")
+    print("\nGenerating Model Training Report...")
     
     os.makedirs("ai/models/mental_health/reports", exist_ok=True)
     
@@ -386,59 +377,47 @@ def save_model_report(results_df, best_model_results, cv_results, feature_names)
         f.write("=" * 80 + "\n")
         f.write(", ".join(feature_names) + "\n")
     
-    print(f"   ✅ Report saved: {report_path}")
+    print(f"   Report saved: {report_path}")
 
 def train_model():
     """Main training pipeline"""
     
-    print("\n" + "=" * 80)
-    print("🚀 MENTAL WELLNESS PREDICTION - ADVANCED ML TRAINING PIPELINE")
-    print("=" * 80)
+    print("\nMental Wellness Prediction - Advanced ML Training Pipeline")
     print(f"Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
     
     # Set data path
     csv_path = "ai/data/ScreenTime_MentalWellness.csv"
     
-    # ============= STEP 1: PREPROCESSING =============
-    print("\n" + "=" * 80)
-    print("STEP 1: DATA PREPROCESSING & FEATURE ENGINEERING")
-    print("=" * 80)
+    # Step 1: Preprocessing
+    print("\nStep 1: Data Preprocessing & Feature Engineering")
     
     X_train, X_test, y_train, y_test, feature_names, preprocessors = preprocess_data(csv_path)
     
-    # ============= STEP 2: BASELINE MODELS =============
-    print("\n" + "=" * 80)
-    print("STEP 2: BASELINE MODEL TRAINING & COMPARISON")
-    print("=" * 80)
+    # Step 2: Baseline Models
+    print("\nStep 2: Baseline Model Training & Comparison")
     
     results_df, models_dict, predictions_dict = train_multiple_models(X_train, X_test, y_train, y_test)
     
-    # ============= STEP 3: HYPERPARAMETER TUNING =============
-    print("\n" + "=" * 80)
-    print("STEP 3: HYPERPARAMETER TUNING")
-    print("=" * 80)
+    # Step 3: Hyperparameter Tuning
+    print("\nStep 3: Hyperparameter Tuning")
     
     best_rf, best_gb, best_et = hyperparameter_tuning(X_train, y_train, X_test, y_test)
     
-    # ============= STEP 4: ENSEMBLE MODELS =============
-    print("\n" + "=" * 80)
-    print("STEP 4: ENSEMBLE MODEL CREATION")
-    print("=" * 80)
+    # Step 4: Ensemble Models
+    print("\nStep 4: Ensemble Model Creation")
     
     voting_model, stacking_model = create_ensemble_model(best_rf, best_gb, best_et, X_train, y_train)
     
     # Evaluate ensemble models
-    print("\n🔍 Evaluating Ensemble Models...")
+    print("\nEvaluating Ensemble Models...")
     voting_results, voting_pred = evaluate_model(voting_model, X_train, X_test, y_train, y_test, "Voting Ensemble")
     stacking_results, stacking_pred = evaluate_model(stacking_model, X_train, X_test, y_train, y_test, "Stacking Ensemble")
     
-    print(f"\n   🏆 Voting Ensemble - Test R²: {voting_results['test_r2']:.4f} | Test MAE: {voting_results['test_mae']:.4f}")
-    print(f"   🏆 Stacking Ensemble - Test R²: {stacking_results['test_r2']:.4f} | Test MAE: {stacking_results['test_mae']:.4f}")
+    print(f"\n   Voting Ensemble - Test R²: {voting_results['test_r2']:.4f} | Test MAE: {voting_results['test_mae']:.4f}")
+    print(f"   Stacking Ensemble - Test R²: {stacking_results['test_r2']:.4f} | Test MAE: {stacking_results['test_mae']:.4f}")
     
-    # ============= STEP 5: SELECT BEST MODEL =============
-    print("\n" + "=" * 80)
-    print("STEP 5: FINAL MODEL SELECTION")
-    print("=" * 80)
+    # Step 5: Select Best Model
+    print("\nStep 5: Final Model Selection")
     
     # Compare all tuned models
     all_results = [
@@ -461,16 +440,14 @@ def train_model():
             best_name = name
             best_model_results = result
     
-    print(f"\n🏆 BEST MODEL: {best_name}")
+    print(f"\nBest Model: {best_name}")
     print(f"   Test R²: {best_model_results['test_r2']:.4f}")
     print(f"   Test MAE: {best_model_results['test_mae']:.4f}")
     print(f"   Test RMSE: {best_model_results['test_rmse']:.4f}")
     print(f"   Test MAPE: {best_model_results['test_mape']:.4f}%")
     
-    # ============= STEP 6: CROSS-VALIDATION =============
-    print("\n" + "=" * 80)
-    print("STEP 6: CROSS-VALIDATION")
-    print("=" * 80)
+    # Step 6: Cross-Validation
+    print("\nStep 6: Cross-Validation")
     
     # Combine train and test for full cross-validation
     X_full = pd.concat([X_train, X_test])
@@ -478,25 +455,21 @@ def train_model():
     
     cv_results = perform_cross_validation(best_model, X_full, y_full, best_name, cv_folds=10)
     
-    # ============= STEP 7: VISUALIZATIONS =============
-    print("\n" + "=" * 80)
-    print("STEP 7: GENERATING VISUALIZATIONS")
-    print("=" * 80)
+    # Step 7: Visualizations
+    print("\nStep 7: Generating Visualizations")
     
     plot_feature_importance(best_model, feature_names, top_n=20)
     plot_predictions(y_test, best_model.predict(X_test), best_name)
     plot_residuals(y_test, best_model.predict(X_test), best_name)
     
-    # ============= STEP 8: SAVE MODELS =============
-    print("\n" + "=" * 80)
-    print("STEP 8: SAVING MODELS & ARTIFACTS")
-    print("=" * 80)
+    # Step 8: Save Models
+    print("\nStep 8: Saving Models & Artifacts")
     
     os.makedirs("ai/models/mental_health", exist_ok=True)
     
     # Save best model
     joblib.dump(best_model, "ai/models/mental_health/best_model.pkl")
-    print("   ✅ Best model saved: best_model.pkl")
+    print("   Best model saved: best_model.pkl")
     
     # Save all tuned models
     joblib.dump(best_rf, "ai/models/mental_health/tuned_random_forest.pkl")
@@ -504,11 +477,11 @@ def train_model():
     joblib.dump(best_et, "ai/models/mental_health/tuned_extra_trees.pkl")
     joblib.dump(voting_model, "ai/models/mental_health/voting_ensemble.pkl")
     joblib.dump(stacking_model, "ai/models/mental_health/stacking_ensemble.pkl")
-    print("   ✅ All tuned models saved")
+    print("   All tuned models saved")
     
     # Save feature names
     joblib.dump(feature_names, "ai/models/mental_health/feature_names.pkl")
-    print("   ✅ Feature names saved")
+    print("   Feature names saved")
     
     # Save model metadata
     metadata = {
@@ -520,16 +493,14 @@ def train_model():
         'dataset_size': len(X_full)
     }
     joblib.dump(metadata, "ai/models/mental_health/model_metadata.pkl")
-    print("   ✅ Model metadata saved")
+    print("   Model metadata saved")
     
-    # ============= STEP 9: GENERATE REPORT =============
+    # Step 9: Generate Report
     save_model_report(results_df, best_model_results, cv_results, feature_names)
     
-    # ============= FINAL SUMMARY =============
-    print("\n" + "=" * 80)
-    print("✅ TRAINING PIPELINE COMPLETED SUCCESSFULLY!")
-    print("=" * 80)
-    print(f"\n📌 SUMMARY:")
+    # Final Summary
+    print("\nTraining Pipeline Completed Successfully!")
+    print(f"\nSummary:")
     print(f"   • Best Model: {best_name}")
     print(f"   • Test R² Score: {best_model_results['test_r2']:.4f}")
     print(f"   • Test MAE: {best_model_results['test_mae']:.4f}")
@@ -538,12 +509,12 @@ def train_model():
     print(f"   • Total Features: {len(feature_names)}")
     print(f"   • Training Samples: {len(X_train)}")
     print(f"   • Test Samples: {len(X_test)}")
-    print(f"\n📁 Saved Artifacts:")
+    print(f"\nSaved Artifacts:")
     print(f"   • Models: ai/models/mental_health/")
     print(f"   • Visualizations: ai/models/mental_health/visualizations/")
     print(f"   • Reports: ai/models/mental_health/reports/")
     print(f"\nCompleted: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print("=" * 80 + "\n")
+    print()
 
 if __name__ == "__main__":
     train_model()
