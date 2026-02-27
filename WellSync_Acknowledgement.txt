@@ -1,0 +1,15 @@
+================================================================================
+ACKNOWLEDGEMENT
+================================================================================
+
+I would like to express my sincere appreciation to the International College of Business and Technology (ICBT Campus) for their invaluable guidance, support, and encouragement throughout this final dissertation project. The institution has consistently provided an exceptional academic environment, modern facilities, and the necessary resources that have been fundamental in nurturing our intellectual growth and academic excellence. Their commitment to delivering quality education and fostering innovation has played a pivotal role in shaping our ideas, refining our approach, and inspiring us to develop a meaningful and impactful solution such as WellSync.
+
+I also extend my heartfelt thanks to Mr. Dr. Gayan Galhena and Mr. Chatura Warnasooriya, our Module Lecturer and Project Supervisor respectively, for their outstanding guidance, continuous motivation, and invaluable feedback throughout every stage of this project. Their deep expertise, patience, and willingness to share their knowledge have been instrumental in steering the development of WellSync in the right direction. Their constructive criticism helped us overcome challenges, think critically, and produce a solution that meets the highest academic and technical standards. We are truly grateful for the time and effort they have dedicated to supporting us throughout this journey.
+
+I would also like to express my sincere gratitude to all the lecturers who have imparted their knowledge, skills, and expertise throughout my entire BSc degree programme at ICBT Campus. The strong academic foundation built through their teaching across various modules — including software engineering, database management, artificial intelligence, and web development — has been the backbone of this project. Every concept learned in the classroom has found a practical application within WellSync, and for that, we are deeply thankful.
+
+Furthermore, I wish to acknowledge the support of my fellow peers, classmates, and the broader open-source developer community whose collaborative spirit, shared tools, and publicly available research have greatly contributed to the success of this project. Last but not least, I am profoundly grateful to my family for their endless patience, unconditional love, and unwavering encouragement throughout this demanding yet rewarding journey. This report stands as a testament to the collective efforts and support of all the influential individuals and entities who have been a part of this achievement.
+
+================================================================================
+END OF ACKNOWLEDGEMENT
+================================================================================
