@@ -113,7 +113,7 @@ export default function NewPredictionPage() {
       <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 flex items-start gap-3">
         <Sparkles className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
         <div className="text-sm">
-          <p className="font-semibold text-foreground mb-1">💡 Pro tip</p>
+          <p className="font-semibold text-foreground mb-1">Pro tip</p>
           <p className="text-muted-foreground">
             Run all three predictions for the most complete picture of your wellness. Each model
             analyses different aspects of your lifestyle and they complement each other perfectly.
