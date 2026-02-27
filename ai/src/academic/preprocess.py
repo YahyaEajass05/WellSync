@@ -22,9 +22,9 @@ def preprocess_data(csv_path, target_variable='Addicted_Score', save_preprocesso
     Returns:
         X_train, X_test, y_train, y_test, feature_names, preprocessors
     """
-    print("🔄 Loading Academic Impact dataset...")
+    print("Loading Academic Impact dataset...")
     df = pd.read_csv(csv_path)
-    print(f"✅ Dataset loaded: {df.shape[0]} rows, {df.shape[1]} columns")
+    print(f"Dataset loaded: {df.shape[0]} rows, {df.shape[1]} columns")
     
     # Store original dataframe
     df_original = df.copy()
@@ -32,52 +32,52 @@ def preprocess_data(csv_path, target_variable='Addicted_Score', save_preprocesso
     # Drop Student_ID (non-predictive)
     df = df.drop(columns=["Student_ID"])
     
-    # ============= DATA QUALITY CHECKS =============
-    print("\n📊 Data Quality Analysis:")
-    print(f"   Missing values: {df.isnull().sum().sum()}")
-    print(f"   Duplicate rows: {df.duplicated().sum()}")
+    # Data quality checks
+    print("\nData Quality Analysis:")
+    print(f"Missing values: {df.isnull().sum().sum()}")
+    print(f"Duplicate rows: {df.duplicated().sum()}")
     
     # Remove duplicates if any
     if df.duplicated().sum() > 0:
         df = df.drop_duplicates()
-        print(f"   ✅ Removed {df.duplicated().sum()} duplicate rows")
+        print(f"Removed {df.duplicated().sum()} duplicate rows")
     
-    # ============= FEATURE ENGINEERING =============
-    print("\n🔧 Feature Engineering for Academic Impact:")
+    # Feature engineering
+    print("\nFeature Engineering for Academic Impact:")
     
-    # 1. Social media usage intensity
+    # Social media usage intensity
     df['usage_intensity'] = pd.cut(df['Avg_Daily_Usage_Hours'], 
                                     bins=[0, 2, 4, 6, 24], 
                                     labels=[0, 1, 2, 3])  # Low, Medium, High, Very High
     df['usage_intensity'] = df['usage_intensity'].astype(int)
     
-    # 2. Sleep deficit indicator
+    # Sleep deficit indicator
     df['sleep_deficit'] = (8 - df['Sleep_Hours_Per_Night']).clip(lower=0)
     df['severe_sleep_deficit'] = (df['Sleep_Hours_Per_Night'] < 6).astype(int)
     
-    # 3. Mental health risk levels
+    # Mental health risk levels
     df['mental_health_risk'] = pd.cut(df['Mental_Health_Score'], 
                                        bins=[0, 3, 6, 10], 
                                        labels=[2, 1, 0])  # High, Medium, Low risk
     df['mental_health_risk'] = df['mental_health_risk'].astype(int)
     
-    # 4. Usage-sleep interaction
+    # Usage-sleep interaction
     df['usage_sleep_ratio'] = df['Avg_Daily_Usage_Hours'] / (df['Sleep_Hours_Per_Night'] + 1e-6)
     
-    # 5. Mental health impact score
+    # Mental health impact score
     df['mental_sleep_score'] = df['Mental_Health_Score'] * df['Sleep_Hours_Per_Night'] / 10
     
-    # 6. Conflict intensity
+    # Conflict intensity
     df['high_conflict'] = (df['Conflicts_Over_Social_Media'] >= 4).astype(int)
     
-    # 7. Age groups for pattern detection
+    # Age groups for pattern detection
     df['age_group'] = pd.cut(df['Age'], bins=[17, 19, 21, 25], labels=[0, 1, 2])
     df['age_group'] = df['age_group'].astype(int)
     
-    # 8. Academic performance binary
+    # Academic performance binary
     df['poor_academic_performance'] = (df['Affects_Academic_Performance'] == 'Yes').astype(int)
     
-    # 9. Combined risk score
+    # Combined risk score
     df['combined_risk_score'] = (
         (df['Avg_Daily_Usage_Hours'] / 10) * 0.3 +
         (df['sleep_deficit'] / 8) * 0.25 +
@@ -85,26 +85,26 @@ def preprocess_data(csv_path, target_variable='Addicted_Score', save_preprocesso
         (df['Conflicts_Over_Social_Media'] / 5) * 0.2
     ) * 10
     
-    # 10. Usage squared for non-linear effects
+    # Usage squared for non-linear effects
     df['usage_squared'] = df['Avg_Daily_Usage_Hours'] ** 2
     
-    # 11. Mental health squared
+    # Mental health squared
     df['mental_health_squared'] = df['Mental_Health_Score'] ** 2
     
-    # 12. Interaction: usage × conflicts
+    # Interaction: usage × conflicts
     df['usage_conflict_interaction'] = df['Avg_Daily_Usage_Hours'] * df['Conflicts_Over_Social_Media']
     
-    # 13. Platform usage intensity (encode popular platforms differently)
+    # Platform usage intensity (encode popular platforms differently)
     popular_platforms = ['Instagram', 'TikTok', 'Snapchat', 'Facebook', 'Twitter']
     df['uses_popular_platform'] = df['Most_Used_Platform'].isin(popular_platforms).astype(int)
     
-    # 14. Relationship impact
+    # Relationship impact
     df['has_relationship'] = (df['Relationship_Status'] != 'Single').astype(int)
     
-    print(f"   ✅ Created {len(df.columns) - len(df_original.columns) + 1} new features")
+    print(f"Created {len(df.columns) - len(df_original.columns) + 1} new features")
     
-    # ============= HANDLE MISSING VALUES =============
-    print("\n🔧 Handling missing values...")
+    # Handle missing values
+    print("\nHandling missing values...")
     numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
     if target_variable in numeric_cols:
         numeric_cols.remove(target_variable)
@@ -112,8 +112,8 @@ def preprocess_data(csv_path, target_variable='Addicted_Score', save_preprocesso
     imputer = SimpleImputer(strategy="median")
     df[numeric_cols] = imputer.fit_transform(df[numeric_cols])
     
-    # ============= ENCODE CATEGORICAL VARIABLES =============
-    print("🔧 Encoding categorical variables...")
+    # Encode categorical variables
+    print("Encoding categorical variables...")
     categorical_cols = ["Gender", "Academic_Level", "Country", "Most_Used_Platform", 
                        "Affects_Academic_Performance", "Relationship_Status"]
     
@@ -125,8 +125,8 @@ def preprocess_data(csv_path, target_variable='Addicted_Score', save_preprocesso
             df[col] = encoder.fit_transform(df[col])
             encoders[col] = encoder
     
-    # ============= HANDLE OUTLIERS =============
-    print("🔧 Handling outliers using IQR method...")
+    # Handle outliers
+    print("Handling outliers using IQR method...")
     
     outlier_cols = ['Avg_Daily_Usage_Hours', 'Sleep_Hours_Per_Night', 'usage_sleep_ratio']
     
@@ -141,20 +141,20 @@ def preprocess_data(csv_path, target_variable='Addicted_Score', save_preprocesso
             # Cap outliers
             df[col] = df[col].clip(lower=lower_bound, upper=upper_bound)
     
-    # ============= PREPARE FEATURES AND TARGET =============
+    # Prepare features and target
     X = df.drop(columns=[target_variable])
     y = df[target_variable]
     
-    # ============= FEATURE SCALING =============
-    print("🔧 Scaling features...")
+    # Feature scaling
+    print("Scaling features...")
     
     scaler = RobustScaler()
     feature_names = X.columns.tolist()
     X_scaled = scaler.fit_transform(X)
     X = pd.DataFrame(X_scaled, columns=feature_names)
     
-    # ============= TRAIN-TEST SPLIT =============
-    print("🔧 Splitting data (80% train, 20% test)...")
+    # Train-test split
+    print("Splitting data (80% train, 20% test)...")
     
     # For regression (Addicted_Score)
     if target_variable == 'Addicted_Score':
@@ -166,10 +166,10 @@ def preprocess_data(csv_path, target_variable='Addicted_Score', save_preprocesso
         X, y, test_size=0.2, random_state=42, stratify=stratify_var
     )
     
-    print(f"   ✅ Train set: {X_train.shape[0]} samples")
-    print(f"   ✅ Test set: {X_test.shape[0]} samples")
+    print(f"Train set: {X_train.shape[0]} samples")
+    print(f"Test set: {X_test.shape[0]} samples")
     
-    # ============= SAVE PREPROCESSORS =============
+    # Save preprocessors
     if save_preprocessors:
         preprocessors = {
             'scaler': scaler,
@@ -181,10 +181,10 @@ def preprocess_data(csv_path, target_variable='Addicted_Score', save_preprocesso
         
         os.makedirs("ai/models/academic", exist_ok=True)
         joblib.dump(preprocessors, "ai/models/academic/preprocessors.pkl")
-        print("\n✅ Preprocessors saved for deployment")
+        print("\nPreprocessors saved for deployment")
     else:
         preprocessors = None
     
-    print("\n✅ Preprocessing completed successfully!\n")
+    print("\nPreprocessing completed successfully!\n")
     
     return X_train, X_test, y_train, y_test, feature_names, preprocessors

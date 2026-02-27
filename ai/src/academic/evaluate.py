@@ -22,39 +22,35 @@ def evaluate_saved_model(model_path="ai/models/academic/best_model.pkl"):
     Evaluate a saved model with comprehensive metrics and visualizations
     """
     
-    print("\n" + "=" * 80)
-    print("🔍 ACADEMIC IMPACT ANALYZER - MODEL EVALUATION")
-    print("=" * 80)
+    print("\nAcademic Impact Analyzer - Model Evaluation")
     
     # Load dataset
     csv_path = "ai/data/Students_Social_Media_Addiction.csv"
-    print(f"\n📂 Loading dataset from: {csv_path}")
+    print(f"Loading dataset from: {csv_path}")
     
     X_train, X_test, y_train, y_test, feature_names, _ = preprocess_data(csv_path, save_preprocessors=False)
     
     # Load model
-    print(f"📂 Loading model from: {model_path}")
+    print(f"Loading model from: {model_path}")
     model = joblib.load(model_path)
     
     # Load metadata
     metadata_path = "ai/models/academic/model_metadata.pkl"
     if os.path.exists(metadata_path):
         metadata = joblib.load(metadata_path)
-        print(f"\n📋 Model Information:")
-        print(f"   • Model Type: {metadata.get('best_model_name', 'N/A')}")
-        print(f"   • Training Date: {metadata.get('training_date', 'N/A')}")
-        print(f"   • Number of Features: {metadata.get('feature_count', 'N/A')}")
-        print(f"   • Dataset Size: {metadata.get('dataset_size', 'N/A')}")
+        print(f"\nModel Information:")
+        print(f"Model Type: {metadata.get('best_model_name', 'N/A')}")
+        print(f"Training Date: {metadata.get('training_date', 'N/A')}")
+        print(f"Number of Features: {metadata.get('feature_count', 'N/A')}")
+        print(f"Dataset Size: {metadata.get('dataset_size', 'N/A')}")
     
     # Make predictions
-    print("\n🔄 Making predictions...")
+    print("Making predictions...")
     y_train_pred = model.predict(X_train)
     y_test_pred = model.predict(X_test)
     
     # Calculate metrics
-    print("\n" + "=" * 80)
-    print("📊 PERFORMANCE METRICS")
-    print("=" * 80)
+    print("\nPerformance Metrics:")
     
     # Training metrics
     train_mae = mean_absolute_error(y_train, y_train_pred)
@@ -70,17 +66,17 @@ def evaluate_saved_model(model_path="ai/models/academic/best_model.pkl"):
     test_r2 = r2_score(y_test, y_test_pred)
     test_mape = mean_absolute_percentage_error(y_test, y_test_pred)
     
-    print("\n🎯 Training Set Performance:")
-    print(f"   • R² Score: {train_r2:.4f}")
-    print(f"   • MAE: {train_mae:.4f}")
-    print(f"   • RMSE: {train_rmse:.4f}")
-    print(f"   • MAPE: {train_mape:.4f}%")
+    print("\nTraining Set Performance:")
+    print(f"R² Score: {train_r2:.4f}")
+    print(f"MAE: {train_mae:.4f}")
+    print(f"RMSE: {train_rmse:.4f}")
+    print(f"MAPE: {train_mape:.4f}%")
     
-    print("\n🎯 Test Set Performance:")
-    print(f"   • R² Score: {test_r2:.4f}")
-    print(f"   • MAE: {test_mae:.4f}")
-    print(f"   • RMSE: {test_rmse:.4f}")
-    print(f"   • MAPE: {test_mape:.4f}%")
+    print("\nTest Set Performance:")
+    print(f"R² Score: {test_r2:.4f}")
+    print(f"MAE: {test_mae:.4f}")
+    print(f"RMSE: {test_rmse:.4f}")
+    print(f"MAPE: {test_mape:.4f}%")
     
     # Overfitting analysis
     r2_diff = train_r2 - test_r2
