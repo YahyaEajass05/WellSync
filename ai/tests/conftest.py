@@ -8,9 +8,7 @@ from unittest.mock import MagicMock, patch
 from fastapi.testclient import TestClient
 
 
-# ---------------------------------------------------------------------------
 # Valid sample payloads (reusable across tests)
-# ---------------------------------------------------------------------------
 
 VALID_MENTAL_WELLNESS_PAYLOAD = {
     "age": 28,
@@ -59,9 +57,7 @@ VALID_ACADEMIC_PAYLOAD = {
 }
 
 
-# ---------------------------------------------------------------------------
 # Mock predictor factory
-# ---------------------------------------------------------------------------
 
 def make_mock_mental_wellness_predictor():
     mock = MagicMock()
@@ -122,9 +118,7 @@ def make_mock_stress_predictor():
     return mock
 
 
-# ---------------------------------------------------------------------------
 # Fixtures
-# ---------------------------------------------------------------------------
 
 @pytest.fixture(scope="session")
 def mock_app():

@@ -1,13 +1,8 @@
 """
 WellSync AI Service — Comprehensive Test Suite
 Covers: root/health endpoints, mental wellness, stress, academic impact,
-        input validation, boundary values, cross-field rules, preprocessing,
-        and score interpretation functions.
-
-Run with:
-    cd ai
-    pytest tests/test_ai_service.py -v
-    pytest tests/test_ai_service.py -v --tb=short --no-header
+input validation, boundary values, cross-field rules, preprocessing,
+and score interpretation functions.
 """
 
 import pytest
@@ -33,9 +28,7 @@ from .conftest import (
     make_mock_stress_predictor,
 )
 
-# ---------------------------------------------------------------------------
 # Shared mocked client (no real models needed)
-# ---------------------------------------------------------------------------
 
 @pytest.fixture(scope="module")
 def client():
@@ -45,9 +38,7 @@ def client():
         yield TestClient(app)
 
 
-# ===========================================================================
 # SECTION 1: Root & Utility Endpoints
-# ===========================================================================
 
 class TestRootEndpoints:
     """Tests for root and health check endpoints."""
@@ -104,9 +95,7 @@ class TestRootEndpoints:
         assert response.status_code == 200
 
 
-# ===========================================================================
 # SECTION 2: Example Endpoints
-# ===========================================================================
 
 class TestExampleEndpoints:
     """Tests for example payload endpoints."""
@@ -150,9 +139,7 @@ class TestExampleEndpoints:
         assert "most_used_platform" in example
 
 
-# ===========================================================================
 # SECTION 3: Mental Wellness Prediction
-# ===========================================================================
 
 class TestMentalWellnessPrediction:
     """Tests for POST /predict/mental-wellness."""
@@ -314,9 +301,7 @@ class TestMentalWellnessPrediction:
         assert response.status_code == 422
 
 
-# ===========================================================================
 # SECTION 4: Stress Level Prediction
-# ===========================================================================
 
 class TestStressPrediction:
     """Tests for POST /predict/stress."""
@@ -418,9 +403,7 @@ class TestStressPrediction:
         assert response.status_code == 422
 
 
-# ===========================================================================
 # SECTION 5: Academic Impact Prediction
-# ===========================================================================
 
 class TestAcademicImpactPrediction:
     """Tests for POST /predict/academic-impact."""
@@ -538,9 +521,7 @@ class TestAcademicImpactPrediction:
         assert response.status_code == 422
 
 
-# ===========================================================================
 # SECTION 6: Score Interpretation Unit Tests
-# ===========================================================================
 
 class TestScoreInterpretation:
     """Unit tests for interpretation helper functions."""
@@ -596,9 +577,7 @@ class TestScoreInterpretation:
         assert "low" in result.lower()
 
 
-# ===========================================================================
 # SECTION 7: Pydantic Schema Validation Unit Tests
-# ===========================================================================
 
 class TestPydanticValidators:
     """Direct unit tests for Pydantic validator schemas."""
@@ -665,9 +644,7 @@ class TestPydanticValidators:
             AcademicImpactInput(**{**VALID_ACADEMIC_PAYLOAD, "conflicts_over_social_media": 6})
 
 
-# ===========================================================================
 # SECTION 8: Model Unavailable (503) Tests
-# ===========================================================================
 
 class TestModelUnavailable:
     """Tests for error responses when models are not loaded."""
@@ -694,9 +671,7 @@ class TestModelUnavailable:
             assert response.status_code in (500, 503)
 
 
-# ===========================================================================
 # SECTION 9: Parametrized Boundary Tests
-# ===========================================================================
 
 class TestParametrizedBoundaries:
     """Parametrized boundary tests for all three prediction endpoints."""
@@ -746,10 +721,6 @@ class TestParametrizedBoundaries:
         response = client.post("/predict/mental-wellness", json=payload)
         assert response.status_code == expected
 
-
-# ===========================================================================
-# Runner (for direct execution)
-# ===========================================================================
 
 if __name__ == "__main__":
     import subprocess
