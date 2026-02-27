@@ -22,7 +22,7 @@ export default function DashboardError({
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] p-8">
 
-      {/* ── Animated Icon ── */}
+      {/* Animated Icon */}
       <div className="relative mb-8">
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="w-24 h-24 rounded-full bg-destructive/10 animate-ping" style={{ animationDuration: '2s' }} />
@@ -32,7 +32,7 @@ export default function DashboardError({
         </div>
       </div>
 
-      {/* ── Message ── */}
+      {/* Message */}
       <div className={`text-center max-w-md transition-all duration-500 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
         <h2 className="text-xl font-bold mb-2">Dashboard Error</h2>
         <p className="text-muted-foreground text-sm mb-4">
@@ -47,7 +47,7 @@ export default function DashboardError({
           </div>
         )}
 
-        {/* ── Action Buttons ── */}
+        {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Button onClick={reset} className="gap-2">
             <RefreshCw className="h-4 w-4" />

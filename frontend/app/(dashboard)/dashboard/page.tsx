@@ -7,7 +7,7 @@ import { Brain, BarChart3, Activity, Heart, TrendingUp, TrendingDown, Minus, Plu
 import { formatDate } from '@/lib/utils';
 import Link from 'next/link';
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// Helpers:
 const getWellnessColor = (score: number) => {
   if (score >= 80) return '#16a34a';
   if (score >= 60) return '#2563eb';
@@ -47,7 +47,7 @@ const predictionTypeIcon = (type: string) => {
   return <BarChart3 className="h-4 w-4 text-purple-500" />;
 };
 
-// ─── Main Page ────────────────────────────────────────────────────────────────
+// Main Page:
 export default function DashboardPage() {
   const { data, isLoading, error } = useDashboard();
 
@@ -70,7 +70,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6 p-6">
 
-      {/* ── Welcome ── */}
+      {/* Welcome */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold">
@@ -86,7 +86,7 @@ export default function DashboardPage() {
         </Link>
       </div>
 
-      {/* ── Stats Cards ── */}
+      {/* Stats Cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {/* Total Predictions */}
         <Card>
@@ -149,7 +149,7 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      {/* ── Latest Predictions ── */}
+      {/* Latest Predictions */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 
         {/* Latest Mental Wellness */}
@@ -242,7 +242,7 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      {/* ── Recent Activity ── */}
+      {/* Recent Activity */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Recent Activity</CardTitle>
@@ -286,7 +286,7 @@ export default function DashboardPage() {
         </CardContent>
       </Card>
 
-      {/* ── Quick Actions ── */}
+      {/* Quick Actions */}
       <Card>
         <CardHeader>
           <CardTitle>Quick Actions</CardTitle>

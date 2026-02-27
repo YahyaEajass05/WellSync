@@ -2,7 +2,7 @@ export default function DashboardLoading() {
   return (
     <div className="space-y-6 p-6 animate-fade-in">
 
-      {/* ── Header Skeleton ── */}
+      {/* Header Skeleton */}
       <div className="flex items-center justify-between">
         <div className="space-y-2">
           <div className="h-8 w-48 bg-muted rounded-lg animate-pulse" />
@@ -11,7 +11,7 @@ export default function DashboardLoading() {
         <div className="h-10 w-32 bg-muted rounded-lg animate-pulse" />
       </div>
 
-      {/* ── Stats Cards Skeleton ── */}
+      {/* Stats Cards Skeleton */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[1, 2, 3, 4].map((i) => (
           <div key={i} className="rounded-xl border bg-card p-6 space-y-3" style={{ animationDelay: `${i * 0.1}s` }}>
@@ -25,7 +25,7 @@ export default function DashboardLoading() {
         ))}
       </div>
 
-      {/* ── Prediction Cards Skeleton ── */}
+      {/* Prediction Cards Skeleton */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {[1, 2, 3].map((i) => (
           <div key={i} className="rounded-xl border bg-card p-6 space-y-4" style={{ animationDelay: `${i * 0.15}s` }}>
@@ -40,7 +40,7 @@ export default function DashboardLoading() {
         ))}
       </div>
 
-      {/* ── Activity Skeleton ── */}
+      {/* Activity Skeleton */}
       <div className="rounded-xl border bg-card p-6 space-y-4">
         <div className="h-6 w-36 bg-muted rounded animate-pulse" />
         {[1, 2, 3, 4].map((i) => (
@@ -58,7 +58,7 @@ export default function DashboardLoading() {
         ))}
       </div>
 
-      {/* ── Wave Loading Indicator ── */}
+      {/* Wave Loading Indicator */}
       <div className="flex items-center justify-center gap-1 py-4">
         {[1, 2, 3, 4, 5].map((i) => (
           <div

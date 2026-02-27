@@ -15,7 +15,7 @@ import { formatDateTime } from '@/lib/utils';
 import { toast } from 'sonner';
 import Link from 'next/link';
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+// Types
 interface StatBlock {
   count: number;
   average: number;
@@ -43,7 +43,7 @@ interface Insight {
   recommendation: string;
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// Helpers
 const TrendIcon = ({ trend }: { trend: string }) => {
   if (trend === 'improving') return <TrendingUp className="h-4 w-4 text-green-500" />;
   if (trend === 'declining') return <TrendingDown className="h-4 w-4 text-red-500" />;
@@ -96,7 +96,7 @@ const predictionTypeIcon = (type: string) => {
   return <BarChart3 className="h-4 w-4 text-purple-500" />;
 };
 
-// ─── Score Bar ────────────────────────────────────────────────────────────────
+// Score Bar
 const ScoreBar = ({ value, max, color }: { value: number; max: number; color: string }) => (
   <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
     <div
@@ -106,7 +106,7 @@ const ScoreBar = ({ value, max, color }: { value: number; max: number; color: st
   </div>
 );
 
-// ─── Stat Card ────────────────────────────────────────────────────────────────
+// Stat Card:
 const StatCard = ({
   title, icon, stat, unit, maxScore, barColor, scoreColor
 }: {
@@ -167,7 +167,7 @@ const StatCard = ({
   </Card>
 );
 
-// ─── Main Page ────────────────────────────────────────────────────────────────
+// Main Page
 export default function AnalyticsPage() {
   const [period, setPeriod] = useState<'weekly' | 'monthly'>('weekly');
 
@@ -214,7 +214,7 @@ export default function AnalyticsPage() {
   return (
     <div className="space-y-6 p-6">
 
-      {/* ── Header ── */}
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold">Analytics</h1>
@@ -256,7 +256,7 @@ export default function AnalyticsPage() {
         </div>
       </div>
 
-      {/* ── Overview Cards ── */}
+      {/* Overview Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <Card>
           <CardContent className="pt-6">
@@ -312,7 +312,7 @@ export default function AnalyticsPage() {
         </Card>
       </div>
 
-      {/* ── Prediction Stats ── */}
+      {/* Prediction Stats */}
       {isLoadingAnalytics ? (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[1, 2, 3].map(i => (
@@ -359,7 +359,7 @@ export default function AnalyticsPage() {
         </div>
       )}
 
-      {/* ── Insights & Recent Predictions ── */}
+      {/* Insights & Recent Predictions */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
         {/* Insights */}
@@ -403,7 +403,7 @@ export default function AnalyticsPage() {
                         <p className="text-xs text-muted-foreground mt-0.5">{insight.message}</p>
                         {insight.recommendation && (
                           <p className="text-xs mt-1 font-medium text-blue-600 dark:text-blue-400">
-                            💡 {insight.recommendation}
+                            {insight.recommendation}
                           </p>
                         )}
                       </div>
@@ -462,7 +462,7 @@ export default function AnalyticsPage() {
         </Card>
       </div>
 
-      {/* ── Quick Actions ── */}
+      {/* Quick Actions */}
       <Card>
         <CardHeader>
           <CardTitle>Quick Actions</CardTitle>
