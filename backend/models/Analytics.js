@@ -19,8 +19,7 @@ const analyticsSchema = new mongoose.Schema({
     },
     periodDate: {
         type: Date,
-        required: true,
-        index: true
+        required: true
     },
     metrics: {
         totalPredictions: {
