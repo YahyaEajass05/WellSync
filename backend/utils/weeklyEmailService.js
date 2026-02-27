@@ -290,7 +290,7 @@ const sendWeeklyEmailToUser = async (user) => {
         
         await sendEmail({
             to: user.email,
-            subject: `📊 Your Weekly Wellness Update - ${dateStr}`,
+            subject: `Your Weekly Wellness Update - ${dateStr}`,
             html,
             attachments: [
                 {

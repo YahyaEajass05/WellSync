@@ -184,7 +184,7 @@ exports.sendInactiveUserReminders = async () => {
                 await notificationService.sendNotification(
                     user._id,
                     'system_alert',
-                    '👋 We Miss You!',
+                    'We Miss You!',
                     'It\'s been a while since your last prediction. Check in on your wellness journey and see how you\'re doing!',
                     {},
                     'low'

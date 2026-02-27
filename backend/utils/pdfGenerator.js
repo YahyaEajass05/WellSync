@@ -1,7 +1,6 @@
 /**
- * Enhanced PDF Generator - Professional Reports
- * Includes: Input Data, Output, Recommendations, Professional Layout
- * Supports: Mental Wellness, Stress Level, Academic Impact
+ * PDF Generator
+ * Generates prediction report PDFs for Mental Wellness, Stress Level, and Academic Impact
  */
 
 const PDFDocument = require('pdfkit');
@@ -38,8 +37,8 @@ exports.generatePredictionReportPDF = async (user, predictionData) => {
                 day: 'numeric'
             });
 
-            // ============= PAGE 1: HEADER & RESULTS =============
-            
+            // Page 1: Header & Results
+
             // Header with gradient effect
             doc.rect(0, 0, 595, 120).fill('#667eea');
             
@@ -161,7 +160,7 @@ exports.generatePredictionReportPDF = async (user, predictionData) => {
                .fillColor('#666666')
                .text(`${((score/maxScore)*100).toFixed(0)}%`, 530, y + 3);
 
-            // ============= PAGE 2: INPUT DATA =============
+            // Page 2: Input Data
             
             doc.addPage();
             y = 50;
@@ -216,7 +215,7 @@ exports.generatePredictionReportPDF = async (user, predictionData) => {
                 }
             });
 
-            // ============= PAGE 3: ANALYSIS & RECOMMENDATIONS =============
+            // Page 3: Analysis & Recommendations
             
             doc.addPage();
             y = 50;
@@ -291,7 +290,7 @@ exports.generatePredictionReportPDF = async (user, predictionData) => {
                 y += 80;
             });
 
-            // ============= FINAL PAGE: DISCLAIMER & FOOTER =============
+            // Final Page: Disclaimer & Footer
             
             // Add disclaimer at the bottom of the last page
             if (y > 650) {
@@ -464,7 +463,7 @@ function getDetailedRecommendations(predictionData) {
         if (score >= 80) {
             // EXCELLENT (80-100)
             recs.push(
-                '🌟 EXCELLENT WELLNESS - Score: ' + score.toFixed(1) + '/100',
+                'EXCELLENT WELLNESS - Score: ' + score.toFixed(1) + '/100',
                 'Sleep Optimization: Your sleep is great! Continue maintaining 7-9 hours with a consistent schedule. Try adding relaxation techniques like gentle stretching or reading before bed to further enhance sleep quality.',
                 'Exercise Excellence: Maintain your 150+ minutes/week of aerobic activity. Add variety with swimming, cycling, or yoga to prevent workout monotony and challenge different muscle groups.',
                 'Screen Time Management: Your screen habits are excellent. Continue limiting recreational screen use to under 3 hours daily. Explore digital detox weekends periodically to recharge.',
@@ -476,7 +475,7 @@ function getDetailedRecommendations(predictionData) {
         } else if (score >= 70) {
             // GOOD (70-79)
             recs.push(
-                '💙 GOOD WELLNESS - Score: ' + score.toFixed(1) + '/100',
+                'GOOD WELLNESS - Score: ' + score.toFixed(1) + '/100',
                 'Sleep Improvement: You\'re doing well but aim for consistent 7-9 hours. Set a fixed bedtime alarm and create a wind-down routine: dim lights 30 minutes before bed and avoid caffeine after 2 PM.',
                 'Exercise Boost: Increase to 150 minutes/week of moderate aerobic exercise. Try brisk walking, swimming, or cycling. Add 2 strength training sessions weekly to boost mood and energy.',
                 'Screen Time Reduction: Cut leisure screen time by 30 minutes daily. Replace with outdoor activities, reading, or in-person socializing. Use app timers to enforce limits.',
@@ -488,7 +487,7 @@ function getDetailedRecommendations(predictionData) {
         } else if (score >= 60) {
             // BELOW AVERAGE (60-69)
             recs.push(
-                '⚠️ BELOW AVERAGE WELLNESS - Score: ' + score.toFixed(1) + '/100 - Action Needed',
+                'BELOW AVERAGE WELLNESS - Score: ' + score.toFixed(1) + '/100 - Action Needed',
                 'Sleep Priority: Sleep deprivation is likely affecting your wellness. Create a strict sleep schedule, eliminate all screens 1 hour before bed, keep your bedroom cool (65-68°F), and use blackout curtains for better sleep quality.',
                 'Exercise Start: Begin with just 20-30 minutes of walking 3 times per week. Exercise releases endorphins that directly improve mental wellness. Even short walks after meals make a significant difference.',
                 'Screen Time Intervention: Immediately reduce screen time by 1-2 hours daily. Set app usage limits on your phone. Replace screen time with outdoor activities, reading, or face-to-face interactions.',
@@ -500,7 +499,7 @@ function getDetailedRecommendations(predictionData) {
         } else {
             // POOR (below 60)
             recs.push(
-                '🚨 POOR WELLNESS - Score: ' + score.toFixed(1) + '/100 - Immediate Action Required',
+                'POOR WELLNESS - Score: ' + score.toFixed(1) + '/100 - Immediate Action Required',
                 'URGENT - Seek Professional Help: Please consult with a mental health professional, campus counselor, or your doctor as soon as possible. Your score indicates multiple lifestyle factors significantly impacting your wellbeing.',
                 'Emergency Sleep Protocol: Your sleep needs immediate attention. Set a non-negotiable sleep schedule (same time every night). Remove all electronics from your bedroom. Use a sleep tracker app to monitor and improve quality.',
                 'Gentle Exercise Start: Even 10 minutes of walking daily can begin improving your mood through endorphin release. Start small - a walk around the block after breakfast or dinner. Gradually build to 30 minutes daily.',
@@ -515,7 +514,7 @@ function getDetailedRecommendations(predictionData) {
         if (score >= 8) {
             // VERY HIGH STRESS (8-10)
             recs.push(
-                '🚨 VERY HIGH STRESS - Score: ' + score.toFixed(1) + '/10 - URGENT ATTENTION NEEDED',
+                'VERY HIGH STRESS - Score: ' + score.toFixed(1) + '/10 - URGENT ATTENTION NEEDED',
                 'Seek Immediate Professional Help: Contact a mental health professional, therapist, or counselor TODAY. Very high stress can cause serious physical and mental health complications. Many campuses offer same-day crisis counseling.',
                 'Emergency Breathing Technique: Practice 4-7-8 breathing immediately: inhale through nose for 4 counts, hold for 7 counts, exhale through mouth for 8 counts. Repeat 4 times. Do this every hour.',
                 'Radical Schedule Reduction: Identify and immediately drop or delegate non-essential commitments. Your health comes first. Talk to professors about extensions or accommodations if needed.',
@@ -528,7 +527,7 @@ function getDetailedRecommendations(predictionData) {
         } else if (score >= 6) {
             // HIGH STRESS (6-7)
             recs.push(
-                '🔴 HIGH STRESS - Score: ' + score.toFixed(1) + '/10 - Action Required',
+                'HIGH STRESS - Score: ' + score.toFixed(1) + '/10 - Action Required',
                 'Professional Support: Schedule an appointment with a counselor or therapist this week. High stress needs professional management strategies tailored to your specific situation and stressors.',
                 'Daily Mindfulness Practice: Commit to 15-20 minutes of meditation daily using apps like Headspace, Calm, or Insight Timer. Research shows consistent meditation reduces stress hormones by up to 30%.',
                 'Sleep Quality Focus: Establish a strict 7-9 hour sleep schedule. Create a 30-minute wind-down routine: reduce lighting, do light stretching, practice gratitude journaling, and avoid screens.',
@@ -540,7 +539,7 @@ function getDetailedRecommendations(predictionData) {
         } else if (score >= 3) {
             // MODERATE STRESS (3-5)
             recs.push(
-                '🟡 MODERATE STRESS - Score: ' + score.toFixed(1) + '/10 - Monitor and Manage',
+                'MODERATE STRESS - Score: ' + score.toFixed(1) + '/10 - Monitor and Manage',
                 'Stress Journaling: Keep a daily stress journal. Note stress triggers, intensity (1-10), and what helped reduce it. This awareness helps identify patterns and develop targeted coping strategies.',
                 'Consistent Sleep Schedule: Maintain your 7-9 hours with consistent wake times even on weekends. Irregular sleep patterns increase cortisol levels and worsen stress responses.',
                 'Regular Physical Activity: Ensure 150 minutes of moderate exercise weekly. Your current activity is helping - keep it consistent. Try adding yoga or tai chi for combined physical and mental benefits.',
@@ -552,7 +551,7 @@ function getDetailedRecommendations(predictionData) {
         } else {
             // LOW STRESS (0-2)
             recs.push(
-                '✅ LOW STRESS - Score: ' + score.toFixed(1) + '/10 - Excellent Stress Management!',
+                'LOW STRESS - Score: ' + score.toFixed(1) + '/10 - Excellent Stress Management!',
                 'Celebrate and Maintain: Your stress management is exemplary! Identify exactly what\'s working (sleep quality, exercise, social support, time management) and consciously maintain these practices.',
                 'Build Stress Resilience: Use this low-stress period to strengthen your coping toolkit. Learn advanced techniques like progressive muscle relaxation or biofeedback to handle future stressors.',
                 'Share Your Strategies: Consider sharing your successful stress management approaches with peers, younger students, or through student wellness groups. Teaching reinforces your own practices.',
@@ -566,7 +565,7 @@ function getDetailedRecommendations(predictionData) {
         if (score >= 7) {
             // HIGH RISK (7-9)
             recs.push(
-                '🚨 HIGH ADDICTION RISK - Score: ' + score.toFixed(1) + '/9 - Immediate Intervention Required',
+                'HIGH ADDICTION RISK - Score: ' + score.toFixed(1) + '/9 - Immediate Intervention Required',
                 'Emergency Digital Intervention: Delete or temporarily deactivate the top 2-3 most addictive social media apps from your phone TODAY. Research shows a 30-day break significantly resets dopamine patterns.',
                 'Strict App Time Limits: Use Screen Time (iOS) or Digital Wellbeing (Android) to set hard limits of 30-60 minutes maximum total social media daily. Enable downtime during study hours (e.g., 8am-6pm).',
                 'Phone-Free Study Environment: Place your phone in another room or a locked drawer during all study sessions. Purchase a cheap digital clock so you don\'t need your phone to check time.',
@@ -579,7 +578,7 @@ function getDetailedRecommendations(predictionData) {
         } else if (score >= 5) {
             // MODERATE RISK (5-6)
             recs.push(
-                '🟡 MODERATE ADDICTION RISK - Score: ' + score.toFixed(1) + '/9 - Reduction Needed',
+                'MODERATE ADDICTION RISK - Score: ' + score.toFixed(1) + '/9 - Reduction Needed',
                 'Set Daily Usage Caps: Implement a maximum 2-3 hours total social media daily. Use app timers and check your weekly Screen Time or Digital Wellbeing report every Sunday to track progress.',
                 'Notification Audit: Turn off ALL non-essential notifications immediately. Keep only calls and messages from close contacts. Each notification interrupts 23 minutes of focused work on average.',
                 'Structured Study Blocks: Use the Pomodoro technique - 25 minutes focused work with phone face-down in another room, then 5 minutes break. Social media during break only after completing the block.',
@@ -592,7 +591,7 @@ function getDetailedRecommendations(predictionData) {
         } else {
             // LOW RISK (2-4)
             recs.push(
-                '✅ LOW ADDICTION RISK - Score: ' + score.toFixed(1) + '/9 - Healthy Digital Balance',
+                'LOW ADDICTION RISK - Score: ' + score.toFixed(1) + '/9 - Healthy Digital Balance',
                 'Maintain Your Balance: Excellent job managing social media alongside academics! Continue your current approach of setting boundaries between digital engagement and study time.',
                 'Awareness Monitoring: Do a monthly check-in of your screen time reports. Catching upward trends early is much easier than reversing established addiction patterns.',
                 'Optimize Study Effectiveness: Since your digital habits are healthy, focus on optimizing study techniques - spaced repetition, active recall, and interleaved practice for maximum academic performance.',
@@ -636,8 +635,8 @@ exports.generateWeeklyWellnessReportPDF = async (user, weeklyData, predictions) 
             weekStart.setDate(weekStart.getDate() - 7);
             const weekRange = `${weekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${reportDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
 
-            // ============= PAGE 1: HEADER & SUMMARY =============
-            
+            // Page 1: Header & Summary
+
             // Header with gradient
             doc.rect(0, 0, 595, 120).fill('#667eea');
             
@@ -826,7 +825,7 @@ exports.generateWeeklyWellnessReportPDF = async (user, weeklyData, predictions) 
                    });
             }
 
-            // ============= PAGE 2: PREDICTION HISTORY =============
+            // Page 2: Prediction History
             
             doc.addPage();
             y = 50;
@@ -933,7 +932,7 @@ exports.generateWeeklyWellnessReportPDF = async (user, weeklyData, predictions) 
                    });
             }
 
-            // ============= PAGE 3: RECOMMENDATIONS =============
+            // Page 3: Recommendations
             
             doc.addPage();
             y = 50;
@@ -1004,7 +1003,7 @@ exports.generateWeeklyWellnessReportPDF = async (user, weeklyData, predictions) 
                    });
             }
 
-            // ============= PAGE 4: WELLNESS TIPS & FOOTER =============
+            // Page 4: Wellness Tips & Footer
             
             doc.addPage();
             y = 50;

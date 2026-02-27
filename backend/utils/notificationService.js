@@ -33,9 +33,9 @@ exports.sendNotification = async (userId, type, title, message, data = {}, prior
  */
 exports.notifyPredictionCompleted = async (userId, predictionType, score, interpretation) => {
     const titles = {
-        mental_wellness: '🧠 Mental Wellness Prediction Complete',
-        academic_impact: '🎓 Academic Impact Analysis Complete',
-        stress_level: '😰 Stress Level Prediction Complete'
+        mental_wellness: 'Mental Wellness Prediction Complete',
+        academic_impact: 'Academic Impact Analysis Complete',
+        stress_level: 'Stress Level Prediction Complete'
     };
 
     const title = titles[predictionType] || 'Prediction Complete';
@@ -58,7 +58,7 @@ exports.notifyEmailVerified = async (userId) => {
     return await this.sendNotification(
         userId,
         'email_verified',
-        '✅ Email Verified Successfully',
+        'Email Verified Successfully',
         'Your email has been verified. You now have full access to all WellSync features!',
         {},
         'low'
@@ -72,7 +72,7 @@ exports.notifyPasswordChanged = async (userId) => {
     return await this.sendNotification(
         userId,
         'password_changed',
-        '🔐 Password Changed',
+        'Password Changed',
         'Your password has been successfully changed. If you did not make this change, please contact support immediately.',
         {},
         'high'
@@ -84,19 +84,19 @@ exports.notifyPasswordChanged = async (userId) => {
  */
 exports.notifyMilestone = async (userId, milestone, count) => {
     const milestones = {
-        10: { emoji: '🎉', message: 'first 10 predictions' },
-        25: { emoji: '🌟', message: '25 predictions' },
-        50: { emoji: '🏆', message: '50 predictions' },
-        100: { emoji: '👑', message: '100 predictions' },
-        250: { emoji: '💎', message: '250 predictions' }
+        10: { message: 'first 10 predictions' },
+        25: { message: '25 predictions' },
+        50: { message: '50 predictions' },
+        100: { message: '100 predictions' },
+        250: { message: '250 predictions' }
     };
 
-    const info = milestones[milestone] || { emoji: '🎊', message: `${milestone} predictions` };
+    const info = milestones[milestone] || { message: `${milestone} predictions` };
 
     return await this.sendNotification(
         userId,
         'milestone_reached',
-        `${info.emoji} Milestone: ${count} Predictions!`,
+        `Milestone: ${count} Predictions!`,
         `Congratulations! You've reached ${info.message}. Keep tracking your wellness journey!`,
         { milestone, count },
         'low'
@@ -115,7 +115,7 @@ exports.notifyWeeklySummary = async (userId, stats) => {
     return await this.sendNotification(
         userId,
         'weekly_summary',
-        '📊 Your Weekly Summary',
+        'Your Weekly Summary',
         message,
         stats,
         'low'
@@ -151,7 +151,7 @@ exports.notifyAccountUpdated = async (userId, updateType) => {
     return await this.sendNotification(
         userId,
         'account_updated',
-        '✏️ Account Updated',
+        'Account Updated',
         messages[updateType] || messages.general,
         { updateType },
         'low'

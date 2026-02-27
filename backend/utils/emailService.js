@@ -320,7 +320,7 @@ exports.sendBroadcastEmail = async (user, broadcastData) => {
 
     await sendEmail({
         to: user.email,
-        subject: `📢 [WellSync] ${broadcastData.title}`,
+        subject: `[WellSync] ${broadcastData.title}`,
         html
     });
 };
